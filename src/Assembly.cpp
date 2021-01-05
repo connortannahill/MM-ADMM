@@ -11,16 +11,11 @@ Assembly::Assembly(unordered_map<string, double> params) {
     this->nPnts = (int)params["nPnts"];
 
     this->d = (int)params["d"];
-    M = new Eigen::SparseMatrix<double>(d*nPnts, d*nPnts);
 
     dAlloc = false;
     wAlloc = false;
     mAlloc = false;
 }
-
-// void Assembly::printDiff() {
-//     cout << "Difference after step: " << (*Vp - *Vc).norm() << endl;
-// }
 
 int Assembly::getD() {
     return this->d;
@@ -89,7 +84,9 @@ void Assembly::buildWMatrix(double w) {
 }
 
 Assembly::~Assembly() {
-    delete M;
+    if (mAlloc) {
+        delete M;
+    }
     if (dAlloc) {
         delete D;
     }

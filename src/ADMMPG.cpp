@@ -23,18 +23,18 @@ ADMMPG::ADMMPG(double dt, Assembly &a) {
     a.copyX(*xBar);
 
     // Compute the initial z vlaue
-    z = new Eigen::VectorXd((*this->x));
+    z = new Eigen::VectorXd(*((this->a)->D) * (*this->x));
 
     uBar = new Eigen::VectorXd(Eigen::VectorXd::Constant(z->size(), 0.0));
 
     // Prefactor the matrix (assuming constant matrix for now)
     double dtsq = dt*dt;
     Eigen::SparseMatrix<double> t(*(this->a)->M);
-    WD_T = new Eigen::SparseMatrix<double>(( *((this->a)->W)).transpose());
+    WD_T = new Eigen::SparseMatrix<double>(( *((this->a)->W) * *((this->a)->D)).transpose());
 
-    t = t + dtsq*((*WD_T * (*(this->a)->W)));
+    t = t + dtsq*((*WD_T * (*(this->a)->W) * (*(this->a)->D)));
 
-    // Compute the sparse Cholseky factorization of the matrix.
+    // Compute the sparse Cholseky factorization.
     cgSol = new Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>>(t);
 
     DXpU = new Eigen::VectorXd(*z);
@@ -52,7 +52,7 @@ void ADMMPG::step(int nIters, double tol) {
     (this->a)->predictX(dt, *this->xPrev, *this->x, *this->xBar);
 
     *xPrev = *x;
-    *z = *x;
+    *z = (*a->D) * *x;
 
     *x = *xBar;
     uBar->setZero();
@@ -67,12 +67,14 @@ void ADMMPG::step(int nIters, double tol) {
 
     int i;
     for (i = 0; i < nIters; i++) {
+        // cout << "Running prox" << endl;
         // Update z_{n+1} using the assembly prox algorithm
         start = clock();
-        *DXpU = ((*x)) + (*uBar);
+        *DXpU = (*(a->D))*(*x) + (*uBar);
         a->updateAfterStep(dt, *xPrev, *x);
         a->prox(dt, *x, *DXpU, *z);
         prox += clock() - start;
+        // cout << "Finished prox" << endl;
 
         // Update the Lagrange multiplier uBar^{n+1}
         *uBar = *DXpU - *z;
@@ -84,7 +86,7 @@ void ADMMPG::step(int nIters, double tol) {
         xUpdate += clock() - start;
 
         // Compute the primal residual. If it is beneath the tolerance, exit
-        double primalRes = (*x - *z).norm();
+        double primalRes = ((*a->D)*(*x) - *z).norm();
         if (primalRes < tol) {
             break;
         }

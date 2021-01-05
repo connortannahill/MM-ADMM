@@ -9,12 +9,15 @@
 #include "HuangFunctional.h"
 #include "MonitorFunction.h"
 
+#define DIM 2
+
 using namespace std;
 
 class Mesh2D : public Assembly {
 public:
     Mesh2D(MonitorFunction *M, unordered_map<string, double> params);
     void prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DxpU, Eigen::VectorXd &z) override;
+    // void proxSimplex(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DxpU, Eigen::VectorXd &z) override;
     void updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x) override;
     void copyX(Eigen::VectorXd &tar) override;
     void predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) override;
@@ -28,13 +31,17 @@ public:
     Eigen::MatrixXd *Vc;
     Eigen::MatrixXd *Vp;
     Eigen::MatrixXi *F;
+    Eigen::VectorXi *boundaryMask;
     Eigen::VectorXd *DXpU;
+    MonitorFunction *M;
     double gradDescent(HuangFunctional &I_wx, Eigen::Vector2d &zPart, int nIter);
     double newtonOpt(HuangFunctional &I_wx, Eigen::Vector2d &z, int nIter);
+    double newtonOptSimplex(int zId, Eigen::Vector<double, DIM*(DIM+1)> &z,
+            Eigen::Vector<double, DIM*(DIM+1)> &xi, int nIter);
     void printDiff();
     int a;
     double tau;
-private:
+protected:
 
     // TODO: make this polymorphic
     vector<HuangFunctional> *I_wx;
@@ -45,8 +52,8 @@ private:
     double rho;
 
     // void buildMassMatrix(Eigen::VectorXd &m) override;
-    // void buildDMatrix() override;
-    // void buildWMatrix() override;
+    void buildDMatrix() override;
+    void buildWMatrix(double w) override;
 };
 
 #endif

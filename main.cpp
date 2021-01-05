@@ -8,6 +8,7 @@
 #include <string>
  
 using namespace std;
+
  
 int main()
 {
@@ -21,7 +22,7 @@ int main()
   params["ny"] = 10;
   params["nPnts"] = (params["nx"]+1)*(params["ny"]+1);
   params["d"] = 2;
-  params["rho"] = 10;
+  params["rho"] = 1.0;
   // params["rho"] = 0.0;
 
   params["xa"] = 0.0;
@@ -41,14 +42,14 @@ int main()
   // }
 
   // Create the solver
-  double dt = 0.01;
+  double dt = 0.1;
   ADMMPG solver(dt, adaptiveMesh);
 
 
   clock_t start = clock();
-  int nSteps = 30;
+  int nSteps = 5;
   for (int i = 0; i < nSteps; i++) {
-    solver.step(200, 1e-5);
+    solver.step(1000, 1e-4);
   }
 
   cout << "Time per step = " << ((clock() - start)/((double)CLOCKS_PER_SEC))/((double)nSteps);

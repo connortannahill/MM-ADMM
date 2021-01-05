@@ -4,6 +4,7 @@
 #include <Eigen/Dense>
 #include "AdaptationFunctional.h"
 // #include "Mesh2D.h"
+#define DIM 2
 
 class Mesh2D;
 
@@ -16,7 +17,11 @@ public:
     HuangFunctional(int d, int simplexId, bool boundaryNode, MonitorFunction *m,
                     double w, double theta, double p);
     double operator()(Eigen::Vector2d &z, Eigen::Vector2d &grad, bool computeGrad) override;
+    double operator()(Eigen::VectorXd &z, Eigen::VectorXd &grad);
     ~HuangFunctional() {};
+    double blockGrad(int zId, Eigen::Vector<double, DIM*(DIM+1)> &x,
+                Eigen::Vector<double, DIM*(DIM+1)> &xi,
+                Eigen::Vector<double, DIM*(DIM+1)> &grad);
 protected:
     double theta;
     double p;
