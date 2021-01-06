@@ -435,7 +435,8 @@ double Mesh2D::newtonOptSimplex(int zId, Eigen::Vector<double, DIM*(DIM+1)> &z,
         Eigen::Vector<double, DIM*(DIM+1)> &xi, int nIter) {
     // double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
     double h = 1e-10; // TODO: play with this
-    const int MAX_LS = 50;
+    // const int MAX_LS = 50;
+    const int MAX_LS = 10;
 
     // HuangFunctional I_wx(DIM, 0, false, *Vc, *Vp, *F, *DXpU, M, 0.0, 0.0, 0.0);
     HuangFunctional I_wx(DIM, 0, false, *Vc, *Vp, *F, *DXpU, M, w, 0.0, 0.0);
@@ -453,44 +454,45 @@ double Mesh2D::newtonOptSimplex(int zId, Eigen::Vector<double, DIM*(DIM+1)> &z,
     for (int iters = 0; iters < nIter; iters++) {
         Ix = I_wx.blockGrad(zId, z, xi, gradZ);
 
-        // zPurt = z;
+        zPurt = z;
 
         // Compute the Hessian column-wise
-        // for (int i = 0; i < d*(d+1); i++) {
-        //     // Compute purturbation
-        //     zPurt(i) += h;
+        for (int i = 0; i < d*(d+1); i++) {
+            // Compute purturbation
+            zPurt(i) += h;
 
-        //     // Compute gradient at purturbed point
-        //     Ipurt = I_wx.blockGrad(zId, zPurt, xi, gradZPurt);
+            // Compute gradient at purturbed point
+            Ipurt = I_wx.blockGrad(zId, zPurt, xi, gradZPurt);
 
-        //     hess.col(i) = (gradZPurt - gradZ)/h;
+            hess.col(i) = (gradZPurt - gradZ)/h;
 
-        //     zPurt(i) = z(i);
-        // }
-        // // cout << gradZ.transpose() << endl;
+            zPurt(i) = z(i);
+        }
+        // cout << gradZ.transpose() << endl;
 
-        // // cout << "det(Hess) = " << hess.determinant() << endl;
+        // cout << "det(Hess) = " << hess.determinant() << endl;
 
-        // // Compute the Newton direction
-        // p = hess.colPivHouseholderQr().solve(-gradZ);
-        // zPurt = z + p;
+        // Compute the Newton direction
+        p = hess.colPivHouseholderQr().solve(-gradZ);
+        zPurt = z + p;
 
         // Perform backtracking line search in the Hessian direction (should work if Hess is pos def)
         int lsIters = 0;
         double alpha = 1.0;
-        zPurt = z - alpha*gradZ;
+        // zPurt = z - alpha*gradZ;
         double c1 = 0.0;
         double c2 = 0.9;
         // Ipurt = I_wx(zPurt, gradTemp, true);
         Ipurt = I_wx.blockGrad(zId, zPurt, xi, gradTemp);
 
-        // while (Ipurt >= Ix - c1*alpha*(gradZ.dot(p)) && -p.dot(gradTemp) >= -c2*p.dot(gradZ)  && lsIters < MAX_LS) {
+        while (Ipurt >= Ix - c1*alpha*(gradZ.dot(p)) && -p.dot(gradTemp) >= -c2*p.dot(gradZ)  && lsIters < MAX_LS) {
         // while (Ipurt >= Ix - c1*alpha*(gradZ.dot(p)) && lsIters < MAX_LS) {
-        while (Ipurt >= Ix - c1*alpha*(gradZ.squaredNorm()) && lsIters < MAX_LS) {
-            alpha /= 2.0;
+        // while (Ipurt >= Ix - c1*alpha*(gradZ.squaredNorm()) && lsIters < MAX_LS) {
+            alpha /= 10.0;
+            // alpha /= 2.0;
 
-            // zPurt = z + alpha*p;
-            zPurt = z - alpha*gradZ;
+            zPurt = z + alpha*p;
+            // zPurt = z - alpha*gradZ;
             // Ipurt = I_wx(zPurt, gradTemp, true);//, false);
             Ipurt = I_wx.blockGrad(zId, zPurt, xi, gradTemp);
 
@@ -527,8 +529,8 @@ void Mesh2D::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen::V
 
         // assert(x_i.isApprox(xi_i));
 
-        // Ih = newtonOptSimplex(i, x_i, xi_i, 1);
-        Ih = newtonOptSimplex(i, z_i, xi_i, 10);
+        Ih = newtonOptSimplex(i, z_i, xi_i, 1);
+        // Ih = newtonOptSimplex(i, z_i, xi_i, 10);
 
         z.segment(d*(d+1)*i, d*(d+1)) = z_i;
 
