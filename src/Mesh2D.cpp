@@ -142,7 +142,8 @@ Mesh2D::Mesh2D(MonitorFunction *M, unordered_map<string, double> params) : Assem
     DXpU = new Eigen::VectorXd((*D)*(m));
 
     // Create the functional for each vertex
-    I_wx = new vector<HuangFunctional>();
+    // I_wx = new vector<HuangFunctional>();
+    I_wx = new HuangFunctional(DIM, false, *Vc, *Vp, *F, *DXpU, M, w, 0.0, 0.0);
 
     boundaryMask = new Eigen::VectorXi(d*Vp->rows());
     boundaryMask->setZero();
@@ -156,19 +157,19 @@ Mesh2D::Mesh2D(MonitorFunction *M, unordered_map<string, double> params) : Assem
             (*boundaryMask)(i) = 1;
         }
 
-        I_wx->push_back(HuangFunctional(d, i, boundaryPnt, *Vc, *Vp, *F, *DXpU, M,
-                                        w, params["theta"],  params["p"]));
+        // I_wx->push_back(HuangFunctional(d, i, boundaryPnt, *Vc, *Vp, *F, *DXpU, M,
+        //                                 w, params["theta"],  params["p"]));
     }
 
-    // Add the stride points
-    for (int i = (nx+1)*(ny+1); i < nPnts; i++) {
-        I_wx->push_back(HuangFunctional(d, i, false, *Vc, *Vp, *F, *DXpU, M,
-                                        w, params["theta"],  params["p"]));
-    }
+    // // Add the stride points
+    // for (int i = (nx+1)*(ny+1); i < nPnts; i++) {
+    //     I_wx->push_back(HuangFunctional(d, i, false, *Vc, *Vp, *F, *DXpU, M,
+    //                                     w, params["theta"],  params["p"]));
+    // }
 
-    assert(I_wx->size() == nPnts);
+    // assert(I_wx->size() == nPnts);
 
-    cout << "Finished setting up!" << endl;
+    // cout << "Finished setting up!" << endl;
 }
 
 // TODO: add external forces (would be handled in this object, as the meshing object should control its own props)
@@ -248,198 +249,13 @@ void Mesh2D::buildDMatrix() {
     dAlloc = true;
 }
 
-void Mesh2D::eulerStep(double dt) {
-    Eigen::Vector2d grad(d);
-    Eigen::MatrixXd VpTemp(*Vp);
-    Eigen::Vector2d temp(d);
-    double Ih = 0.0;
-
-    for (int i = 0; i < I_wx->size(); i++) {
-        if (I_wx->at(i).boundaryNode) {
-            continue;
-        }
-        temp = Vp->row(i);
-        Ih += (I_wx->at(i))(temp, grad, true);
-
-        VpTemp.row(i) -= (dt/tau)*grad;
-        // VpTemp.row(i) = grad;
-    }
-
-    cout << "Ih = " << Ih << endl;
-
-    *Vp = VpTemp;
-}
-
-/**
- * Attempting to use gradient descent
-*/
-double Mesh2D::gradDescent(HuangFunctional &I_wx, Eigen::Vector2d &z, int nIter) {
-    double alpha = 1.0;
-    double Ih_pnt = 0.0;
-    double Ih = 0.0;
-    const int MAX_ITERS = 100;
-    const int MAX_LS = 50;
-    const double tol = 1e-5;
-
-    Eigen::Vector2d grad(z.size());
-    Eigen::Vector2d gradDummy(z.size());
-
-    Eigen::Vector2d zTemp(z);
-    int iters = 0;
-
-    // Initial gradient
-    Ih_pnt = I_wx(zTemp, grad, true);
-    Ih = Ih_pnt;
-
-    // cout << "BOUNDARY PNT = " << I_wx.boundaryNode << endl;
-    // cout << "initial objective val = " << Ih_pnt << endl;
-
-    // cout << "Grad norm = " << grad.norm() << endl;
-
-    // for (int i = 0; i < nIter; i++) {
-    while (grad.norm() > tol && iters < MAX_ITERS) {
-        alpha = 1.0;
-        // cout << "Entering main loop" << endl;
-        // Compute the gradient
-        Ih_pnt = I_wx(z, grad, true);
-
-        // cout << "grad = " << grad << endl;
-
-        zTemp = z - alpha*grad;
-
-        // cout << "init z = " << zTemp << endl;
-        // assert(false);
-
-        Ih = I_wx(zTemp, gradDummy, false);
-
-        // cout << "IH_pnt " << Ih << endl;
-
-        int lsIters = 0;
-
-        double gam = 1e-2;
-
-        // while (Ih >= Ih_pnt && lsIters < MAX_LS) {
-        while (Ih >= Ih_pnt + gam*alpha*grad.squaredNorm() && lsIters < MAX_LS) {
-            alpha /= 2.0;
-
-            zTemp = z - alpha*grad;
-            Ih = I_wx(zTemp, gradDummy, false);
-
-            lsIters++;
-
-            // cout << "li IH = " << Ih << endl;
-        }
-
-        // Only if line search as successful do we continue. If line search unsuccessful, break out of outer loop
-        // (line search can only fail again)
-        if (lsIters < MAX_LS) {
-            z = zTemp;
-        } else {
-            break;
-        }
-
-        // z = zTemp;
-        iters++;
-
-        // assert(false);
-    }
-
-    // cout << "final objective val = " << Ih << " obtained in " << iters << " iterations" << endl << endl;
-
-    // if (iters >= MAX_ITERS) {
-    //     cout << "hit max iters" << endl;
-    // }
-
-    // assert(false);
-
-    return Ih;
-
-}
-
-/**
- * Optimize with Newton's method using approximate Jacobian
-*/
-double Mesh2D::newtonOpt(HuangFunctional &I_wx, Eigen::Vector2d &z, int nIter) {
-    double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
-    // double h = 1e-10; // TODO: play with this
-    const int MAX_LS = 10;
-
-    Eigen::Vector2d zPurt(d);
-    Eigen::Vector2d gradZ(d);
-    Eigen::Vector2d gradZPurt(d);
-    Eigen::Matrix2d hess(d, d);
-    Eigen::Vector2d p(d);
-    Eigen::Vector2d gradTemp(d);
-
-    double Ix;
-    double Ipurt;
-
-    for (int iters = 0; iters < nIter; iters++) {
-        Ix = I_wx(z, gradZ, true);
-        zPurt = z;
-
-        // Compute the Hessian column-wise
-        for (int i = 0; i < d; i++) {
-            // Compute purturbation
-            zPurt(i) += h;
-
-            // Compute gradient at purturbed point
-            Ipurt = I_wx(zPurt, gradZPurt, true);
-
-            hess.col(i) = (gradZPurt - gradZ)/h;
-
-            zPurt(i) = z(i);
-        }
-
-        // Compute the Newton direction
-        p = hess.inverse()*(-gradZ);
-        zPurt = z + p;
-
-        // Perform backtracking line search in the Hessian direction (should work if Hess is pos def)
-        int lsIters = 0;
-        double alpha = 1.0;
-        double c1 = 1e-4;
-        double c2 = 0.9;
-        Ipurt = I_wx(zPurt, gradTemp, true);
-
-        // while (Ipurt >= Ix - c1*alpha*(gradZ.dot(p)) && -p.dot(gradTemp) >= -c2*p.dot(gradZ)  && lsIters < MAX_LS) {
-        while (Ipurt >= Ix - c1*alpha*(gradZ.dot(p)) && lsIters < MAX_LS) {
-            alpha /= 10.0;
-
-            zPurt = z + alpha*p;
-            // Ipurt = I_wx(zPurt, gradTemp, true);//, false);
-            Ipurt = I_wx(zPurt, gradTemp, false);//, false);
-
-            lsIters++;
-        }
-
-        // cout << "num iters = " << lsIters << endl;
-
-        if (lsIters == MAX_LS) {
-            cout << "Max ls hit"<< endl;
-            break;
-        } else {
-            cout << "Max ls NOT hit"<< endl;
-            z = zPurt;
-        }
-    }
-
-    return Ix;
-}
-
-
 /**
  * Newton's method over a single simplex
 */
 double Mesh2D::newtonOptSimplex(int zId, Eigen::Vector<double, DIM*(DIM+1)> &z,
         Eigen::Vector<double, DIM*(DIM+1)> &xi, int nIter) {
-    // double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
-    double h = 1e-10; // TODO: play with this
-    // const int MAX_LS = 50;
+    double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
     const int MAX_LS = 10;
-
-    // HuangFunctional I_wx(DIM, 0, false, *Vc, *Vp, *F, *DXpU, M, 0.0, 0.0, 0.0);
-    HuangFunctional I_wx(DIM, 0, false, *Vc, *Vp, *F, *DXpU, M, w, 0.0, 0.0);
 
     Eigen::Vector<double, DIM*(DIM+1)> zPurt;
     Eigen::Vector<double, DIM*(DIM+1)> gradZ;
@@ -452,7 +268,7 @@ double Mesh2D::newtonOptSimplex(int zId, Eigen::Vector<double, DIM*(DIM+1)> &z,
     double Ipurt;
 
     for (int iters = 0; iters < nIter; iters++) {
-        Ix = I_wx.blockGrad(zId, z, xi, gradZ);
+        Ix = I_wx->blockGrad(zId, z, xi, gradZ);
 
         zPurt = z;
 
@@ -462,15 +278,12 @@ double Mesh2D::newtonOptSimplex(int zId, Eigen::Vector<double, DIM*(DIM+1)> &z,
             zPurt(i) += h;
 
             // Compute gradient at purturbed point
-            Ipurt = I_wx.blockGrad(zId, zPurt, xi, gradZPurt);
+            Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradZPurt);
 
             hess.col(i) = (gradZPurt - gradZ)/h;
 
             zPurt(i) = z(i);
         }
-        // cout << gradZ.transpose() << endl;
-
-        // cout << "det(Hess) = " << hess.determinant() << endl;
 
         // Compute the Newton direction
         p = hess.colPivHouseholderQr().solve(-gradZ);
@@ -479,27 +292,18 @@ double Mesh2D::newtonOptSimplex(int zId, Eigen::Vector<double, DIM*(DIM+1)> &z,
         // Perform backtracking line search in the Hessian direction (should work if Hess is pos def)
         int lsIters = 0;
         double alpha = 1.0;
-        // zPurt = z - alpha*gradZ;
         double c1 = 0.0;
         double c2 = 0.9;
-        // Ipurt = I_wx(zPurt, gradTemp, true);
-        Ipurt = I_wx.blockGrad(zId, zPurt, xi, gradTemp);
+        Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp);
 
         while (Ipurt >= Ix - c1*alpha*(gradZ.dot(p)) && -p.dot(gradTemp) >= -c2*p.dot(gradZ)  && lsIters < MAX_LS) {
-        // while (Ipurt >= Ix - c1*alpha*(gradZ.dot(p)) && lsIters < MAX_LS) {
-        // while (Ipurt >= Ix - c1*alpha*(gradZ.squaredNorm()) && lsIters < MAX_LS) {
             alpha /= 10.0;
-            // alpha /= 2.0;
 
             zPurt = z + alpha*p;
-            // zPurt = z - alpha*gradZ;
-            // Ipurt = I_wx(zPurt, gradTemp, true);//, false);
-            Ipurt = I_wx.blockGrad(zId, zPurt, xi, gradTemp);
+            Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp);
 
             lsIters++;
         }
-
-        // cout << "num iters = " << lsIters << endl;
 
         if (lsIters == MAX_LS) {
             break;
@@ -529,7 +333,7 @@ void Mesh2D::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen::V
 
         // assert(x_i.isApprox(xi_i));
 
-        Ih = newtonOptSimplex(i, z_i, xi_i, 1);
+        Ih = newtonOptSimplex(i, z_i, xi_i, 2);
         // Ih = newtonOptSimplex(i, z_i, xi_i, 10);
 
         z.segment(d*(d+1)*i, d*(d+1)) = z_i;

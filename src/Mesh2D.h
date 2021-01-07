@@ -21,10 +21,8 @@ public:
     void updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x) override;
     void copyX(Eigen::VectorXd &tar) override;
     void predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) override;
-    void eulerStep(double dt);
     void outputTriangles(const char *fname);
     void outputPoints(const char *fname);
-    // void eulerStep(double dt);
     // double U(int nodeId) override;
     ~Mesh2D();
     // double nablaU(int nodeId) override;
@@ -34,8 +32,6 @@ public:
     Eigen::VectorXi *boundaryMask;
     Eigen::VectorXd *DXpU;
     MonitorFunction *M;
-    double gradDescent(HuangFunctional &I_wx, Eigen::Vector2d &zPart, int nIter);
-    double newtonOpt(HuangFunctional &I_wx, Eigen::Vector2d &z, int nIter);
     double newtonOptSimplex(int zId, Eigen::Vector<double, DIM*(DIM+1)> &z,
             Eigen::Vector<double, DIM*(DIM+1)> &xi, int nIter);
     void printDiff();
@@ -44,7 +40,9 @@ public:
 protected:
 
     // TODO: make this polymorphic
-    vector<HuangFunctional> *I_wx;
+    // vector<HuangFunctional> *I_wx;
+
+    HuangFunctional *I_wx;
 
     int nx, ny;
     double xa, xb, ya, yb;

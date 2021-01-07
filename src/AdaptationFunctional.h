@@ -9,10 +9,7 @@ protected:
     const Eigen::MatrixXd *Vc;
     const Eigen::MatrixXd *Vp;
     const Eigen::VectorXd *DXpU;
-    Eigen::MatrixXi *Floc;
     double w;
-    // int simplexId;
-    int nodeId;
     MonitorFunction *M;
     int d;
 
@@ -23,10 +20,9 @@ protected:
     virtual void dGdX(Eigen::Matrix2d &J, double det, Eigen::Matrix2d &M, Eigen::Vector2d &x, Eigen::Vector2d &out)=0;
 public:
     bool boundaryNode;
-    AdaptationFunctional(int d, int nodeId, bool boundaryNode,
-        Eigen::MatrixXd &Vc, Eigen::MatrixXd &Vp, Eigen::MatrixXi &F, Eigen::VectorXd &DXpU, MonitorFunction *m, double w);
+    AdaptationFunctional(int d, bool boundaryNode, Eigen::MatrixXd &Vc, Eigen::MatrixXd &Vp,
+        Eigen::MatrixXi &F, Eigen::VectorXd &DXpU, MonitorFunction *m, double w);
     AdaptationFunctional(const AdaptationFunctional &obj);
-    virtual double operator()(Eigen::Vector2d &Vx, Eigen::Vector2d &grad, bool computeGrad)=0;
     virtual ~AdaptationFunctional();
 private:
 };

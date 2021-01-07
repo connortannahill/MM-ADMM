@@ -11,13 +11,11 @@ class Mesh2D;
 class HuangFunctional : public AdaptationFunctional {
 public:
     HuangFunctional(const HuangFunctional &obj);
-    HuangFunctional(int d, int simplexId,
-        bool boundaryNode, Eigen::MatrixXd &Vc, Eigen::MatrixXd &Vp, Eigen::MatrixXi &F,
-        Eigen::VectorXd &DXpU, MonitorFunction *m, double w, double theta, double p);
-    HuangFunctional(int d, int simplexId, bool boundaryNode, MonitorFunction *m,
+    HuangFunctional(int d, bool boundaryNode, Eigen::MatrixXd &Vc, Eigen::MatrixXd &Vp,
+        Eigen::MatrixXi &F, Eigen::VectorXd &DXpU, MonitorFunction *m, double w, double theta,
+        double p);
+    HuangFunctional(int d, bool boundaryNode, MonitorFunction *m,
                     double w, double theta, double p);
-    double operator()(Eigen::Vector2d &z, Eigen::Vector2d &grad, bool computeGrad) override;
-    double operator()(Eigen::VectorXd &z, Eigen::VectorXd &grad);
     ~HuangFunctional() {};
     double blockGrad(int zId, Eigen::Vector<double, DIM*(DIM+1)> &x,
                 Eigen::Vector<double, DIM*(DIM+1)> &xi,

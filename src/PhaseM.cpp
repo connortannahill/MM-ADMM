@@ -14,8 +14,10 @@ void PhaseM::operator()(Eigen::Vector2d &x, Eigen::Matrix2d &M) {
     M = Eigen::Matrix2d::Identity(M.rows(), M.cols());
     M *= (1 + mu_1/( 1 + mu_2*((x - center).squaredNorm()) ));
 
+    // // double lam1 = 1 + 10.0*(1.0/cosh(50*(x[0] + x[1] - 1.0)*(x[0] + x[1] - 1.0)));
     // double lam1 = 1 + 10.0*(1.0/cosh(50*(x[0] + x[1] - 1.0)*(x[0] + x[1] - 1.0)));
-    // double lam2 = lam1;
+    // // double lam2 = lam1;
+    // double lam2 = 1.0/lam1;
 
     // Eigen::Vector2d v;
     // v << (1.0/sqrt(2.0))*1.0 , (1.0/sqrt(2.0))*1.0; 

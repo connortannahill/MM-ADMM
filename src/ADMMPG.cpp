@@ -55,7 +55,7 @@ void ADMMPG::step(int nIters, double tol) {
     *z = (*a->D) * *x;
 
     *x = *xBar;
-    // uBar->setZero();
+    uBar->setZero();
 
     time_t start, prox, xUpdate, admm;
     prox = 0;
