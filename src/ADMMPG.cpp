@@ -3,19 +3,21 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
-#include "Assembly.h"
+// #include "Assembly.h"
+#include "Mesh.h"
 #include <iostream>
 
 using namespace std;
 
-ADMMPG::ADMMPG(double dt, Assembly &a) {
+template <int D>
+ADMMPG<D>::ADMMPG(double dt, Mesh<D> &a) {
     this->a = &a;
     this->dt = dt;
 
     // Allocate and assign initial values
-    x = new Eigen::VectorXd(a.getD()*a.getNPnts());
-    xPrev = new Eigen::VectorXd(a.getD()*a.getNPnts());
-    xBar = new Eigen::VectorXd(a.getD()*a.getNPnts());
+    x = new Eigen::VectorXd(D*a.getNPnts());
+    xPrev = new Eigen::VectorXd(D*a.getNPnts());
+    xBar = new Eigen::VectorXd(D*a.getNPnts());
 
     // Assign initial values to x and z (xBar must be assigned at each step)
     a.copyX(*x);
@@ -23,16 +25,16 @@ ADMMPG::ADMMPG(double dt, Assembly &a) {
     a.copyX(*xBar);
 
     // Compute the initial z vlaue
-    z = new Eigen::VectorXd(*((this->a)->D) * (*this->x));
+    z = new Eigen::VectorXd(*((this->a)->Dmat) * (*this->x));
 
     uBar = new Eigen::VectorXd(Eigen::VectorXd::Constant(z->size(), 0.0));
 
     // Prefactor the matrix (assuming constant matrix for now)
     double dtsq = dt*dt;
     Eigen::SparseMatrix<double> t(*(this->a)->M);
-    WD_T = new Eigen::SparseMatrix<double>(( *((this->a)->W) * *((this->a)->D)).transpose());
+    WD_T = new Eigen::SparseMatrix<double>(( *((this->a)->W) * *((this->a)->Dmat)).transpose());
 
-    t = t + dtsq*((*WD_T * (*(this->a)->W) * (*(this->a)->D)));
+    t = t + dtsq*((*WD_T * (*(this->a)->W) * (*(this->a)->Dmat)));
 
     // Compute the sparse Cholseky factorization.
     cgSol = new Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>>(t);
@@ -44,7 +46,8 @@ ADMMPG::ADMMPG(double dt, Assembly &a) {
 /**
  * Assumes a constant mass matrix for now
 */
-void ADMMPG::step(int nIters, double tol) {
+template <int D>
+void ADMMPG<D>::step(int nIters, double tol) {
     // Get xBar, the predicted (explicit) location of the nodes independent of constraints
     double dtsq = dt*dt;
 
@@ -52,7 +55,7 @@ void ADMMPG::step(int nIters, double tol) {
     (this->a)->predictX(dt, *this->xPrev, *this->x, *this->xBar);
 
     *xPrev = *x;
-    *z = (*a->D) * *x;
+    *z = (*a->Dmat) * *x;
 
     *x = *xBar;
     uBar->setZero();
@@ -70,7 +73,7 @@ void ADMMPG::step(int nIters, double tol) {
         // cout << "Running prox" << endl;
         // Update z_{n+1} using the assembly prox algorithm
         start = clock();
-        *DXpU = (*(a->D))*(*x) + (*uBar);
+        *DXpU = (*(a->Dmat))*(*x) + (*uBar);
         a->updateAfterStep(dt, *xPrev, *x);
         a->prox(dt, *x, *DXpU, *z);
         prox += clock() - start;
@@ -86,7 +89,7 @@ void ADMMPG::step(int nIters, double tol) {
         xUpdate += clock() - start;
 
         // Compute the primal residual. If it is beneath the tolerance, exit
-        double primalRes = ((*a->D)*(*x) - *z).norm();
+        double primalRes = ((*a->Dmat)*(*x) - *z).norm();
         if (primalRes < tol) {
             break;
         }
@@ -105,7 +108,8 @@ void ADMMPG::step(int nIters, double tol) {
     // cout << "time to update after step " << clock() - start << endl;
 }
 
-ADMMPG::~ADMMPG() {
+template <int D>
+ADMMPG<D>::~ADMMPG() {
     delete x;
     delete xBar;
     delete z;
@@ -115,3 +119,6 @@ ADMMPG::~ADMMPG() {
     delete DXpU;
     delete vec;
 }
+
+template class ADMMPG<2>;
+template class ADMMPG<3>;

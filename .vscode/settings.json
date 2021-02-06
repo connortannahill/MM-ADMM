@@ -63,6 +63,9 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "fft": "cpp"
+        "fft": "cpp",
+        "numericaldiff": "cpp",
+        "specialfunctions": "cpp",
+        "core": "cpp"
     }
 }

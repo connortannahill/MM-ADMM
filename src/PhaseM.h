@@ -4,9 +4,10 @@
 #include <Eigen/Dense>
 #include "MonitorFunction.h"
 
-class PhaseM : public MonitorFunction {
+template <int D>
+class PhaseM : public MonitorFunction<D> {
 public:
-    void operator()(Eigen::Vector2d &x, Eigen::Matrix2d &M) override;
+    void operator()(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &M) override;
 };
 
 #endif

@@ -1,19 +1,109 @@
 #include <iostream>
 #include "./src/ADMMPG.h"
-#include "./src/Mesh2D.h"
+// #include "./src/Mesh2D.h"
 #include "./src/PhaseM.h"
 #include <unordered_map>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <string>
+#include "./src/Mesh.h"
+#include "./src/Assembly.h"
  
 using namespace std;
+#define D 2
 
- 
+void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixXd *Vc,
+      Eigen::MatrixXi *F, Eigen::VectorXi *boundaryMask) {
+    int nx = (int) params["nx"];
+    int ny = (int) params["ny"];
+
+    int xa = params["xa"];
+    int xb = params["xb"];
+    int ya = params["ya"];
+    int yb = params["yb"];
+
+    double hx = (xb - xa)/((double)nx);
+    double hy = (yb - ya)/((double)ny);
+
+    int nPnts = (nx+1)*(ny+1) + nx*ny;
+    // this->setNPnts(nPnts);
+    Vc = new Eigen::MatrixXd(nPnts, D);
+    // Vp = new Eigen::MatrixXd(this->nPnts, d);
+    F = new Eigen::MatrixXi(4*nx*ny, D+1);
+    boundaryMask = new Eigen::VectorXi(Vc->rows());
+
+    int off = 0;
+    for (int j = 0; j <= ny; j++) {
+        for (int i = 0; i <= nx; i++) {
+            (*Vc)(off, 0) = hx*i;
+            (*Vc)(off, 1) = hy*j;
+
+            off++;
+        }
+    }
+
+    // Append the midoints
+    for (int j = 0; j < ny; j++) {
+        for (int i = 0; i < nx; i++) {
+            (*Vc)(off, 0) = hx*i + hx/2.0;
+            (*Vc)(off, 1) = hy*j + hy/2.0;
+
+            off++;
+        }
+    }
+
+     int stride = (nx+1) * (ny+1);
+
+    off = 0;
+    for (int j = 0; j < ny; j++) {
+        for (int i = 0; i < nx; i++) {
+            // Left
+            (*F)(off, 0) = i            + j*(nx+1);
+            (*F)(off, 1) = i            + (j+1)*(nx+1);
+            (*F)(off, 2) = stride + i   + j*nx;
+            off++;
+
+            // Top
+            (*F)(off, 0) = i            + (j+1)*(nx+1);
+            (*F)(off, 1) = i+1          + (j+1)*(nx+1);
+            (*F)(off, 2) = stride + i   + j*nx;
+
+            off++;
+
+            // Right
+            (*F)(off, 0) = i+1          + (j+1)*(nx+1);
+            (*F)(off, 1) = i+1          + j*(nx+1);
+            (*F)(off, 2) = stride + i   + j*nx;
+
+            off++;
+
+            // Bot
+            (*F)(off, 0) = i            + j*(nx+1);
+            (*F)(off, 1) = i+1          + j*(nx+1);
+            (*F)(off, 2) = stride + i   + j*nx;
+
+            off++;
+        }
+    }
+
+    for (int i = 0; i < (nx+1)*(ny+1); i++) {
+        int iOff = i % (nx+1);
+        int jOff = i / (ny+1);
+        bool boundaryPnt = (iOff == 0) || (iOff == nx) || (jOff == 0) || (jOff == ny);
+
+        if (boundaryPnt) {
+            (*boundaryMask)(i) = 1;
+        }
+    }
+
+}
+
 int main()
 {
   // Specify the monitor function
-  PhaseM *M = new PhaseM();
+  // PhaseM<2> phaseM;
+  PhaseM<2> *M = new PhaseM<2>();
+  // MonitorFunction<2> *M = (MonitorFunction<2>*) new PhaseM<2>();
   // PhaseM M();
 
   // Parameters for the mesh
@@ -22,8 +112,8 @@ int main()
   params["ny"] = 10;
   params["nPnts"] = (params["nx"]+1)*(params["ny"]+1);
   params["d"] = 2;
-  // params["rho"] = 1.0;
-  params["rho"] = 60.0;
+  double rho = 100;
+  params["rho"] = rho;
 
   params["xa"] = 0.0;
   params["xb"] = 1.0;
@@ -31,32 +121,49 @@ int main()
   params["yb"] = 1.0;
   params["theta"] = 0.5;
   params["p"] = 1;
-  params["tau"] = 1e-2;
+  double tau = 1e-1;
+  params["tau"] = tau;
+
+  Eigen::MatrixXd *Vc = nullptr;
+  Eigen::MatrixXi *F = nullptr;
+  Eigen::VectorXi *boundaryMask = nullptr;
+
+  cout << "Generating the uniform mesh" << endl;
+  generateUniformRectMesh(params, Vc, F, boundaryMask);
+  cout << endl;
+
+//   AdaptationFunctional<2> *I_wx = new HuangFunctional<2>(*Vc, *Vp, *F, *DXpU, M, w, 0.0, 0.0);
   // params["tau"] = 1e-1;
 
   // Make a square mesh
-  Mesh2D adaptiveMesh(M, params);
+  // Mesh<2> adaptiveMesh(Vc, F, boundaryMask, M, params["rho"], params["d"]);
+  Mesh<2> adaptiveMesh(*Vc, *F, *boundaryMask, M, rho, tau);
+//   Assembly<2> *asmbl =dynamic_cast<Assembly<2>>(&adaptiveMesh);
 
   // for (int i = 0; i < 300; i++) {
   //     adaptiveMesh.eulerStep(0.001);
   // }
 
   // Create the solver
-  double dt = 0.05;
-  ADMMPG solver(dt, adaptiveMesh);
+  double dt = 0.01;
+  ADMMPG<2> solver(dt, adaptiveMesh);
 
 
   clock_t start = clock();
-  int nSteps = 30;
+  int nSteps = 300;
   for (int i = 0; i < nSteps; i++) {
-    solver.step(1000, 1e-4);
+    solver.step(1000, 1e-6);
     cout << "STEP = " << i << endl;
   }
 
   cout << "Time per step = " << ((clock() - start)/((double)CLOCKS_PER_SEC))/((double)nSteps);
 
-  delete M;
 
   adaptiveMesh.outputPoints("points.txt");
-  adaptiveMesh.outputTriangles("triangles.txt");
+  adaptiveMesh.outputSimplices("triangles.txt");
+
+  delete M;
+  delete Vc;
+  delete F;
+  delete boundaryMask;
 }

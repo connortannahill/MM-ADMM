@@ -3,18 +3,20 @@
 
 #include <Eigen/Sparse>
 #include <unordered_map>
-#include "Assembly.h"
+// #include "Assembly.h"
+#include "Mesh.h"
 #include <string>
 
 using namespace std;
 
+template <int D>
 class ADMMPG {
 public:
-    ADMMPG(double dt, Assembly &a);
+    ADMMPG(double dt, Mesh<D> &a);
     ~ADMMPG();
     void step(int nIters, double tol);
 private:
-    Assembly *a;
+    Mesh<D> *a;
     Eigen::VectorXd *x;
     Eigen::VectorXd *xPrev;
     Eigen::VectorXd *xBar;

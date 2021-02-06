@@ -6,32 +6,28 @@
 
 using namespace std;
 
-Assembly::Assembly(unordered_map<string, double> params) {
+template <int D>
+Assembly<D>::Assembly() {
     // Allocate the diagonal mass matrix
-    this->nPnts = (int)params["nPnts"];
-
-    this->d = (int)params["d"];
+    // this->nPnts = (int)params["nPnts"];
 
     dAlloc = false;
     wAlloc = false;
     mAlloc = false;
 }
 
-int Assembly::getD() {
-    return this->d;
-}
-
-int Assembly::getNPnts() {
+template <int D>
+int Assembly<D>::getNPnts() {
     return this->nPnts;
 }
-void Assembly::setNPnts(int nPnts) {
+
+template <int D>
+void Assembly<D>::setNPnts(int nPnts) {
     this->nPnts = nPnts;
 }
-void Assembly::setD(int d) {
-    this->d = d;
-}
 
-void Assembly::buildMassMatrix(Eigen::VectorXd &m) {
+template <int D>
+void Assembly<D>::buildMassMatrix(Eigen::VectorXd &m) {
     if (!mAlloc) {
         M = new Eigen::SparseMatrix<double>(m.size(), m.size());
         mAlloc = true;
@@ -48,49 +44,55 @@ void Assembly::buildMassMatrix(Eigen::VectorXd &m) {
 /**
  * Default implementation, D is the identity matrix
 */
-void Assembly::buildDMatrix() {
+template <int D>
+void Assembly<D>::buildDMatrix() {
     if (!dAlloc) {
-        D = new Eigen::SparseMatrix<double>(d*nPnts, d*nPnts);
+        Dmat = new Eigen::SparseMatrix<double>(D*nPnts, D*nPnts);
         dAlloc = true;
     } else {
         assert(false);
     }
 
-    D->reserve(Eigen::VectorXd::Constant(d*nPnts, 1));
+    Dmat->reserve(Eigen::VectorXd::Constant(D*nPnts, 1));
 
-    for (int i = 0; i < D->rows(); i++) {
-        D->insert(i, i) = 1.0;
+    for (int i = 0; i < Dmat->rows(); i++) {
+        Dmat->insert(i, i) = 1.0;
     }
 }
 
 /**
  * Default implementation, W is the identity matrix
 */
-void Assembly::buildWMatrix(double w) {
+template <int D>
+void Assembly<D>::buildWMatrix(double w) {
     this->w = w;
 
     if (!wAlloc) {
-        W = new Eigen::SparseMatrix<double>(d*nPnts, d*nPnts);
+        W = new Eigen::SparseMatrix<double>(D*nPnts, D*nPnts);
         wAlloc = true;
     } else {
         assert(false);
     }
 
-    W->reserve(Eigen::VectorXd::Constant(d*nPnts, 1));
+    W->reserve(Eigen::VectorXd::Constant(D*nPnts, 1));
 
     for (int i = 0; i < W->rows(); i++) {
         W->insert(i, i) = w;
     }
 }
 
-Assembly::~Assembly() {
+template <int D>
+Assembly<D>::~Assembly() {
     if (mAlloc) {
         delete M;
     }
     if (dAlloc) {
-        delete D;
+        delete Dmat;
     }
     if (wAlloc) {
         delete W;
     }
 }
+
+template class Assembly<2>;
+template class Assembly<3>;
