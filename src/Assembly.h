@@ -23,6 +23,7 @@ public:
     virtual void updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x) = 0;
     virtual void copyX(Eigen::VectorXd &tar) = 0;
     virtual void predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) = 0;
+    virtual void setUp() = 0;
     void printDiff();
     virtual ~Assembly();
 protected:

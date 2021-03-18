@@ -17,6 +17,7 @@ HuangFunctional<D>::HuangFunctional(Eigen::MatrixXd &Vc,
     this->theta = theta;
     this->w = w;
 }
+
 template <int D>
 double HuangFunctional<D>::G(Eigen::Matrix<double,D,D> &J, double detJ,
             Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x) {

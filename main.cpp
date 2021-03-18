@@ -8,6 +8,8 @@
 #include <string>
 #include "./src/Mesh.h"
 #include "./src/Assembly.h"
+#include <cstdlib> 
+#include <ctime> 
  
 using namespace std;
 #define D 2
@@ -24,13 +26,6 @@ void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixX
 
     double hx = (xb - xa)/((double)nx);
     double hy = (yb - ya)/((double)ny);
-
-    int nPnts = (nx+1)*(ny+1) + nx*ny;
-    // this->setNPnts(nPnts);
-    Vc = new Eigen::MatrixXd(nPnts, D);
-    // Vp = new Eigen::MatrixXd(this->nPnts, d);
-    F = new Eigen::MatrixXi(4*nx*ny, D+1);
-    boundaryMask = new Eigen::VectorXi(Vc->rows());
 
     int off = 0;
     for (int j = 0; j <= ny; j++) {
@@ -52,7 +47,7 @@ void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixX
         }
     }
 
-     int stride = (nx+1) * (ny+1);
+    int stride = (nx+1) * (ny+1);
 
     off = 0;
     for (int j = 0; j < ny; j++) {
@@ -95,11 +90,11 @@ void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixX
             (*boundaryMask)(i) = 1;
         }
     }
-
 }
 
 int main()
 {
+  srand(static_cast<unsigned int>(std::time(nullptr)));
   // Specify the monitor function
   // PhaseM<2> phaseM;
   PhaseM<2> *M = new PhaseM<2>();
@@ -108,11 +103,14 @@ int main()
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
-  params["nx"] = 10;
-  params["ny"] = 10;
+  int nx = 10;
+  int ny = 10;
+  int nPnts = (nx+1)*(ny+1) + nx*ny;
+  params["nx"] = nx;
+  params["ny"] = ny;
   params["nPnts"] = (params["nx"]+1)*(params["ny"]+1);
-  params["d"] = 2;
-  double rho = 100;
+  params["d"] = D;
+  double rho = 10;
   params["rho"] = rho;
 
   params["xa"] = 0.0;
@@ -128,36 +126,36 @@ int main()
   Eigen::MatrixXi *F = nullptr;
   Eigen::VectorXi *boundaryMask = nullptr;
 
-  cout << "Generating the uniform mesh" << endl;
+  // Generate the initial mesh
+  Vc = new Eigen::MatrixXd(nPnts, D);
+  F = new Eigen::MatrixXi(4*nx*ny, D+1);
+
+  cout << "Size of the matrix F " << F->rows() << endl;
+//   assert(false);
+  boundaryMask = new Eigen::VectorXi(Vc->rows());
+
   generateUniformRectMesh(params, Vc, F, boundaryMask);
-  cout << endl;
 
-//   AdaptationFunctional<2> *I_wx = new HuangFunctional<2>(*Vc, *Vp, *F, *DXpU, M, w, 0.0, 0.0);
-  // params["tau"] = 1e-1;
-
-  // Make a square mesh
-  // Mesh<2> adaptiveMesh(Vc, F, boundaryMask, M, params["rho"], params["d"]);
-  Mesh<2> adaptiveMesh(*Vc, *F, *boundaryMask, M, rho, tau);
-//   Assembly<2> *asmbl =dynamic_cast<Assembly<2>>(&adaptiveMesh);
-
-  // for (int i = 0; i < 300; i++) {
-  //     adaptiveMesh.eulerStep(0.001);
-  // }
+  cout << "Creating the mesh" << endl;
+  Mesh<D> adaptiveMesh(*Vc, *F, *boundaryMask, M, rho, tau);
+  cout << "finished creating the mesh" << endl;
 
   // Create the solver
-  double dt = 0.01;
-  ADMMPG<2> solver(dt, adaptiveMesh);
-
+  double dt = 0.1;
+  cout << "Creating the solver" << endl;
+  ADMMPG<D> solver(dt, adaptiveMesh);
+  cout << "FINISHED Creating the solver" << endl;
 
   clock_t start = clock();
-  int nSteps = 300;
+  int nSteps = 5;
+  cout << "Starting the time stepper" << endl;
   for (int i = 0; i < nSteps; i++) {
-    solver.step(1000, 1e-6);
+    solver.step(100, 1e-6);
     cout << "STEP = " << i << endl;
   }
 
-  cout << "Time per step = " << ((clock() - start)/((double)CLOCKS_PER_SEC))/((double)nSteps);
-
+  cout << "Took " << ((double)clock() - (double)start)
+        / ((double)CLOCKS_PER_SEC) / ((double)nSteps) << " per steps" << endl;
 
   adaptiveMesh.outputPoints("points.txt");
   adaptiveMesh.outputSimplices("triangles.txt");

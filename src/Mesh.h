@@ -3,6 +3,7 @@
 
 #include "AdaptationFunctional.h"
 #include "MonitorFunction.h"
+#include "MeshInterpolator.h"
 #include "PhaseM.h"
 #include <Eigen/Sparse>
 
@@ -12,10 +13,12 @@ public:
     // Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryMask,
     //         MonitorFunction<D> *M, unordered_map<string, double> params);
     Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryMask,
-            PhaseM<D> *M, double rho, double tau);
+            MonitorFunction<D> *M, double rho, double tau);
+    void evalMonitorAtPoint(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &mVal);
     void outputSimplices(const char *fname);
     void copyX(Eigen::VectorXd &tar);
     void outputPoints(const char *fname);
+    void setUp();
     int getNPnts();
     ~Mesh();
     Eigen::MatrixXd *Vc;
@@ -23,7 +26,9 @@ public:
     Eigen::MatrixXi *F;
     Eigen::VectorXi *boundaryMask;
     Eigen::VectorXd *DXpU;
+    Eigen::MatrixXd *monitorEvals;
     MonitorFunction<D> *Mon;
+    MeshInterpolator<D> *mapEvaluator;
 
     Eigen::SparseMatrix<double> *M;
     Eigen::SparseMatrix<double> *Dmat;
@@ -41,7 +46,9 @@ public:
     double newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
             Eigen::Vector<double, D*(D+1)> &xi, int nIter);
     void printDiff();
-
+    double BFGSSimplex(int zId, Eigen::Vector<double,D*(D+1)> &z,
+        Eigen::Vector<double,D*(D+1)> &xi, int nIter);
+    
     AdaptationFunctional<D> *I_wx;
 
     int nx, ny;

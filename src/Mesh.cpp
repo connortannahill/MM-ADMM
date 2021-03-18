@@ -40,24 +40,29 @@ int Mesh<D>::getNPnts() {
 
 template <int D>
 Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryMask,
-            PhaseM<D> *Mon, double rho, double tau) {
-
-    unordered_map<string, double> params;
+            MonitorFunction<D> *Mon, double rho, double tau) {
 
     this->Vc = &X;
     this->Vp = new Eigen::MatrixXd(*this->Vc);
     this->F = &F;
     this->boundaryMask = &boundaryMask;
 
-    this->nPnts = X.rows();
+    // Create mesh interpolator
+    // cout << "Making mesh interpolator" << endl;
+    mapEvaluator = new MeshInterpolator<D>();
+    mapEvaluator->updateMesh((*this->Vc), (*this->F));
+    mapEvaluator->interpolateMonitor(*Mon);
+    // cout << "FINISHED Making mesh interpolator" << endl;
 
-    this->hx = (xb - xa)/((double)this->nx);
-    this->hy = (yb - ya)/((double)this->ny);
+    this->nPnts = X.rows();
 
     this->Mon = Mon;
 
     // Trivial edge matrix
-    int nPnts = Vc->rows();//this->X->size();
+    int nPnts = Vc->rows();
+
+    // Build the monitor simplex values
+    monitorEvals = new Eigen::MatrixXd(X.rows(), D*D);
 
     // Build the mass matrix
     Eigen::VectorXd m(Eigen::VectorXd::Constant(nPnts*D, tau));
@@ -154,6 +159,15 @@ void Mesh<D>::buildDMatrix() {
 }
 
 /**
+ * BFGS over a input simplex
+*/
+template <int D>
+double Mesh<D>::BFGSSimplex(int zId, Eigen::Vector<double,D*(D+1)> &z,
+        Eigen::Vector<double,D*(D+1)> &xi, int nIter) {
+    return 0;
+}
+
+/**
  * Newton's method over a single simplex
 */
 template <int D>
@@ -174,7 +188,9 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
     double Ipurt;
 
     for (int iters = 0; iters < nIter; iters++) {
-        Ix = I_wx->blockGrad(zId, z, xi, gradZ);
+        // cout << "Running block grad" << endl;
+        Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator);
+        // assert(false);
 
         zPurt = z;
 
@@ -184,7 +200,7 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
             zPurt(i) += h;
 
             // Compute gradient at purturbed point
-            Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradZPurt);
+            Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator);
 
             hess.col(i) = (gradZPurt - gradZ)/h;
 
@@ -200,13 +216,14 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         double alpha = 1.0;
         double c1 = 0.0;
         double c2 = 0.9;
-        Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp);
+        Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp, *mapEvaluator);
 
-        while (Ipurt >= Ix - c1*alpha*(gradZ.dot(p)) && -p.dot(gradTemp) >= -c2*p.dot(gradZ)  && lsIters < MAX_LS) {
+        while (Ipurt >= Ix - c1*alpha*(gradZ.dot(p)) &&
+                -p.dot(gradTemp) >= -c2*p.dot(gradZ)  && lsIters < MAX_LS) {
             alpha /= 10.0;
 
             zPurt = z + alpha*p;
-            Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp);
+            Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp, *mapEvaluator);
 
             lsIters++;
         }
@@ -217,6 +234,7 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
             z = zPurt;
         }
     }
+    // assert(false);
 
     return Ipurt;
 
@@ -227,10 +245,15 @@ void Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen::
     // Copy DXpU address to local pointer
     *this->DXpU = DXpU;
 
+    mapEvaluator->interpolateMonitor(*this->Mon);
+    mapEvaluator->outputStuff();
+    // assert(false);
+
     // Run Newton's method on each simplex
     Eigen::Vector<double, D*(D+1)> z_i;
     Eigen::Vector<double, D*(D+1)> xi_i;
-    double Ih;
+    double Ih = 0;
+    // cout << "Into the for" << endl;
     for (int i = 0; i < F->rows(); i++) {
         for (int n = 0; n < D+1; n++) {
             xi_i.segment(n*D, D) = (*Vc)((*F)(i,n), Eigen::all);
@@ -240,7 +263,7 @@ void Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen::
 
         // assert(x_i.isApprox(xi_i));
 
-        Ih = newtonOptSimplex(i, z_i, xi_i, 1);
+        Ih += newtonOptSimplex(i, z_i, xi_i, 1);
         // Ih = newtonOptSimplex(i, z_i, xi_i, 10);
 
         z.segment(D*(D+1)*i, D*(D+1)) = z_i;
@@ -256,6 +279,7 @@ void Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen::
             }
         }
     }
+    cout << "Ih = " << Ih << endl;
 }
 
 template <int D>
@@ -269,6 +293,29 @@ void Mesh<D>::copyX(Eigen::VectorXd &tar) {
 }
 
 template <int D>
+void Mesh<D>::setUp() {
+
+    // Update the mesh in the interpolator.
+    cout << "Updating the mesh" << endl;
+    mapEvaluator->updateMesh((*this->Vc), (*this->F));
+    // cout << "FINISHED Updating the mesh" << endl;
+    // cout << "inteprolating the monitor function" << endl;
+    mapEvaluator->interpolateMonitor(*Mon);
+
+    // cout << "FINSIHED interpolating the monitor function" << endl;
+
+    // Mon->interpolateMonitor(*mapEvaluator, *Vc, *F, *monitorEvals);
+
+    // // Evaluate and smooth the monitor function.
+    // cout << "Eval at vertices" << endl;
+    // Mon->evaluateAtVertices(*Vc, *F, *monitorEvals);;
+    // cout << "FINISHED Eval at vertices" << endl;
+    // cout << "smmooth monitor" << endl;
+    // Mon->smoothMonitor(NUM_SMOOTH, (*this->Vc), (*this->F), *monitorEvals, *mapEvaluator);
+    // cout << "Finished setting up" << endl;
+}
+
+template <int D>
 void Mesh<D>::updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x) {
     int cols = Vp->cols();
     for (int i = 0; i < Vp->rows(); i++) {
@@ -276,7 +323,6 @@ void Mesh<D>::updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd
             (*Vp)(i, j) = x(i*cols+j);
         }
     }
-    cout << "Difference after step: " << (*Vp - *Vc).norm() << endl;
 }
 
 template <int D>
@@ -311,8 +357,8 @@ void Mesh<D>::printDiff() {
 template <int D>
 Mesh<D>::~Mesh() {
 
-    delete Vc;
-    delete Vp;
+    // delete Vc;
+    // delete Vp;
     // delete F;
     delete DXpU;
 

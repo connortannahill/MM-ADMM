@@ -1,7 +1,6 @@
 #include "AdaptationFunctional.h"
 #include <Eigen/Dense>
 #include "MonitorFunction.h"
-#include "Mesh.h"
 #include <vector>
 #include <iostream>
 
@@ -59,7 +58,8 @@ AdaptationFunctional<D>::AdaptationFunctional( Eigen::MatrixXd &Vc,
 template <int D>
 double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)> &z,
             Eigen::Vector<double, D*(D+1)> &xi,
-            Eigen::Vector<double, D*(D+1)> &grad) {
+            Eigen::Vector<double, D*(D+1)> &grad,
+            MeshInterpolator<D> &interp) {
     double Ih = 0.0;;
     double detFJ;
     Eigen::Vector<double,D> gradSimplex;
@@ -72,7 +72,7 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     Eigen::Matrix<double,D,D> M(Eigen::Matrix<double,D,D>::Constant(0.0));
     Eigen::Vector<double,D> xK(Eigen::Vector<double,D>::Constant(0.0));
     Eigen::Matrix<double,D,D> vLoc(Eigen::Matrix<double,D,D>::Constant(0.0));
-    Eigen::Matrix<double,D,D> Mtemp(Eigen::Matrix<double,D,D>::Constant(0.0));
+    // Eigen::Matrix<double,D,D> Mtemp(Eigen::Matrix<double,D,D>::Constant(0.0));
     Eigen::Vector<double,D> xTemp(Eigen::Vector<double,D>::Constant(0.0));
     Eigen::Matrix<double,D,D> Einv(Eigen::Matrix<double,D,D>::Constant(0.0));
     Eigen::Matrix<double,D,D> dGdJ(Eigen::Matrix<double,D,D>::Constant(0.0));
@@ -87,16 +87,19 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     double absK;
     int d = D;
 
-    // Build the edge matrices and the centroid
+    // Build the centroid
     xK = z.segment(0, d);
     for (int n = 1; n <= d; n++) {
         xK += z.segment(d*n, d);
     }
     xK /= ((double) d + 1.0);
 
-    // Evaluate the monitor function at the centroid
-    M = Mtemp/((double) d + 1);
-    (*this->M)(xK, M);
+    // Interpolate the monitor function
+    // cout << "evaling the monitor funciton" << endl;
+    interp.evalMonitorAtPoint(xK, M);
+    // cout << "In eval " << M.determinant() << endl;
+    // assert(false);
+    // cout << "FINISHED evaling the monitor funciton" << endl;
 
     for (int i = 0; i < d+1; i++) {
         // Compute the edge matrix
@@ -118,7 +121,7 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
         // Approximate Jacobian
         FJ = Ehat * Einv;
         detFJ = Ehatdet/Edet;
-
+        
         // Compute the gradient and Ih
         double G = this->G(FJ, detFJ, M, xK);
 
@@ -130,16 +133,26 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
 
         // Form the linear combination of the linear basis derivatives
         xTemp = z.segment(i*d, d);
+
         (*this->M)(xTemp, Mt0);
+        // cout << "Operator M " << Mt0.determinant() << endl;
+        interp.evalMonitorAtPoint(xTemp, Mt0);
+        // cout << "approx M" << Mt0.determinant() << endl;
         
         basisComb.setZero();
         j = 0;
         for (int n = (i+1)%(d+1); n != i; n = (n+1)%(d+1)) {
             xTemp = z.segment(n*d, d);
-            (*this->M)(xTemp, Mtn);
+            // (*this->M)(xTemp, Mtn);
+            // cout << "Operator M " << Mtn.determinant() << endl;
+            interp.evalMonitorAtPoint(xTemp, Mtn);
+            // cout << "approx M" << Mtn.determinant() << endl;
+            // cout << "Norm diff " << (Mtn - Mt0).norm() << endl;
             basisComb += Einv.row(j) * ((dGdM * (Mtn - Mt0)).trace());
             j++;
         }
+        // cout << endl;
+        // assert(false);
 
         vLoc = -G*Einv + Einv*dGdJ*Ehat*Einv + dGddet*detFJ*Einv;
         for (int n = 0; n < d; n++) {

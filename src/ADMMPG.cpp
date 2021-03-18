@@ -51,7 +51,15 @@ void ADMMPG<D>::step(int nIters, double tol) {
     // Get xBar, the predicted (explicit) location of the nodes independent of constraints
     double dtsq = dt*dt;
 
+    // Setup the assembly for the step
+    cout << "Setting hp the assembly" << endl;
+    (this->a)->setUp();
+    cout << "FINISHED Setting hp the assembly" << endl;
+    // assert(false);
+
     // Make prediction for next value of x (sorta)
+    // a->copyX(*x);
+    // a->copyX(*xPrev);
     (this->a)->predictX(dt, *this->xPrev, *this->x, *this->xBar);
 
     *xPrev = *x;
@@ -74,8 +82,11 @@ void ADMMPG<D>::step(int nIters, double tol) {
         // Update z_{n+1} using the assembly prox algorithm
         start = clock();
         *DXpU = (*(a->Dmat))*(*x) + (*uBar);
-        a->updateAfterStep(dt, *xPrev, *x);
+        // a->updateAfterStep(dt, *xPrev, *x);
+        // cout << "running prox" << endl;
         a->prox(dt, *x, *DXpU, *z);
+        // assert(false);
+        // cout << "FINSIEHD running prox" << endl;
         prox += clock() - start;
         // cout << "Finished prox" << endl;
 
@@ -90,6 +101,7 @@ void ADMMPG<D>::step(int nIters, double tol) {
 
         // Compute the primal residual. If it is beneath the tolerance, exit
         double primalRes = ((*a->Dmat)*(*x) - *z).norm();
+        cout << "Primal res = " << primalRes << endl;
         if (primalRes < tol) {
             break;
         }
@@ -98,7 +110,7 @@ void ADMMPG<D>::step(int nIters, double tol) {
     // cout << "time in full loop " << (clock() - admm)/((double) CLOCKS_PER_SEC) << endl;
     // cout << "time in prox per step " << (prox)/((double) CLOCKS_PER_SEC)/((double)i) << endl;
     // cout << "time in xUpdate per step " << xUpdate/((double) CLOCKS_PER_SEC)/((double)i) << endl;
-    // cout << "converged in " << i << " iters" << endl;
+    cout << "converged in " << i+1 << " iters" << endl;
 
 
     // Update the assembly using the new locations

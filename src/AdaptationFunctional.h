@@ -3,6 +3,7 @@
 
 #include <Eigen/Dense>
 #include "MonitorFunction.h"
+#include "MeshInterpolator.h"
 
 template <int D=-1>
 class AdaptationFunctional {
@@ -13,11 +14,20 @@ protected:
     double w;
     MonitorFunction<D> *M;
 
-    virtual double G(Eigen::Matrix<double,D,D> &J, double det, Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x)=0;
-    virtual void dGdJ(Eigen::Matrix<double,D,D> &J, double det, Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &out)=0;
-    virtual double dGddet(Eigen::Matrix<double,D,D> &J, double det, Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x)=0;
-    virtual void dGdM(Eigen::Matrix<double,D,D> &J, double det, Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &out)=0;
-    virtual void dGdX(Eigen::Matrix<double,D,D> &J, double det, Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x, Eigen::Vector<double,D> &out)=0;
+    virtual double G(Eigen::Matrix<double,D,D> &J, double det,
+                        Eigen::Matrix<double,D,D> &M,
+                        Eigen::Vector<double,D> &x)=0;
+    virtual void dGdJ(Eigen::Matrix<double,D,D> &J, double det,
+                        Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x,
+                        Eigen::Matrix<double,D,D> &out)=0;
+    virtual double dGddet(Eigen::Matrix<double,D,D> &J, double det,
+                        Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x)=0;
+    virtual void dGdM(Eigen::Matrix<double,D,D> &J, double det,
+                        Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x,
+                        Eigen::Matrix<double,D,D> &out)=0;
+    virtual void dGdX(Eigen::Matrix<double,D,D> &J, double det,
+                        Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x,
+                        Eigen::Vector<double,D> &out)=0;
 public:
     bool boundaryNode;
     AdaptationFunctional(Eigen::MatrixXd &Vc, Eigen::MatrixXd &Vp,
@@ -25,7 +35,8 @@ public:
     AdaptationFunctional(const AdaptationFunctional &obj);
     double blockGrad(int zId, Eigen::Vector<double, D*(D+1)> &z,
                 Eigen::Vector<double, D*(D+1)> &xi,
-                Eigen::Vector<double, D*(D+1)> &grad);
+                Eigen::Vector<double, D*(D+1)> &grad,
+                MeshInterpolator<D> &interp);
     virtual ~AdaptationFunctional();
 private:
 };

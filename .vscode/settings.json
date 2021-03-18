@@ -66,6 +66,18 @@
         "fft": "cpp",
         "numericaldiff": "cpp",
         "specialfunctions": "cpp",
-        "core": "cpp"
+        "core": "cpp",
+        "alignedvector3": "cpp",
+        "*.evaluator": "cpp",
+        "*.traits": "cpp",
+        "adolcforward": "cpp",
+        "autodiff": "cpp",
+        "bvh": "cpp",
+        "eulerangles": "cpp",
+        "kroneckerproduct": "cpp",
+        "mprealsupport": "cpp",
+        "openglsupport": "cpp",
+        "splines": "cpp",
+        "superlusupport": "cpp"
     }
 }
