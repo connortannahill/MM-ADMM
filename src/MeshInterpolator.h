@@ -27,7 +27,7 @@ public:
     Eigen::MatrixXi *F;
 
     void updateMesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F);
-    int eval(Eigen::Vector<double, D> &x, Eigen::Vector<double,D+1> &bCoords);
+    int eval(Eigen::Vector<double, D> &x);//, Eigen::Vector<double,D+1> &bCoords);
     void computeBarycentricCoordinates(int simplexId, Eigen::Vector<double, D> &pnt,
             Eigen::Vector<double, D+1> &bCoords);
     void interpolateMonitor(MonitorFunction<D> &Mon);
@@ -36,6 +36,8 @@ public:
     void findNeighbourPoints(int pntId, vector<int> neighPnts);
     void checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, bool resize);
     void evalMonitorAtPoint(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &mVal);
+    void evalMonitorOnSimplex(int simplexId, Eigen::Vector<double,D> &x,
+            Eigen::Matrix<double,D,D> &mVal);
     void outputStuff();
 
     /**

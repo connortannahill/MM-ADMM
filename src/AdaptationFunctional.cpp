@@ -95,11 +95,9 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     xK /= ((double) d + 1.0);
 
     // Interpolate the monitor function
-    // cout << "evaling the monitor funciton" << endl;
-    interp.evalMonitorAtPoint(xK, M);
-    // cout << "In eval " << M.determinant() << endl;
-    // assert(false);
-    // cout << "FINISHED evaling the monitor funciton" << endl;
+    // (*this->M)(xK, M);
+    interp.evalMonitorOnSimplex(zId, xK, M);
+    // interp.evalMonitorAtPoint(xK, M);
 
     for (int i = 0; i < d+1; i++) {
         // Compute the edge matrix
@@ -124,8 +122,6 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
         
         // Compute the gradient and Ih
         double G = this->G(FJ, detFJ, M, xK);
-
-        // if (!boundaryNode && computeGrad) {
         this->dGdJ(FJ, detFJ, M, xK, dGdJ);
         double dGddet = this->dGddet(FJ, detFJ, M, xK);
         this->dGdX(FJ, detFJ, M, xK, dGdX);
@@ -134,25 +130,20 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
         // Form the linear combination of the linear basis derivatives
         xTemp = z.segment(i*d, d);
 
-        (*this->M)(xTemp, Mt0);
-        // cout << "Operator M " << Mt0.determinant() << endl;
-        interp.evalMonitorAtPoint(xTemp, Mt0);
-        // cout << "approx M" << Mt0.determinant() << endl;
+        // (*this->M)(xTemp, Mt0);
+        interp.evalMonitorOnSimplex(zId, xTemp, Mt0);
+        // interp.evalMonitorAtPoint(xTemp, Mt0);
         
         basisComb.setZero();
         j = 0;
         for (int n = (i+1)%(d+1); n != i; n = (n+1)%(d+1)) {
             xTemp = z.segment(n*d, d);
+            // interp.evalMonitorAtPoint(xTemp, Mtn);
+            interp.evalMonitorOnSimplex(zId, xTemp, Mtn);
             // (*this->M)(xTemp, Mtn);
-            // cout << "Operator M " << Mtn.determinant() << endl;
-            interp.evalMonitorAtPoint(xTemp, Mtn);
-            // cout << "approx M" << Mtn.determinant() << endl;
-            // cout << "Norm diff " << (Mtn - Mt0).norm() << endl;
             basisComb += Einv.row(j) * ((dGdM * (Mtn - Mt0)).trace());
             j++;
         }
-        // cout << endl;
-        // assert(false);
 
         vLoc = -G*Einv + Einv*dGdJ*Ehat*Einv + dGddet*detFJ*Einv;
         for (int n = 0; n < d; n++) {
@@ -174,6 +165,7 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
         // Update the energy
         Ih += absK * G;
     }
+    // cout << endl;
 
     // Now add the constraint regularization
     Ih += 0.5*w*w*( (*DXpU).segment(d*(d+1)*zId, d*(d+1)) - z ).squaredNorm();

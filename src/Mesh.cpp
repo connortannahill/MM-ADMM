@@ -208,31 +208,32 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         }
 
         // Compute the Newton direction
-        p = hess.colPivHouseholderQr().solve(-gradZ);
+        // p = hess.colPivHouseholderQr().solve(-gradZ);
+        p = hess.lu().solve(-gradZ);
         zPurt = z + p;
 
         // Perform backtracking line search in the Hessian direction (should work if Hess is pos def)
-        int lsIters = 0;
-        double alpha = 1.0;
-        double c1 = 0.0;
-        double c2 = 0.9;
-        Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp, *mapEvaluator);
+        // int lsIters = 0;
+        // double alpha = 1.0;
+        // double c1 = 0.0;
+        // double c2 = 0.9;
+        // Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp, *mapEvaluator);
 
-        while (Ipurt >= Ix - c1*alpha*(gradZ.dot(p)) &&
-                -p.dot(gradTemp) >= -c2*p.dot(gradZ)  && lsIters < MAX_LS) {
-            alpha /= 10.0;
+        // while (Ipurt >= Ix - c1*alpha*(gradZ.dot(p)) &&
+        //         -p.dot(gradTemp) >= -c2*p.dot(gradZ)  && lsIters < MAX_LS) {
+        //     alpha /= 10.0;
 
-            zPurt = z + alpha*p;
-            Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp, *mapEvaluator);
+        //     zPurt = z + alpha*p;
+        //     Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp, *mapEvaluator);
 
-            lsIters++;
-        }
+        //     lsIters++;
+        // }
 
-        if (lsIters == MAX_LS) {
-            break;
-        } else {
+        // if (lsIters == MAX_LS) {
+        //     break;
+        // } else {
             z = zPurt;
-        }
+        // }
     }
     // assert(false);
 

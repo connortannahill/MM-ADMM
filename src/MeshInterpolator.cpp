@@ -8,7 +8,7 @@
 
 using namespace std;
 
-const int NUM_RESULTS = 10;
+const int NUM_RESULTS = 1;
 
 template<int D>
 MeshInterpolator<D>::MeshInterpolator() {
@@ -20,7 +20,7 @@ MeshInterpolator<D>::MeshInterpolator() {
     centroidSearchTree
         = new KDTreeSingleIndexAdaptor<L2_Simple_Adaptor<double, MeshInterpolator<D>>,
                 MeshInterpolator<D>, D>
-                (3 /*dim*/, *this, KDTreeSingleIndexAdaptorParams(10 /* max leaf */) );
+                (3 /*dim*/, *this, KDTreeSingleIndexAdaptorParams(5 /* max leaf */) );
 }
 
 template <int D>
@@ -175,6 +175,9 @@ void MeshInterpolator<D>::computeBarycentricCoordinates(int simplexId, Eigen::Ve
     Eigen::Vector<double, D> temp((*X)((*F)(simplexId, D), Eigen::all));
     Eigen::Matrix<double,D,D> Tinv(T.inverse());
 
+    // temp = T.lu().solve(pnt - temp);
+    // cout << "Solving for the barycenters" << endl;
+    // Eigen::Vector<double, D> temp(T.lu().solve(temp2));
     temp = Tinv * (pnt - temp);
 
     // bCoords.segment(0, D) = ( T.inverse() ) * (pnt - X(F(simplexId,3), Eigen::all));
@@ -188,10 +191,10 @@ void MeshInterpolator<D>::computeBarycentricCoordinates(int simplexId, Eigen::Ve
 
 
     // Compute difference in Barycentric reconstruction and the input point
-    Eigen::Vector<double, D> test(Eigen::Vector<double, D>::Constant(0.0));
-    for (int i = 0; i < D+1; i++) {
-        test += bCoords(i) * (*X)((*F)(simplexId, i), Eigen::all);
-    }
+    // Eigen::Vector<double, D> test(Eigen::Vector<double, D>::Constant(0.0));
+    // for (int i = 0; i < D+1; i++) {
+    //     test += bCoords(i) * (*X)((*F)(simplexId, i), Eigen::all);
+    // }
 
     // cout << "Difference in temp vs x " << (test - pnt).norm() << endl;
     // cout << "finisehd the bCoords" << endl;
@@ -200,7 +203,7 @@ void MeshInterpolator<D>::computeBarycentricCoordinates(int simplexId, Eigen::Ve
 template <int D>
 void MeshInterpolator<D>::interpolateMonitor(MonitorFunction<D> &Mon) {
     // Set up relevant information
-    const int NUM_SMOOTH = 1; // TODO: allow this to be set as a input param
+    const int NUM_SMOOTH = 5; // TODO: allow this to be set as a input param
     // cout << "eval @ vertices" << endl;
     Mon.evaluateAtVertices(*X, *F, *monVals);;
     // cout << "FINISHED eval @ vertices" << endl;
@@ -230,12 +233,13 @@ void MeshInterpolator<D>::interpolateMonitor(MonitorFunction<D> &Mon) {
 }
 
 template <int D>
-void MeshInterpolator<D>::evalMonitorAtPoint(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &mVal) {
+void MeshInterpolator<D>::evalMonitorOnSimplex(int simplexId, Eigen::Vector<double,D> &x,
+        Eigen::Matrix<double,D,D> &mVal) {
     // Use the mesh interpolator to find the simplex this point lays on, as well
     // as its barycentric coordaintes,
     Eigen::Vector<double, D+1> bCoords;
-    // cout << "running eval" << endl;
-    int simplexId = this->eval(x, bCoords);
+
+    computeBarycentricCoordinates(simplexId, x, bCoords);
 
     // assert(abs())
     // cout << "FINISHED running eval" << endl;
@@ -259,7 +263,20 @@ void MeshInterpolator<D>::evalMonitorAtPoint(Eigen::Vector<double,D> &x, Eigen::
 }
 
 template <int D>
-int MeshInterpolator<D>::eval(Eigen::Vector<double, D> &x, Eigen::Vector<double,D+1> &bCoords) {
+void MeshInterpolator<D>::evalMonitorAtPoint(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &mVal) {
+    // Use the mesh interpolator to find the simplex this point lays on, as well
+    // as its barycentric coordaintes,
+    // Eigen::Vector<double, D+1> bCoords;
+
+    // Extract the simplex at this point
+    int simplexId = this->eval(x);//, bCoords);
+
+    // Evaluate on this simplex
+    evalMonitorOnSimplex(simplexId, x, mVal);
+}
+
+template <int D>
+int MeshInterpolator<D>::eval(Eigen::Vector<double, D> &x) {//, Eigen::Vector<double,D+1> &bCoords) {
     // Do a nearest neighbours search for the nearest centroid
     std::vector<size_t> ret_index(NUM_RESULTS);
     std::vector<double> out_dist_sqr(NUM_RESULTS);
@@ -286,7 +303,7 @@ int MeshInterpolator<D>::eval(Eigen::Vector<double, D> &x, Eigen::Vector<double,
         roid = (*centroids)(simplexId, Eigen::all);
         // cout << "FINSIEHD Extracting roid" << endl;
         // cout << "computing barycenters" << endl;
-        computeBarycentricCoordinates(simplexId, x, bCoords);
+        // computeBarycentricCoordinates(simplexId, x, bCoords);
         // cout << "in eval" << bCoords.transpose() << endl;
         
         // Ensure we are in the simplex with this centroid

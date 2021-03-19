@@ -119,7 +119,7 @@ int main()
   params["yb"] = 1.0;
   params["theta"] = 0.5;
   params["p"] = 1;
-  double tau = 1e-1;
+  double tau = 1e-2;
   params["tau"] = tau;
 
   Eigen::MatrixXd *Vc = nullptr;
@@ -147,10 +147,10 @@ int main()
   cout << "FINISHED Creating the solver" << endl;
 
   clock_t start = clock();
-  int nSteps = 5;
+  int nSteps = 10;
   cout << "Starting the time stepper" << endl;
   for (int i = 0; i < nSteps; i++) {
-    solver.step(100, 1e-6);
+    solver.step(10, 1e-3);
     cout << "STEP = " << i << endl;
   }
 
