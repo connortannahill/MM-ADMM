@@ -25,6 +25,7 @@ public:
     Eigen::MatrixXd *monVals;
     Eigen::MatrixXd *X;
     Eigen::MatrixXi *F;
+    vector<vector<int>> *connectivity;
 
     void updateMesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F);
     int eval(Eigen::Vector<double, D> &x);//, Eigen::Vector<double,D+1> &bCoords);

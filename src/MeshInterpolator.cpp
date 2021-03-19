@@ -17,6 +17,7 @@ MeshInterpolator<D>::MeshInterpolator() {
     F = new Eigen::MatrixXi(1, D);
     mTemp = new Eigen::MatrixXd(1, D*D);
     monVals = new Eigen::MatrixXd(1, D*D);
+    connectivity = new vector<vector<int>>();
     centroidSearchTree
         = new KDTreeSingleIndexAdaptor<L2_Simple_Adaptor<double, MeshInterpolator<D>>,
                 MeshInterpolator<D>, D>
@@ -25,7 +26,9 @@ MeshInterpolator<D>::MeshInterpolator() {
 
 template <int D>
 void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, bool resize)  {
+    bool sizeChanged = false;
     if (F.rows() != centroids->rows()) {
+        sizeChanged = true;
         if (resize) {
             centroids->resize(F.rows(), D);
             (this->F)->resize(F.rows(), F.cols());
@@ -37,6 +40,7 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
     cout << "after the resize, centroids.size = (" << centroids->rows() << ", " << centroids->cols() << ")" << endl;
 
     if (X.size() != (this->mTemp)->size()) {
+        sizeChanged=true;
         if (resize) {
             (this->mTemp)->resize(X.rows(), D*D);
             (this->monVals)->resize(X.rows(), D*D);
@@ -44,6 +48,18 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
         } else {
             cout << "can not modify the size of the X matrix ahead of this call! call updateMesh" << endl;
             assert(X.size() != (this->mTemp)->size());
+        }
+    }
+
+    // If the size changed, update the connectivity
+    if (sizeChanged) {
+        connectivity.clear();
+
+        for (int i = 0; i < X->rows(); i++) {
+            vector<int> neighs;
+            findNeighbourPoints(i, neighs);
+
+            connectivity->push_back(neighs);
         }
     }
 }
@@ -63,23 +79,23 @@ void MeshInterpolator<D>::updateMesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F) {
     *(this->F) = F;
 
     // Compute the new centroids
-    Eigen::Vector<double,D> temp;
-    Eigen::Vector<double,D> x;
-    for (int i = 0; i < F.rows(); i++) {
-        temp.setZero();
-        for (int k = 0; k < D+1; k++) {
-            x = X(F(i,k), Eigen::all);
-            temp += x;
-        }
-        temp /= (D+1);
+    // Eigen::Vector<double,D> temp;
+    // Eigen::Vector<double,D> x;
+    // for (int i = 0; i < F.rows(); i++) {
+    //     temp.setZero();
+    //     for (int k = 0; k < D+1; k++) {
+    //         x = X(F(i,k), Eigen::all);
+    //         temp += x;
+    //     }
+    //     temp /= (D+1);
 
-        for (int j = 0; j < D; j++)  {
-            (*centroids)(i, j) = temp(j);
-        }
-    }
+    //     for (int j = 0; j < D; j++)  {
+    //         (*centroids)(i, j) = temp(j);
+    //     }
+    // }
 
     // Update the index
-    centroidSearchTree->buildIndex();
+    // centroidSearchTree->buildIndex();
 }
 
 template <int D>
@@ -138,6 +154,7 @@ void MeshInterpolator<D>::outputStuff() {
         }
 
         // cout << "evalling" << endl;
+        assert(false);
         evalMonitorAtPoint(centroid, mTemp);
         // cout << "FINISEHD evalling" << endl;
 
@@ -164,25 +181,31 @@ void MeshInterpolator<D>::computeBarycentricCoordinates(int simplexId, Eigen::Ve
 
     // cout << "Computing the T matrix" << endl;
     // bCoords(0) = 
-    Eigen::Matrix<double,D,D> T;
-    for (int i = 0; i < D; i++) {
-        // cout << "i: " << (*X)((*F)(simplexId,i), Eigen::all).rows() << endl;
-        // cout << "3: " << (*X)((*F)(simplexId,D), Eigen::all).rows() << endl;
-        T.col(i) = (*X)((*F)(simplexId,i), Eigen::all) - (*X)((*F)(simplexId,D), Eigen::all);
-    }
-    // cout << "T matrix finished" << endl;
+    // Eigen::Matrix<double,D,D> T;
+    // for (int i = 0; i < D; i++) {
+    //     // cout << "i: " << (*X)((*F)(simplexId,i), Eigen::all).rows() << endl;
+    //     // cout << "3: " << (*X)((*F)(simplexId,D), Eigen::all).rows() << endl;
+    //     T.col(i) = (*X)((*F)(simplexId,i), Eigen::all) - (*X)((*F)(simplexId,D), Eigen::all);
+    // }
+    // // cout << "T matrix finished" << endl;
 
-    Eigen::Vector<double, D> temp((*X)((*F)(simplexId, D), Eigen::all));
-    Eigen::Matrix<double,D,D> Tinv(T.inverse());
+    // Eigen::Vector<double, D> temp((*X)((*F)(simplexId, D), Eigen::all));
+    // Eigen::Matrix<double,D,D> Tinv(T.inverse());
 
-    // temp = T.lu().solve(pnt - temp);
-    // cout << "Solving for the barycenters" << endl;
-    // Eigen::Vector<double, D> temp(T.lu().solve(temp2));
-    temp = Tinv * (pnt - temp);
+    // // temp = T.lu().solve(pnt - temp);
+    // // cout << "Solving for the barycenters" << endl;
+    // // Eigen::Vector<double, D> temp(T.lu().solve(temp2));
+    // temp = Tinv * (pnt - temp);
 
     // bCoords.segment(0, D) = ( T.inverse() ) * (pnt - X(F(simplexId,3), Eigen::all));
     // cout << "computing the bCoords" << endl;
-    bCoords.segment(0, D) = temp;
+    // bCoords.segment(0, D) = temp;
+    Eigen::Vector<double, D> x1;
+
+    double det = 
+    bCoords(0) = 
+
+
     bCoords(D) = 1.0;
     for (int i = 0; i < D; i++) {
         bCoords(D) -= bCoords(i);
@@ -264,6 +287,7 @@ void MeshInterpolator<D>::evalMonitorOnSimplex(int simplexId, Eigen::Vector<doub
 
 template <int D>
 void MeshInterpolator<D>::evalMonitorAtPoint(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &mVal) {
+    assert(false);
     // Use the mesh interpolator to find the simplex this point lays on, as well
     // as its barycentric coordaintes,
     // Eigen::Vector<double, D+1> bCoords;
@@ -446,11 +470,12 @@ void MeshInterpolator<D>::smoothMonitor(int nIters) {
     double weightNeigh;
     for (int iter = 0; iter < nIters; iter++) {
         for (int pId = 0; pId < monVals->rows(); pId++) {
-            neighIds.clear();
+            neighIds = connectivity->at(pId);
+
 
             // Find all of the neighbours to this simplex
             // cout << "fouding neigh pnts" << endl;
-            findNeighbourPoints(pId, neighIds);
+            // findNeighbourPoints(pId, neighIds);
             // cout << "FINISHED fouding neigh pnts" << endl;
 
             // Moving average weights for then current point
