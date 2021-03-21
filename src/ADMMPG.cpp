@@ -52,9 +52,9 @@ void ADMMPG<D>::step(int nIters, double tol) {
     double dtsq = dt*dt;
 
     // Setup the assembly for the step
-    cout << "Setting hp the assembly" << endl;
+    // cout << "Setting hp the assembly" << endl;
     (this->a)->setUp();
-    cout << "FINISHED Setting hp the assembly" << endl;
+    // cout << "FINISHED Setting hp the assembly" << endl;
     // assert(false);
 
     // Make prediction for next value of x (sorta)
@@ -77,6 +77,7 @@ void ADMMPG<D>::step(int nIters, double tol) {
     admm = clock();
 
     int i;
+    double IhCur, IhPrev;
     for (i = 0; i < nIters; i++) {
         // cout << "Running prox" << endl;
         // Update z_{n+1} using the assembly prox algorithm
@@ -84,7 +85,7 @@ void ADMMPG<D>::step(int nIters, double tol) {
         *DXpU = (*(a->Dmat))*(*x) + (*uBar);
         // a->updateAfterStep(dt, *xPrev, *x);
         // cout << "running prox" << endl;
-        a->prox(dt, *x, *DXpU, *z);
+        double Ihcur = a->prox(dt, *x, *DXpU, *z);
         // assert(false);
         // cout << "FINSIEHD running prox" << endl;
         prox += clock() - start;
@@ -100,11 +101,14 @@ void ADMMPG<D>::step(int nIters, double tol) {
         xUpdate += clock() - start;
 
         // Compute the primal residual. If it is beneath the tolerance, exit
-        double primalRes = ((*a->Dmat)*(*x) - *z).norm();
-        cout << "Primal res = " << primalRes << endl;
-        if (primalRes < tol) {
+        // double primalRes = ((*a->Dmat)*(*x) - *z).norm();
+        // cout << "Primal res = " << primalRes << endl;
+        cout << "check " << abs((IhPrev - Ihcur)/(IhPrev)) << endl;
+        if (i >= 1 && abs((IhPrev - Ihcur)/(IhPrev)) < tol) {
             break;
         }
+
+        IhPrev = Ihcur;
     }
 
     // cout << "time in full loop " << (clock() - admm)/((double) CLOCKS_PER_SEC) << endl;

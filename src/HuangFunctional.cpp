@@ -21,24 +21,36 @@ HuangFunctional<D>::HuangFunctional(Eigen::MatrixXd &Vc,
 template <int D>
 double HuangFunctional<D>::G(Eigen::Matrix<double,D,D> &J, double detJ,
             Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x) {
+    // double d = (double) D;
+    // double p = d / 2.0;
+    // double theta = 0.5;
     // double sqrtDetM = sqrt(M.determinant());
     // return theta * sqrtDetM * pow((J * M.inverse() * J).trace(), (d*p)/2.0) +
     //     (1 - 2.0*theta)*pow(d, d*p/2.0)*sqrtDetM*pow(detJ/sqrtDetM, p);
+
     return (J * M.inverse() * J.transpose()).trace();
 }
 
 template <int D>
 void HuangFunctional<D>::dGdJ(Eigen::Matrix<double,D,D> &J, double detJ,
             Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &out) {
+    // double d = (double) D;
+    // double p = d / 2.0;
+    // double theta = 0.5;
     // double sqrtDetM = sqrt(M.determinant());
     // out = d*p*theta*sqrtDetM * pow(((J * M.inverse() * J).trace()), d*p/2.0 - 1) * M.inverse() * J;
+
     out = 2.0*M.inverse()*J.transpose();
 }
 
 template <int D>
 double HuangFunctional<D>::dGddet(Eigen::Matrix<double,D,D> &J, double detJ,
             Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x) {
+    // double d = (double) D;
+    // double p = d / 2.0;
+    // double theta = 0.5;
     // return p*(1.0 - 2.0*theta)*pow(d, d*p/2.0)*pow(M.determinant(), (1.0 - p)/2.0)*pow(detJ, p-1);
+
     return 0.0;
 }
 
@@ -46,6 +58,9 @@ template <int D>
 void HuangFunctional<D>::dGdM(Eigen::Matrix<double,D,D> &J, double detJ,
             Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &out) {
     // out.setZero();
+    // double d = (double) D;
+    // double p = d / 2.0;
+    // double theta = 0.5;
     // double sqrtDetM = sqrt(M.determinant());
 
     // out = -theta*(d*p/2.0) * sqrtDetM * pow(((J * M.inverse() * J).trace()), d*p/2.0 - 1) *

@@ -173,8 +173,8 @@ double Mesh<D>::BFGSSimplex(int zId, Eigen::Vector<double,D*(D+1)> &z,
 template <int D>
 double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         Eigen::Vector<double, D*(D+1)> &xi, int nIter) {
-    // double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
-    double h = 1e-10;
+    double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
+    // double h = 1e-10;
     const int MAX_LS = 10;
 
     Eigen::Vector<double, D*(D+1)> zPurt;
@@ -237,17 +237,17 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
     }
     // assert(false);
 
-    return Ipurt;
+    return Ix;
 
 }
 
 template <int D>
-void Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen::VectorXd &z) {
+double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen::VectorXd &z) {
     // Copy DXpU address to local pointer
     *this->DXpU = DXpU;
 
     mapEvaluator->interpolateMonitor(*this->Mon);
-    mapEvaluator->outputStuff();
+    // mapEvaluator->outputStuff();
     // assert(false);
 
     // Run Newton's method on each simplex
@@ -280,7 +280,8 @@ void Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen::
             }
         }
     }
-    cout << "Ih = " << Ih << endl;
+    return Ih;
+    // cout << "Ih = " << Ih << endl;
 }
 
 template <int D>
@@ -297,7 +298,7 @@ template <int D>
 void Mesh<D>::setUp() {
 
     // Update the mesh in the interpolator.
-    cout << "Updating the mesh" << endl;
+    // cout << "Updating the mesh" << endl;
     mapEvaluator->updateMesh((*this->Vc), (*this->F));
     // cout << "FINISHED Updating the mesh" << endl;
     // cout << "inteprolating the monitor function" << endl;

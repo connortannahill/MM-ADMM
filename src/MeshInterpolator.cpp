@@ -53,9 +53,9 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
 
     // If the size changed, update the connectivity
     if (sizeChanged) {
-        connectivity.clear();
+        connectivity->clear();
 
-        for (int i = 0; i < X->rows(); i++) {
+        for (int i = 0; i < X.rows(); i++) {
             vector<int> neighs;
             findNeighbourPoints(i, neighs);
 
@@ -179,37 +179,42 @@ template <int D>
 void MeshInterpolator<D>::computeBarycentricCoordinates(int simplexId, Eigen::Vector<double, D> &pnt,
             Eigen::Vector<double, D+1> &bCoords) {
 
-    // cout << "Computing the T matrix" << endl;
-    // bCoords(0) = 
+    // // cout << "Computing the T matrix" << endl;
+    // // bCoords(0) = 
     // Eigen::Matrix<double,D,D> T;
     // for (int i = 0; i < D; i++) {
     //     // cout << "i: " << (*X)((*F)(simplexId,i), Eigen::all).rows() << endl;
     //     // cout << "3: " << (*X)((*F)(simplexId,D), Eigen::all).rows() << endl;
     //     T.col(i) = (*X)((*F)(simplexId,i), Eigen::all) - (*X)((*F)(simplexId,D), Eigen::all);
     // }
-    // // cout << "T matrix finished" << endl;
+    // // // cout << "T matrix finished" << endl;
 
     // Eigen::Vector<double, D> temp((*X)((*F)(simplexId, D), Eigen::all));
     // Eigen::Matrix<double,D,D> Tinv(T.inverse());
 
-    // // temp = T.lu().solve(pnt - temp);
-    // // cout << "Solving for the barycenters" << endl;
-    // // Eigen::Vector<double, D> temp(T.lu().solve(temp2));
+    // // // temp = T.lu().solve(pnt - temp);
+    // // // cout << "Solving for the barycenters" << endl;
+    // // // Eigen::Vector<double, D> temp(T.lu().solve(temp2));
     // temp = Tinv * (pnt - temp);
 
-    // bCoords.segment(0, D) = ( T.inverse() ) * (pnt - X(F(simplexId,3), Eigen::all));
-    // cout << "computing the bCoords" << endl;
+    // // bCoords.segment(0, D) = ( T.inverse() ) * (pnt - X(F(simplexId,3), Eigen::all));
+    // // cout << "computing the bCoords" << endl;
     // bCoords.segment(0, D) = temp;
-    Eigen::Vector<double, D> x1;
+    Eigen::Vector<double, D> x0((*X)((*F)(simplexId,0), Eigen::all));
+    Eigen::Vector<double, D> x1((*X)((*F)(simplexId,1), Eigen::all));
+    Eigen::Vector<double, D> x2((*X)((*F)(simplexId,2), Eigen::all));
 
-    double det = 
-    bCoords(0) = 
+    double det = (x1(1) - x2(1)) * (x0(0) - x2(0)) + (x2(0) - x1(0)) * (x0(1) - x2(1));
+    // cout << "err = " << det - T.determinant() << endl;
+    bCoords(0) = ( (x1(1) - x2(1)) * (pnt(0) - x2(0)) + (x2(0) - x1(0)) * (pnt(1) - x2(1)) ) / det;
+    bCoords(1) = ( (x2(1) - x0(1)) * (pnt(0) - x2(0)) + (x0(0) - x2(0)) * (pnt(1) - x2(1)) ) / det;
+    bCoords(2) = 1.0 - bCoords(1) - bCoords(0);
 
 
-    bCoords(D) = 1.0;
-    for (int i = 0; i < D; i++) {
-        bCoords(D) -= bCoords(i);
-    }
+    // bCoords(D) = 1.0;
+    // for (int i = 0; i < D; i++) {
+    //     bCoords(D) -= bCoords(i);
+    // }
     // cout << "In compute barycentric coordintes " << bCoords.transpose() << endl;
 
 
@@ -226,7 +231,7 @@ void MeshInterpolator<D>::computeBarycentricCoordinates(int simplexId, Eigen::Ve
 template <int D>
 void MeshInterpolator<D>::interpolateMonitor(MonitorFunction<D> &Mon) {
     // Set up relevant information
-    const int NUM_SMOOTH = 5; // TODO: allow this to be set as a input param
+    const int NUM_SMOOTH = 0; // TODO: allow this to be set as a input param
     // cout << "eval @ vertices" << endl;
     Mon.evaluateAtVertices(*X, *F, *monVals);;
     // cout << "FINISHED eval @ vertices" << endl;
@@ -470,12 +475,12 @@ void MeshInterpolator<D>::smoothMonitor(int nIters) {
     double weightNeigh;
     for (int iter = 0; iter < nIters; iter++) {
         for (int pId = 0; pId < monVals->rows(); pId++) {
-            neighIds = connectivity->at(pId);
+            // neighIds = connectivity->at(pId);
 
 
             // Find all of the neighbours to this simplex
             // cout << "fouding neigh pnts" << endl;
-            // findNeighbourPoints(pId, neighIds);
+            findNeighbourPoints(pId, neighIds);
             // cout << "FINISHED fouding neigh pnts" << endl;
 
             // Moving average weights for then current point

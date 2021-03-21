@@ -103,8 +103,8 @@ int main()
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
-  int nx = 10;
-  int ny = 10;
+  int nx = 20;
+  int ny = 20;
   int nPnts = (nx+1)*(ny+1) + nx*ny;
   params["nx"] = nx;
   params["ny"] = ny;
@@ -119,7 +119,7 @@ int main()
   params["yb"] = 1.0;
   params["theta"] = 0.5;
   params["p"] = 1;
-  double tau = 1e-2;
+  double tau = 1e-1;
   params["tau"] = tau;
 
   Eigen::MatrixXd *Vc = nullptr;
@@ -147,10 +147,10 @@ int main()
   cout << "FINISHED Creating the solver" << endl;
 
   clock_t start = clock();
-  int nSteps = 10;
+  int nSteps = 15;
   cout << "Starting the time stepper" << endl;
   for (int i = 0; i < nSteps; i++) {
-    solver.step(10, 1e-3);
+    solver.step(100, 1e-4);
     cout << "STEP = " << i << endl;
   }
 

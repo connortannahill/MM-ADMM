@@ -40,7 +40,7 @@ public:
     // void updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x) override;
     // void copyX(Eigen::VectorXd &tar) override;
     // void predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) override;
-    void prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DxpU, Eigen::VectorXd &z);
+    double prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DxpU, Eigen::VectorXd &z);
     void updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x);
     void predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar);
     double newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
