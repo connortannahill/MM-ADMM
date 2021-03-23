@@ -37,7 +37,9 @@ ADMMPG<D>::ADMMPG(double dt, Mesh<D> &a) {
     t = t + dtsq*((*WD_T * (*(this->a)->W) * (*(this->a)->Dmat)));
 
     // Compute the sparse Cholseky factorization.
+    cout << "Performing sparse cholesky" << endl;
     cgSol = new Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>>(t);
+    cout << "FINISHED Performing sparse cholesky" << endl;
 
     DXpU = new Eigen::VectorXd(*z);
     vec = new Eigen::VectorXd(*z);
@@ -103,7 +105,7 @@ void ADMMPG<D>::step(int nIters, double tol) {
         // Compute the primal residual. If it is beneath the tolerance, exit
         // double primalRes = ((*a->Dmat)*(*x) - *z).norm();
         // cout << "Primal res = " << primalRes << endl;
-        cout << "check " << abs((IhPrev - Ihcur)/(IhPrev)) << endl;
+        //cout << "check " << abs((IhPrev - Ihcur)/(IhPrev)) << endl;
         if (i >= 1 && abs((IhPrev - Ihcur)/(IhPrev)) < tol) {
             break;
         }
@@ -114,7 +116,7 @@ void ADMMPG<D>::step(int nIters, double tol) {
     // cout << "time in full loop " << (clock() - admm)/((double) CLOCKS_PER_SEC) << endl;
     // cout << "time in prox per step " << (prox)/((double) CLOCKS_PER_SEC)/((double)i) << endl;
     // cout << "time in xUpdate per step " << xUpdate/((double) CLOCKS_PER_SEC)/((double)i) << endl;
-    cout << "converged in " << i+1 << " iters" << endl;
+    //cout << "converged in " << i+1 << " iters" << endl;
 
 
     // Update the assembly using the new locations

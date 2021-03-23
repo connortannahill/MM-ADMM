@@ -24,6 +24,7 @@ public:
     Eigen::MatrixXd *Vc;
     Eigen::MatrixXd *Vp;
     Eigen::MatrixXi *F;
+    Eigen::VectorXd *Ih;
     Eigen::VectorXi *boundaryMask;
     Eigen::VectorXd *DXpU;
     Eigen::MatrixXd *monitorEvals;

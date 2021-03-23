@@ -37,7 +37,7 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
             assert(F.size() != centroids->size());
         }
     }
-    cout << "after the resize, centroids.size = (" << centroids->rows() << ", " << centroids->cols() << ")" << endl;
+    //cout << "after the resize, centroids.size = (" << centroids->rows() << ", " << centroids->cols() << ")" << endl;
 
     if (X.size() != (this->mTemp)->size()) {
         sizeChanged=true;
@@ -277,7 +277,9 @@ void MeshInterpolator<D>::evalMonitorOnSimplex(int simplexId, Eigen::Vector<doub
 
     // Accumulate the monitor function in a flattened array
     // cout << "interp" << endl;
-    Eigen::Vector<double,D*D> mFlat(Eigen::Vector<double,D*D>::Constant(0.0));
+    //Eigen::Vector<double,D*D> mFlat(Eigen::Vector<double,D*D>::Constant(0.0));
+    Eigen::Vector<double,D*D> mFlat;
+    mFlat.setZero();
     for (int i = 0; i < D+1; i++) {
         mFlat += bCoords(i)*(*monVals)(pntIds(i), Eigen::all);
     }

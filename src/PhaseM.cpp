@@ -7,6 +7,7 @@ using namespace std;
 
 template <int D>
 void PhaseM<D>::operator()(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &M) {
+    /*
     double mu_1 = 20;
     double mu_2 = 20;
 
@@ -31,6 +32,10 @@ void PhaseM<D>::operator()(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D>
     Eigen::Matrix<double,D,D> m2(lam2*vOrth*vOrth.transpose());
 
     M = m1 + m2;
+    */
+    M = Eigen::Matrix<double,D,D>::Identity(M.rows(), M.cols());
+    M *= sqrt(0.01/(2.0 + cos(8.0*3.1415*sqrt(pow(x(0) - 0.5, 2) + pow(x(1) - 0.5, 2)))));
+
 }
 
 // Typically only need the 2D and 3D cases. 1D needs to be tested and 4D would break me.
