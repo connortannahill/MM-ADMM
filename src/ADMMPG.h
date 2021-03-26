@@ -14,7 +14,7 @@ class ADMMPG {
 public:
     ADMMPG(double dt, Mesh<D> &a);
     ~ADMMPG();
-    void step(int nIters, double tol);
+    double step(int nIters, double tol);
 private:
     Mesh<D> *a;
     Eigen::VectorXd *x;

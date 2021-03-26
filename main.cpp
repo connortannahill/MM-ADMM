@@ -103,14 +103,14 @@ int main()
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
-  int nx = 20;
-  int ny = 20;
+  int nx = 40;
+  int ny = 40;
   int nPnts = (nx+1)*(ny+1) + nx*ny;
   params["nx"] = nx;
   params["ny"] = ny;
   params["nPnts"] = (params["nx"]+1)*(params["ny"]+1);
   params["d"] = D;
-  double rho = 10;
+  double rho = 30;
   params["rho"] = rho;
 
   params["xa"] = 0.0;
@@ -147,11 +147,20 @@ int main()
   cout << "FINISHED Creating the solver" << endl;
 
   clock_t start = clock();
-  int nSteps = 15;
+  int nSteps = 10; 
   cout << "Starting the time stepper" << endl;
+  double Ih;
+  double Ihprev = INFINITY;
   for (int i = 0; i < nSteps; i++) {
-    solver.step(100, 1e-4);
+    Ih = solver.step(100, 1e-4);
     cout << "STEP = " << i << endl;
+    cout << "Ih = " << Ih << endl;
+
+    if (Ih >= Ihprev) {
+        cout << "converged" << endl;
+        break;
+    }
+    Ihprev = Ih;
   }
 
   cout << "Took " << ((double)clock() - (double)start)

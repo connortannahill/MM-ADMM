@@ -48,11 +48,11 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryM
     this->boundaryMask = &boundaryMask;
 
     // Create mesh interpolator
-    // cout << "Making mesh interpolator" << endl;
+    cout << "Making mesh interpolator" << endl;
     mapEvaluator = new MeshInterpolator<D>();
     mapEvaluator->updateMesh((*this->Vc), (*this->F));
     mapEvaluator->interpolateMonitor(*Mon);
-    // cout << "FINISHED Making mesh interpolator" << endl;
+    cout << "FINISHED Making mesh interpolator" << endl;
 
     this->nPnts = X.rows();
 
@@ -113,11 +113,24 @@ void Mesh<D>::buildWMatrix(double w) {
 
 template <int D>
 void Mesh<D>::buildDMatrix() {
-    // Temp matrix (we insert the transpose) and we keep it this way for storage reasons
+    // // Temp matrix (we insert the transpose) and we keep it this way for storage reasons
     Eigen::SparseMatrix<double> Dt(D*Vp->rows(), D*(D+1)*F->rows());
 
-    // Reserve the memory
-    Dt.reserve(Eigen::VectorXi::Constant(D*(D+1)*F->rows(), 1));
+    // // Reserve the memory
+    // Dt.reserve(Eigen::VectorXi::Constant(D*(D+1)*F->rows(), 1));
+
+    typedef Eigen::Triplet<double> T;
+    std::vector<T> tripletList;
+    tripletList.reserve(D*(D+1)*F->rows());
+    // for(...)
+    // {
+    // // ...
+    // tripletList.push_back(T(i,j,v_ij));
+    // }
+    // SparseMatrixType mat(rows,cols);
+    // mat.setFromTriplets(tripletList.begin(), tripletList.end());
+    // mat is ready to go!
+
 
     // Add the spring constraints to the system
     int pntIds[3];
@@ -141,17 +154,26 @@ void Mesh<D>::buildDMatrix() {
         for (int n = 0; n < D; n++) {
             for (int m = 0; m < D; m++) {
                 if (n == m) {
-                    Dt.insert(n+rowStart0, m+colStart0) = 1.0;
-                    Dt.insert(n+rowStart1, m+colStart1) = 1.0;
-                    Dt.insert(n+rowStart2, m+colStart2) = 1.0;
+                    tripletList.push_back(T(n+rowStart0, m+colStart0, 1.0));
+                    tripletList.push_back(T(n+rowStart1, m+colStart1, 1.0));
+                    tripletList.push_back(T(n+rowStart2, m+colStart2, 1.0));
+
+                    // Dt.insert(n+rowStart0, m+colStart0) = 1.0;
+                    // Dt.insert(n+rowStart1, m+colStart1) = 1.0;
+                    // Dt.insert(n+rowStart2, m+colStart2) = 1.0;
                 } else {
-                    Dt.insert(n+rowStart0, m+colStart0) = 0.0;
-                    Dt.insert(n+rowStart1, m+colStart1) = 0.0;
-                    Dt.insert(n+rowStart2, m+colStart2) = 0.0;
+                    tripletList.push_back(T(n+rowStart0, m+colStart0, 0.0));
+                    tripletList.push_back(T(n+rowStart1, m+colStart1, 0.0));
+                    tripletList.push_back(T(n+rowStart2, m+colStart2, 0.0));
+                    // Dt.insert(n+rowStart0, m+colStart0) = 0.0;
+                    // Dt.insert(n+rowStart1, m+colStart1) = 0.0;
+                    // Dt.insert(n+rowStart2, m+colStart2) = 0.0;
                 }
             }
         }
     }
+
+    Dt.setFromTriplets(tripletList.begin(), tripletList.end());
 
     // Create the D matrix
     Dmat = new Eigen::SparseMatrix<double>(Dt.transpose());
@@ -264,7 +286,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         // assert(x_i.isApprox(xi_i));
 
-        Ih += newtonOptSimplex(i, z_i, xi_i, 1);
+        Ih += newtonOptSimplex(i, z_i, xi_i, 2);
         // Ih = newtonOptSimplex(i, z_i, xi_i, 10);
 
         z.segment(D*(D+1)*i, D*(D+1)) = z_i;

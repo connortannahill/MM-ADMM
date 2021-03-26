@@ -47,7 +47,7 @@ ADMMPG<D>::ADMMPG(double dt, Mesh<D> &a) {
  * Assumes a constant mass matrix for now
 */
 template <int D>
-void ADMMPG<D>::step(int nIters, double tol) {
+double ADMMPG<D>::step(int nIters, double tol) {
     // Get xBar, the predicted (explicit) location of the nodes independent of constraints
     double dtsq = dt*dt;
 
@@ -85,7 +85,7 @@ void ADMMPG<D>::step(int nIters, double tol) {
         *DXpU = (*(a->Dmat))*(*x) + (*uBar);
         // a->updateAfterStep(dt, *xPrev, *x);
         // cout << "running prox" << endl;
-        double Ihcur = a->prox(dt, *x, *DXpU, *z);
+        IhCur = a->prox(dt, *x, *DXpU, *z);
         // assert(false);
         // cout << "FINSIEHD running prox" << endl;
         prox += clock() - start;
@@ -103,12 +103,12 @@ void ADMMPG<D>::step(int nIters, double tol) {
         // Compute the primal residual. If it is beneath the tolerance, exit
         // double primalRes = ((*a->Dmat)*(*x) - *z).norm();
         // cout << "Primal res = " << primalRes << endl;
-        cout << "check " << abs((IhPrev - Ihcur)/(IhPrev)) << endl;
-        if (i >= 1 && abs((IhPrev - Ihcur)/(IhPrev)) < tol) {
+        // cout << "check " << abs((IhPrev - IhCur)/(IhPrev)) << endl;
+        if (i >= 1 && abs((IhPrev - IhCur)/(IhPrev)) < tol) {
             break;
         }
 
-        IhPrev = Ihcur;
+        IhPrev = IhCur;
     }
 
     // cout << "time in full loop " << (clock() - admm)/((double) CLOCKS_PER_SEC) << endl;
@@ -120,6 +120,8 @@ void ADMMPG<D>::step(int nIters, double tol) {
     // Update the assembly using the new locations
     start = clock();
     a->updateAfterStep(dt, *xPrev, *x);
+
+    return IhCur;
     // a->printDiff();
     // cout << "time to update after step " << clock() - start << endl;
 }
