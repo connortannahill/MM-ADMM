@@ -67,6 +67,7 @@ void HuangFunctional<D>::dGdM(Eigen::Matrix<double,D,D> &J, double detJ,
     //         M.inverse() * J.transpose() * J * M.inverse() + (theta/2.0) * sqrtDetM *
     //         pow(((J * M.inverse() * J).trace()), d*p/2.0) * M.inverse() +
     //         ((1.0-2.0*theta)*(1.0-p)*pow(d, d*p/2.0))/2.0 * sqrtDetM * pow(detJ/sqrtDetM, p) * M.inverse();
+    //Eigen::Matrix<double, D, D> Minv(M.inverse());
 
     out = - Minv * J.transpose() * J * Minv;
 }

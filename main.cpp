@@ -10,6 +10,8 @@
 #include "./src/Assembly.h"
 #include <cstdlib> 
 #include <ctime> 
+#include <omp.h>
+#include <unistd.h>
  
 using namespace std;
 #define D 2
@@ -100,6 +102,7 @@ int main()
   PhaseM<2> *M = new PhaseM<2>();
   // MonitorFunction<2> *M = (MonitorFunction<2>*) new PhaseM<2>();
   // PhaseM M();
+ // std::cout << "Number of available threads: " << omp_get_num_thread() << std::endl;
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
@@ -163,6 +166,7 @@ int main()
     Ihprev = Ih;
   }
 
+  nSteps = 1;
   cout << "Took " << ((double)clock() - (double)start)
         / ((double)CLOCKS_PER_SEC) / ((double)nSteps) << " per steps" << endl;
 

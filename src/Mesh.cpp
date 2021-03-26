@@ -10,6 +10,11 @@
 #include <iostream>
 // #include <LBFGS.h>
 #include <fstream>
+#include <omp.h>
+#include <unistd.h>
+#include <algorithm>
+
+#define THREAD_NUM 1
 
 using namespace std;
 // using namespace LBFGSpp;
@@ -47,12 +52,17 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryM
     this->F = &F;
     this->boundaryMask = &boundaryMask;
 
+    this->Ih = new Eigen::VectorXd(F.rows());
+
+    //omp_set_thread_num(THREAD_NUM);
+    omp_set_num_threads(THREAD_NUM);
+
     // Create mesh interpolator
-    cout << "Making mesh interpolator" << endl;
+    cout << "Creating the mesh interpolator" << endl;
     mapEvaluator = new MeshInterpolator<D>();
     mapEvaluator->updateMesh((*this->Vc), (*this->F));
     mapEvaluator->interpolateMonitor(*Mon);
-    cout << "FINISHED Making mesh interpolator" << endl;
+    cout << "FINSIEHD Creating the mesh interpolator" << endl;
 
     this->nPnts = X.rows();
 
@@ -65,17 +75,23 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryM
     monitorEvals = new Eigen::MatrixXd(X.rows(), D*D);
 
     // Build the mass matrix
+    cout << "bulding the mass matrix" << endl;
     Eigen::VectorXd m(Eigen::VectorXd::Constant(nPnts*D, tau));
     buildMassMatrix(m);
+    cout << "FINISHED bulding the mass matrix" << endl;
 
+    cout << "bulding the D matrix" << endl;
     buildDMatrix();
     this->w = sqrt(rho);
     buildWMatrix(this->w);
+    cout << "FINISHED bulding the D matrix" << endl;
 
     DXpU = new Eigen::VectorXd((*Dmat)*(m));
 
     // Create the functional for each vertex
+    cout << "bulding the functional" << endl;
     I_wx = new HuangFunctional<D>(*Vc, *Vp, *(this->F), *DXpU, Mon, this->w, 0.0, 0.0);
+    cout << "FINSIEHD bulding the functional" << endl;
 }
 
 // TODO: add external forces (would be handled in this object, as the meshing object should control its own props)
@@ -157,17 +173,10 @@ void Mesh<D>::buildDMatrix() {
                     tripletList.push_back(T(n+rowStart0, m+colStart0, 1.0));
                     tripletList.push_back(T(n+rowStart1, m+colStart1, 1.0));
                     tripletList.push_back(T(n+rowStart2, m+colStart2, 1.0));
-
-                    // Dt.insert(n+rowStart0, m+colStart0) = 1.0;
-                    // Dt.insert(n+rowStart1, m+colStart1) = 1.0;
-                    // Dt.insert(n+rowStart2, m+colStart2) = 1.0;
                 } else {
                     tripletList.push_back(T(n+rowStart0, m+colStart0, 0.0));
                     tripletList.push_back(T(n+rowStart1, m+colStart1, 0.0));
                     tripletList.push_back(T(n+rowStart2, m+colStart2, 0.0));
-                    // Dt.insert(n+rowStart0, m+colStart0) = 0.0;
-                    // Dt.insert(n+rowStart1, m+colStart1) = 0.0;
-                    // Dt.insert(n+rowStart2, m+colStart2) = 0.0;
                 }
             }
         }
@@ -177,7 +186,6 @@ void Mesh<D>::buildDMatrix() {
 
     // Create the D matrix
     Dmat = new Eigen::SparseMatrix<double>(Dt.transpose());
-
 }
 
 /**
@@ -273,36 +281,36 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
     // assert(false);
 
     // Run Newton's method on each simplex
-    Eigen::Vector<double, D*(D+1)> z_i;
-    Eigen::Vector<double, D*(D+1)> xi_i;
-    double Ih = 0;
+  //  Eigen::Vector<double, D*(D+1)> z_i;
+  //  Eigen::Vector<double, D*(D+1)> xi_i;
+    //double Ih = 0;
     // cout << "Into the for" << endl;
+    //Eigen::VectorXd Ih(F->rows());
+    Ih->setZero();
+
+    #pragma omp parallel for
     for (int i = 0; i < F->rows(); i++) {
+        Eigen::Vector<double, D*(D+1)> z_i;
+        Eigen::Vector<double, D*(D+1)> xi_i;
         for (int n = 0; n < D+1; n++) {
             xi_i.segment(n*D, D) = (*Vc)((*F)(i,n), Eigen::all);
         }
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
 
-        // assert(x_i.isApprox(xi_i));
-
-        Ih += newtonOptSimplex(i, z_i, xi_i, 2);
-        // Ih = newtonOptSimplex(i, z_i, xi_i, 10);
+        (*Ih)(i) += newtonOptSimplex(i, z_i, xi_i, 2);
 
         z.segment(D*(D+1)*i, D*(D+1)) = z_i;
-
-        // assert(boundaryMask->sum() == 40);
-        // cout << "Sum of boundary mask = " << boundaryMask->sum() << endl;
-
 
         // Fix any boundary points
         for (int n = 0; n < D+1; n++) {
             if ((*boundaryMask)((*F)(i,n))) {
-                z.segment(D*(D+1)*i+n*D, D) = x.segment((*F)(i,n)*D, D);
+	        z.segment(D*(D+1)*i+n*D, D) = x.segment((*F)(i,n)*D, D);
             }
         }
     }
-    return Ih;
+
+    return Ih->sum();
     // cout << "Ih = " << Ih << endl;
 }
 
@@ -385,6 +393,7 @@ Mesh<D>::~Mesh() {
     // delete Vp;
     // delete F;
     delete DXpU;
+    delete Ih;
 
     delete M;
     delete Dmat;

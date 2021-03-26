@@ -37,9 +37,13 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
             assert(F.size() != centroids->size());
         }
     }
+<<<<<<< HEAD
     // cout << "after the resize, centroids.size = (" << centroids->rows() << ", " << centroids->cols() << ")" << endl;
+=======
+    //cout << "after the resize, centroids.size = (" << centroids->rows() << ", " << centroids->cols() << ")" << endl;
+>>>>>>> 1b2b26caba73bb875e2d15d4299ff76a85ce8a5b
 
-    if (X.size() != (this->mTemp)->size()) {
+    if (X.rows() != (this->mTemp)->rows()) {
         sizeChanged=true;
         if (resize) {
             (this->mTemp)->resize(X.rows(), D*D);
@@ -53,6 +57,7 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
 
     // If the size changed, update the connectivity
     if (sizeChanged) {
+	/**
         connectivity->clear();
 
         for (int i = 0; i < X.rows(); i++) {
@@ -61,6 +66,7 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
 
             connectivity->push_back(neighs);
         }
+	*/
     }
 }
 
@@ -269,14 +275,10 @@ void MeshInterpolator<D>::evalMonitorOnSimplex(int simplexId, Eigen::Vector<doub
 
     computeBarycentricCoordinates(simplexId, x, bCoords);
 
-    // assert(abs())
-    // cout << "FINISHED running eval" << endl;
-
     // Now, interpolate the monitor function at this point
     Eigen::Vector<int, D+1> pntIds((*F)(simplexId, Eigen::all));
 
     // Accumulate the monitor function in a flattened array
-    // cout << "interp" << endl;
     Eigen::Vector<double,D*D> mFlat;
     mFlat.setZero();
     for (int i = 0; i < D+1; i++) {
@@ -284,11 +286,9 @@ void MeshInterpolator<D>::evalMonitorOnSimplex(int simplexId, Eigen::Vector<doub
     }
 
     // Now place the value in the output array
-    // cout << "Making flat" << endl;
     for (int i = 0; i < D*D; i++) {
         mVal(i/D, i%D) = mFlat(i);
     }
-    // cout << "FINISHED Making flat" << endl;
 }
 
 template <int D>
@@ -368,6 +368,7 @@ int MeshInterpolator<D>::eval(Eigen::Vector<double, D> &x) {//, Eigen::Vector<do
 
 template <int D>
 void MeshInterpolator<D>::findNeighbourSimplices(int simplexId, vector<int> neighIds) {
+    return;
 
     Eigen::Vector<int, D> curSimplexIds((*F)(simplexId, Eigen::all));
     Eigen::Vector<int, D> simplexIds(Eigen::Vector<int, D>::Constant(0));
