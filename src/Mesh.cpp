@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include <algorithm>
 
-#define THREAD_NUM 4
+#define THREAD_NUM 1
 
 using namespace std;
 // using namespace LBFGSpp;

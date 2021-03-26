@@ -39,7 +39,7 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
     }
     //cout << "after the resize, centroids.size = (" << centroids->rows() << ", " << centroids->cols() << ")" << endl;
 
-    if (X.size() != (this->mTemp)->size()) {
+    if (X.rows() != (this->mTemp)->rows()) {
         sizeChanged=true;
         if (resize) {
             (this->mTemp)->resize(X.rows(), D*D);
@@ -53,6 +53,7 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
 
     // If the size changed, update the connectivity
     if (sizeChanged) {
+	/**
         connectivity->clear();
 
         for (int i = 0; i < X.rows(); i++) {
@@ -61,6 +62,7 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
 
             connectivity->push_back(neighs);
         }
+	*/
     }
 }
 
@@ -369,6 +371,7 @@ int MeshInterpolator<D>::eval(Eigen::Vector<double, D> &x) {//, Eigen::Vector<do
 
 template <int D>
 void MeshInterpolator<D>::findNeighbourSimplices(int simplexId, vector<int> neighIds) {
+    return;
 
     Eigen::Vector<int, D> curSimplexIds((*F)(simplexId, Eigen::all));
     Eigen::Vector<int, D> simplexIds(Eigen::Vector<int, D>::Constant(0));

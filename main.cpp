@@ -106,8 +106,8 @@ int main()
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
-  int nx = 80;
-  int ny = 80;
+  int nx = 40;
+  int ny = 40;
   int nPnts = (nx+1)*(ny+1) + nx*ny;
   params["nx"] = nx;
   params["ny"] = ny;
@@ -152,9 +152,16 @@ int main()
   clock_t start = clock();
   int nSteps = 15;
   cout << "Starting the time stepper" << endl;
+  double Ih;
+  double Ihprev=INFINITY;
   for (int i = 0; i < nSteps; i++) {
     solver.step(100, 1e-3);
     cout << "STEP = " << i << endl;
+
+    //if (Ih >= Ihprev) {
+    //  break;
+    //}
+    //Ihprev = Ih;
   }
 
   nSteps = 1;
