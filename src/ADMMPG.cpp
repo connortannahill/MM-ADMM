@@ -54,14 +54,9 @@ double ADMMPG<D>::step(int nIters, double tol) {
     double dtsq = dt*dt;
 
     // Setup the assembly for the step
-    // cout << "Setting hp the assembly" << endl;
     (this->a)->setUp();
-    // cout << "FINISHED Setting hp the assembly" << endl;
-    // assert(false);
 
     // Make prediction for next value of x (sorta)
-    // a->copyX(*x);
-    // a->copyX(*xPrev);
     (this->a)->predictX(dt, *this->xPrev, *this->x, *this->xBar);
 
     *xPrev = *x;
@@ -105,7 +100,7 @@ double ADMMPG<D>::step(int nIters, double tol) {
         // Compute the primal residual. If it is beneath the tolerance, exit
         // double primalRes = ((*a->Dmat)*(*x) - *z).norm();
         // cout << "Primal res = " << primalRes << endl;
-        // cout << "check " << abs((IhPrev - IhCur)/(IhPrev)) << endl;
+        cout << "check " << abs((IhPrev - IhCur)/(IhPrev)) << endl;
         if (i >= 1 && abs((IhPrev - IhCur)/(IhPrev)) < tol) {
             break;
         }
@@ -113,19 +108,11 @@ double ADMMPG<D>::step(int nIters, double tol) {
         IhPrev = IhCur;
     }
 
-    // cout << "time in full loop " << (clock() - admm)/((double) CLOCKS_PER_SEC) << endl;
-    // cout << "time in prox per step " << (prox)/((double) CLOCKS_PER_SEC)/((double)i) << endl;
-    // cout << "time in xUpdate per step " << xUpdate/((double) CLOCKS_PER_SEC)/((double)i) << endl;
-    //cout << "converged in " << i+1 << " iters" << endl;
-
-
     // Update the assembly using the new locations
     start = clock();
     a->updateAfterStep(dt, *xPrev, *x);
 
     return IhCur;
-    // a->printDiff();
-    // cout << "time to update after step " << clock() - start << endl;
 }
 
 template <int D>

@@ -45,6 +45,16 @@ elif mode == 2:
     ax = fig.add_subplot(111, projection='3d')
 
     ax.scatter(x, y, z)
+elif mode == 3:
+    points = np.genfromtxt('boundaryPnts.txt', delimiter=',')
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+
+    ax.scatter(points[:,0], points[:,1], points[:,2])
+
+    # import meshio
+    # meshio.write('out.stl', points, {'tetra': triangles})
+
 
 
 

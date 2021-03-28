@@ -10,7 +10,6 @@
 #include <iostream>
 // #include <LBFGS.h>
 #include <fstream>
-#include <omp.h>
 #include <unistd.h>
 #include <algorithm>
 
@@ -55,7 +54,6 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryM
     this->Ih = new Eigen::VectorXd(F.rows());
 
     //omp_set_thread_num(THREAD_NUM);
-    omp_set_num_threads(THREAD_NUM);
 
     // Create mesh interpolator
     cout << "Creating the mesh interpolator" << endl;
@@ -149,34 +147,36 @@ void Mesh<D>::buildDMatrix() {
 
 
     // Add the spring constraints to the system
-    int pntIds[3];
-    int rowStart0, rowStart1, rowStart2, colStart0, colStart1, colStart2;
+    int pntIds[D+1];
+    int colStarts[D+1];
+    int rowStarts[D+1];
     // Note: the is columns in the matrix transposed
     for (int col = 0; col < F->rows(); col++) {
         // Extract the ids
-        pntIds[0] = (*F)(col, 0);
-        pntIds[1] = (*F)(col, 1);
-        pntIds[2] = (*F)(col, 2);
+        for (int i = 0; i < D+1; i++)  {
+            pntIds[i] = (*F)(col, i);
+        }
 
-        colStart0 = D*(D+1)*col;
-        colStart1 = colStart0+D;
-        colStart2 = colStart1+D;
+        colStarts[0] = D*(D+1)*col;
+        for (int i = 1; i < D+1; i++) {
+            colStarts[i] = colStarts[i-1]+D;
+        }
 
-        rowStart0 = pntIds[0]*D;
-        rowStart1 = pntIds[1]*D;
-        rowStart2 = pntIds[2]*D;
+        for (int i = 0; i < D+1; i++) {
+            rowStarts[i] = pntIds[i]*D;
+        }
 
         // First block
         for (int n = 0; n < D; n++) {
             for (int m = 0; m < D; m++) {
                 if (n == m) {
-                    tripletList.push_back(T(n+rowStart0, m+colStart0, 1.0));
-                    tripletList.push_back(T(n+rowStart1, m+colStart1, 1.0));
-                    tripletList.push_back(T(n+rowStart2, m+colStart2, 1.0));
+                    for (int i = 0; i < D+1; i++) {
+                        tripletList.push_back(T(n+rowStarts[i], m+colStarts[i], 1.0));
+                    }
                 } else {
-                    tripletList.push_back(T(n+rowStart0, m+colStart0, 0.0));
-                    tripletList.push_back(T(n+rowStart1, m+colStart1, 0.0));
-                    tripletList.push_back(T(n+rowStart2, m+colStart2, 0.0));
+                    for (int i = 0; i < D+1; i++) {
+                        tripletList.push_back(T(n+rowStarts[i], m+colStarts[i], 0.0));
+                    }
                 }
             }
         }
@@ -203,8 +203,8 @@ double Mesh<D>::BFGSSimplex(int zId, Eigen::Vector<double,D*(D+1)> &z,
 template <int D>
 double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         Eigen::Vector<double, D*(D+1)> &xi, int nIter) {
-    double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
-    // double h = 1e-10;
+    // double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
+    double h = 1e-10;
     const int MAX_LS = 10;
 
     Eigen::Vector<double, D*(D+1)> zPurt;
@@ -276,19 +276,14 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
     // Copy DXpU address to local pointer
     *this->DXpU = DXpU;
 
-    mapEvaluator->interpolateMonitor(*this->Mon);
+    // mapEvaluator->interpolateMonitor(*this->Mon);
     // mapEvaluator->outputStuff();
     // assert(false);
 
     // Run Newton's method on each simplex
-  //  Eigen::Vector<double, D*(D+1)> z_i;
-  //  Eigen::Vector<double, D*(D+1)> xi_i;
-    //double Ih = 0;
-    // cout << "Into the for" << endl;
-    //Eigen::VectorXd Ih(F->rows());
     Ih->setZero();
 
-    #pragma omp parallel for
+    // #pragma omp parallel for
     for (int i = 0; i < F->rows(); i++) {
         Eigen::Vector<double, D*(D+1)> z_i;
         Eigen::Vector<double, D*(D+1)> xi_i;
@@ -305,7 +300,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
         // Fix any boundary points
         for (int n = 0; n < D+1; n++) {
             if ((*boundaryMask)((*F)(i,n))) {
-	        z.segment(D*(D+1)*i+n*D, D) = x.segment((*F)(i,n)*D, D);
+                z.segment(D*(D+1)*i+n*D, D) = x.segment((*F)(i,n)*D, D);
             }
         }
     }
@@ -358,12 +353,33 @@ void Mesh<D>::updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd
 }
 
 template <int D>
+void Mesh<D>::outputBoundaryNodes(const char *fname) {
+    std::ofstream outFile;
+    outFile.open(fname);
+
+    for (int i = 0; i < Vc->rows(); i++) {
+        if ((*boundaryMask)(i)) {
+            for (int j = 0; j < D-1; j++) {
+                outFile << (*Vc)(i, j) << ", ";
+            }
+            outFile << (*Vc)(i, D-1) << endl;
+
+        }
+    }
+
+    outFile.close();
+}
+
+template <int D>
 void Mesh<D>::outputSimplices(const char *fname) {
     std::ofstream outFile;
     outFile.open(fname);
 
     for (int i = 0; i < F->rows(); i++) {
-        outFile << (*F)(i, 0) << ", " << (*F)(i, 1) << ", " << (*F)(i, 2) << endl;
+        for (int j = 0; j < D; j++) {
+            outFile << (*F)(i, j) << ", ";
+        }
+        outFile << (*F)(i, D) << endl;
     }
 
     outFile.close();
@@ -375,7 +391,10 @@ void Mesh<D>::outputPoints(const char *fname) {
     outFile.open(fname);
 
     for (int i = 0; i < Vp->rows(); i++) {
-        outFile << (*Vp)(i, 0) << ", " << (*Vp)(i, 1) << endl;
+        for (int j = 0; j < D-1; j++) {
+            outFile << (*Vp)(i, j) << ", ";
+        }
+        outFile << (*Vp)(i, D-1) << endl;
     }
 
     outFile.close();

@@ -30,6 +30,7 @@ public:
     Eigen::MatrixXd *monitorEvals;
     MonitorFunction<D> *Mon;
     MeshInterpolator<D> *mapEvaluator;
+    void outputBoundaryNodes(const char *fname);
 
     Eigen::SparseMatrix<double> *M;
     Eigen::SparseMatrix<double> *Dmat;

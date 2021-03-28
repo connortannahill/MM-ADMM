@@ -86,7 +86,7 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     double dFact;
     if (D == 2) {
         dFact = 2.0;
-    } else {
+    } else if (D == 3) {
         dFact = 6.0;
     }
     double absK;
@@ -100,17 +100,20 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     xK /= ((double) D + 1.0);
 
     // Interpolate the monitor function
-    // (*this->M)(xK, M);
-    interp.evalMonitorOnSimplex(zId, xK, M);
+    (*this->M)(xK, M);
+    // interp.evalMonitorOnSimplex(zId, xK, M);
     Eigen::Matrix<double, D, D> Minv(M.inverse());
+    // cout << "Minv = " << M.determinant() << endl;
+    // cout << "Minv = " << Minv.determinant() << endl;
 
     //Eigen::Matrix<double, D+1, D, D> Mevals;
     vector<Eigen::Matrix<double, D, D>> mPre;
     for (int i = 0; i < D+1; i++) {
         Eigen::Matrix<double, D, D> mTemp;
         xTemp = z.segment(i*D, D);
-	interp.evalMonitorOnSimplex(zId, xTemp, mTemp);
-	mPre.push_back(mTemp);
+        (*this->M)(xTemp, mTemp);
+        // interp.evalMonitorOnSimplex(zId, xTemp, mTemp);
+        mPre.push_back(mTemp);
     }
 
     // interp.evalMonitorAtPoint(xK, M);
@@ -139,6 +142,19 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
         // Compute the gradient and Ih
 
         double G = this->G(FJ, detFJ, Minv, xK);
+        // cout << "G = " << G << endl;
+        if (isnan(G)) {
+            cout << "z = " << z.transpose() << endl;
+            cout << "xi = " << z.transpose() << endl;
+            cout << "E = " << E << endl;
+            cout << "FJ = " << FJ << endl;
+            cout << "detE = " << E.determinant() << endl;
+            cout << "M = " << M << endl;
+            cout << "Minv = " << Minv << endl;
+            cout << "detMinv = " << Minv.determinant() << endl;
+            cout << "xK = " << xK.transpose() << endl;
+            assert(false);
+        }
         this->dGdJ(FJ, detFJ, Minv, xK, dGdJ);
         double dGddet = this->dGddet(FJ, detFJ, Minv, xK);
         this->dGdX(FJ, detFJ, Minv, xK, dGdX);
@@ -158,7 +174,7 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
         // (*this->M)(xTemp, Mt0);
         //interp.evalMonitorOnSimplex(zId, xTemp, Mt0);
 	//Mt0 = Mtemp(i, Eigen::all, Eigen::all);
-	Mt0 = mPre.at(i);
+	    Mt0 = mPre.at(i);
         // interp.evalMonitorAtPoint(xTemp, Mt0);
         
         basisComb.setZero();
@@ -167,8 +183,7 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
             //xTemp = z.segment(n*D, D);
             // interp.evalMonitorAtPoint(xTemp, Mtn);
             //interp.evalMonitorOnSimplex(zId, xTemp, Mtn);
-	    Mtn = mPre.at(n);
-            // (*this->M)(xTemp, Mtn);
+	        Mtn = mPre.at(n);
             basisComb += Einv.row(j) * ((dGdM * (Mtn - Mt0)).trace());
             j++;
         }
@@ -195,7 +210,7 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     }
 
     // Now add the constraint regularization
-    Ih += 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
+    // Ih += 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
 
     grad += -w*w*(*DXpU).segment(D*(D+1)*zId, D*(D+1)) + w*w*z;
 

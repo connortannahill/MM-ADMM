@@ -37,11 +37,6 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
             assert(F.size() != centroids->size());
         }
     }
-<<<<<<< HEAD
-    // cout << "after the resize, centroids.size = (" << centroids->rows() << ", " << centroids->cols() << ")" << endl;
-=======
-    //cout << "after the resize, centroids.size = (" << centroids->rows() << ", " << centroids->cols() << ")" << endl;
->>>>>>> 1b2b26caba73bb875e2d15d4299ff76a85ce8a5b
 
     if (X.rows() != (this->mTemp)->rows()) {
         sizeChanged=true;
@@ -184,43 +179,51 @@ void MeshInterpolator<D>::outputStuff() {
 template <int D>
 void MeshInterpolator<D>::computeBarycentricCoordinates(int simplexId, Eigen::Vector<double, D> &pnt,
             Eigen::Vector<double, D+1> &bCoords) {
-
-    // // cout << "Computing the T matrix" << endl;
-    // // bCoords(0) = 
-    // Eigen::Matrix<double,D,D> T;
-    // for (int i = 0; i < D; i++) {
-    //     // cout << "i: " << (*X)((*F)(simplexId,i), Eigen::all).rows() << endl;
-    //     // cout << "3: " << (*X)((*F)(simplexId,D), Eigen::all).rows() << endl;
-    //     T.col(i) = (*X)((*F)(simplexId,i), Eigen::all) - (*X)((*F)(simplexId,D), Eigen::all);
+    // if (D == 3) {
+    //     cout << "DO jnot have 3d case finished" << endl;
+    //     assert(false);
     // }
-    // // // cout << "T matrix finished" << endl;
 
-    // Eigen::Vector<double, D> temp((*X)((*F)(simplexId, D), Eigen::all));
-    // Eigen::Matrix<double,D,D> Tinv(T.inverse());
+    Eigen::Matrix<double,D,D> T;
+    for (int i = 0; i < D; i++) {
+        T.col(i) = (*X)((*F)(simplexId,i), Eigen::all) - (*X)((*F)(simplexId,D), Eigen::all);
+    }
 
-    // // // temp = T.lu().solve(pnt - temp);
-    // // // cout << "Solving for the barycenters" << endl;
-    // // // Eigen::Vector<double, D> temp(T.lu().solve(temp2));
-    // temp = Tinv * (pnt - temp);
+    Eigen::Vector<double, D> temp((*X)((*F)(simplexId, D), Eigen::all));
+    Eigen::Matrix<double,D,D> Tinv(T.inverse());
+
+    // temp = T.lu().solve(pnt - temp);
+    // // // // cout << "Solving for the barycenters" << endl;
+    // // // // Eigen::Vector<double, D> temp(T.lu().solve(temp2));
+    temp = Tinv * (pnt - temp);
 
     // // bCoords.segment(0, D) = ( T.inverse() ) * (pnt - X(F(simplexId,3), Eigen::all));
     // // cout << "computing the bCoords" << endl;
-    // bCoords.segment(0, D) = temp;
-    Eigen::Vector<double, D> x0((*X)((*F)(simplexId,0), Eigen::all));
-    Eigen::Vector<double, D> x1((*X)((*F)(simplexId,1), Eigen::all));
-    Eigen::Vector<double, D> x2((*X)((*F)(simplexId,2), Eigen::all));
+    bCoords.segment(0, D) = temp;
 
-    double det = (x1(1) - x2(1)) * (x0(0) - x2(0)) + (x2(0) - x1(0)) * (x0(1) - x2(1));
-    // cout << "err = " << det - T.determinant() << endl;
-    bCoords(0) = ( (x1(1) - x2(1)) * (pnt(0) - x2(0)) + (x2(0) - x1(0)) * (pnt(1) - x2(1)) ) / det;
-    bCoords(1) = ( (x2(1) - x0(1)) * (pnt(0) - x2(0)) + (x0(0) - x2(0)) * (pnt(1) - x2(1)) ) / det;
-    bCoords(2) = 1.0 - bCoords(1) - bCoords(0);
+    // if (D == 2) {
+    //     Eigen::Vector<double, D> x0((*X)((*F)(simplexId,0), Eigen::all));
+    //     Eigen::Vector<double, D> x1((*X)((*F)(simplexId,1), Eigen::all));
+    //     Eigen::Vector<double, D> x2((*X)((*F)(simplexId,2), Eigen::all));
 
+    //     double det = (x1(1) - x2(1)) * (x0(0) - x2(0)) + (x2(0) - x1(0)) * (x0(1) - x2(1));
+    //     // // cout << "err = " << det - T.determinant() << endl;
+    //     bCoords(0) = ( (x1(1) - x2(1)) * (pnt(0) - x2(0)) + (x2(0) - x1(0)) * (pnt(1) - x2(1)) ) / det;
+    //     bCoords(1) = ( (x2(1) - x0(1)) * (pnt(0) - x2(0)) + (x0(0) - x2(0)) * (pnt(1) - x2(1)) ) / det;
+    //     bCoords(2) = 1.0 - bCoords(1) - bCoords(0);
+    // } else if (D == 3) {
+    //     Eigen::Vector<double, D> x0((*X)((*F)(simplexId,0), Eigen::all));
+    //     Eigen::Vector<double, D> x1((*X)((*F)(simplexId,1), Eigen::all));
+    //     Eigen::Vector<double, D> x2((*X)((*F)(simplexId,2), Eigen::all));
+    //     Eigen::Vector<double, D> x3((*X)((*F)(simplexId,3), Eigen::all));
 
-    // bCoords(D) = 1.0;
-    // for (int i = 0; i < D; i++) {
-    //     bCoords(D) -= bCoords(i);
     // }
+
+
+    bCoords(D) = 1.0;
+    for (int i = 0; i < D; i++) {
+        bCoords(D) -= bCoords(i);
+    }
     // cout << "In compute barycentric coordintes " << bCoords.transpose() << endl;
 
 
