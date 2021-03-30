@@ -7,7 +7,6 @@
 #include <Eigen/Sparse>
 #include <string>
 #include "./src/Mesh.h"
-#include "./src/Assembly.h"
 #include <cstdlib> 
 #include <ctime> 
 // #include <omp.h>
@@ -106,8 +105,8 @@ int main()
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
-  int nx = 80;
-  int ny = 80;
+  int nx = 10;
+  int ny = 10;
   int nPnts = (nx+1)*(ny+1) + nx*ny;
   params["nx"] = nx;
   params["ny"] = ny;

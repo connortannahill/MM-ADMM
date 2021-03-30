@@ -1,16 +1,13 @@
 #include <iostream>
 #include "./src/ADMMPG.h"
-// #include "./src/Mesh2D.h"
 #include "./src/PhaseM.h"
 #include <unordered_map>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <string>
 #include "./src/Mesh.h"
-#include "./src/Assembly.h"
 #include <cstdlib> 
 #include <ctime> 
-// #include <omp.h>
 #include <unistd.h>
  
 using namespace std;
@@ -222,18 +219,18 @@ int main()
   cout << "finished creating the mesh" << endl;
 
   // Create the solver
-  double dt = 0.3;
+  double dt = 0.5;
   cout << "Creating the solver" << endl;
   ADMMPG<D> solver(dt, adaptiveMesh);
   cout << "FINISHED Creating the solver" << endl;
 
   clock_t start = clock();
-  int nSteps = 30; 
+  int nSteps = 20; 
   cout << "Starting the time stepper" << endl;
   double Ih;
   double Ihprev = INFINITY;
   for (int i = 0; i < nSteps; i++) {
-    Ih = solver.step(100, 1e-3);
+    Ih = solver.step(100, 1e-4);
     cout << "STEP = " << i << endl;
     cout << "Ih = " << Ih << endl;
 

@@ -100,8 +100,8 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     xK /= ((double) D + 1.0);
 
     // Interpolate the monitor function
-    (*this->M)(xK, M);
-    // interp.evalMonitorOnSimplex(zId, xK, M);
+    // (*this->M)(xK, M);
+    interp.evalMonitorOnSimplex(zId, xK, M);
     Eigen::Matrix<double, D, D> Minv(M.inverse());
     // cout << "Minv = " << M.determinant() << endl;
     // cout << "Minv = " << Minv.determinant() << endl;
@@ -111,8 +111,8 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     for (int i = 0; i < D+1; i++) {
         Eigen::Matrix<double, D, D> mTemp;
         xTemp = z.segment(i*D, D);
-        (*this->M)(xTemp, mTemp);
-        // interp.evalMonitorOnSimplex(zId, xTemp, mTemp);
+        // (*this->M)(xTemp, mTemp);
+        interp.evalMonitorOnSimplex(zId, xTemp, mTemp);
         mPre.push_back(mTemp);
     }
 

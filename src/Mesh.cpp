@@ -1,5 +1,4 @@
 #include "Mesh.h"
-#include "Assembly.h"
 #include <Eigen/Dense>
 #include <unordered_map>
 #include "MonitorFunction.h"
@@ -280,6 +279,8 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
     // mapEvaluator->outputStuff();
     // assert(false);
 
+    // computeXGradients(x);
+
     // Run Newton's method on each simplex
     Ih->setZero();
 
@@ -293,7 +294,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
 
-        (*Ih)(i) += newtonOptSimplex(i, z_i, xi_i, 2);
+        (*Ih)(i) += newtonOptSimplex(i, z_i, xi_i, 1);
 
         z.segment(D*(D+1)*i, D*(D+1)) = z_i;
 
