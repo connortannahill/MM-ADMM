@@ -224,6 +224,7 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         zPurt = z;
 
         // Compute the Hessian column-wise
+        if (iters == 0) {
         for (int i = 0; i < D*(D+1); i++) {
             // Compute purturbation
             zPurt(i) += h;
@@ -236,6 +237,8 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
             zPurt(i) = z(i);
         }
 
+        }
+
         // Compute the Newton direction
         // p = hess.colPivHouseholderQr().solve(-gradZ);
         p = hess.lu().solve(-gradZ);
@@ -244,7 +247,7 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         // Perform backtracking line search in the Hessian direction (should work if Hess is pos def)
         // int lsIters = 0;
         // double alpha = 1.0;
-        // double c1 = 0.0;
+        // double c1 = 0.1;
         // double c2 = 0.9;
         // Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp, *mapEvaluator);
 
@@ -294,7 +297,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
 
-        (*Ih)(i) += newtonOptSimplex(i, z_i, xi_i, 1);
+        (*Ih)(i) += newtonOptSimplex(i, z_i, xi_i, 3);
 
         z.segment(D*(D+1)*i, D*(D+1)) = z_i;
 
@@ -325,7 +328,7 @@ void Mesh<D>::setUp() {
 
     // Update the mesh in the interpolator.
     // cout << "Updating the mesh" << endl;
-    mapEvaluator->updateMesh((*this->Vc), (*this->F));
+    mapEvaluator->updateMesh((*this->Vp), (*this->F));
     // cout << "FINISHED Updating the mesh" << endl;
     // cout << "inteprolating the monitor function" << endl;
     mapEvaluator->interpolateMonitor(*Mon);

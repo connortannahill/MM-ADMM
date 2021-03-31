@@ -68,7 +68,6 @@ void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixX
                 /* Format: xInd + yInd + zInd */
                 int mid = stride + i + j*nx + k*(nx*ny); 
 
-                cout << "(i, j, k) = (" << i << ", " << j << ", " << k << ")" << endl;
 
                 // Bot tets
                 (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
@@ -175,9 +174,9 @@ int main()
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
-  int nx = 20;
-  int ny = 20;
-  int nz = 20;
+  int nx = 40;
+  int ny = 40;
+  int nz = 40;
   int nPnts = (nx+1)*(ny+1)*(nz+1) + nx*ny*nz;
   params["nx"] = nx;
   params["ny"] = ny;
@@ -219,7 +218,7 @@ int main()
   cout << "finished creating the mesh" << endl;
 
   // Create the solver
-  double dt = 0.5;
+  double dt = 0.1;
   cout << "Creating the solver" << endl;
   ADMMPG<D> solver(dt, adaptiveMesh);
   cout << "FINISHED Creating the solver" << endl;
@@ -230,7 +229,7 @@ int main()
   double Ih;
   double Ihprev = INFINITY;
   for (int i = 0; i < nSteps; i++) {
-    Ih = solver.step(100, 1e-4);
+    Ih = solver.step(100, 1e-3);
     cout << "STEP = " << i << endl;
     cout << "Ih = " << Ih << endl;
 

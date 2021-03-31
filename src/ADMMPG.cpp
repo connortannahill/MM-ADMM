@@ -63,7 +63,7 @@ double ADMMPG<D>::step(int nIters, double tol) {
     *z = (*a->Dmat) * *x;
 
     *x = *xBar;
-    uBar->setZero();
+    // uBar->setZero();
 
     time_t start, prox, xUpdate, admm;
     prox = 0;

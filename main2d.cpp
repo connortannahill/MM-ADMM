@@ -105,8 +105,8 @@ int main()
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
-  int nx = 10;
-  int ny = 10;
+  int nx = 160;
+  int ny = 160;
   int nPnts = (nx+1)*(ny+1) + nx*ny;
   params["nx"] = nx;
   params["ny"] = ny;
