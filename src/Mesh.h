@@ -66,6 +66,8 @@ public:
     void buildDMatrix();
     void buildWMatrix(double w);
     void buildMassMatrix(Eigen::VectorXd &m);
+
+    void outputAfterStep();
 };
 
 #endif

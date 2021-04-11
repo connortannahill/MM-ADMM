@@ -20,17 +20,17 @@ acceptMask = ~(yGtHalf & zGtHalf);
 
 
 
-off = 20;
+off = 10;
 i = 3;
-%tetramesh(T(acceptMask,:),X,'FaceAlpha',1)
-%camorbit(180,0)
+tetramesh(T(acceptMask,:),X,'FaceAlpha',1)
+camorbit(180,0)
 
-n = 41;
+%n = 21;
 %scatter3(X(:,1), X(:,2), X(:,3));
 %plot3(X(:,1),X(:,2),X(:,3),'r+');
 %plot3(C(:,1),C(:,2),C(:,3),'r+');
-inds = off*(n)*(n):(off+1)*(n)*(n);
+%inds = off*(n)*(n):(off+1)*(n)*(n);
 %scatter(X(inds,1), X(inds,2))
 
-DT = delaunay(X(inds,1), X(inds,2));
-triplot(DT,X(inds,1), X(inds,2));
+%DT = delaunay(X(inds,1), X(inds,2));
+%triplot(DT,X(inds,1), X(inds,2));

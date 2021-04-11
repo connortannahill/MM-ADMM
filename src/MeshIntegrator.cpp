@@ -1,16 +1,18 @@
 #include <Eigen/Sparse>
-#include "ADMMPG.h"
+#include "MeshIntegrator.h"
 #include <vector>
 #include <unordered_map>
 #include <string>
 // #include "Assembly.h"
 #include "Mesh.h"
 #include <iostream>
+#include <stdlib.h>
+#include <fstream>
 
 using namespace std;
 
 template <int D>
-ADMMPG<D>::ADMMPG(double dt, Mesh<D> &a) {
+MeshIntegrator<D>::MeshIntegrator(double dt, Mesh<D> &a) {
     this->a = &a;
     this->dt = dt;
 
@@ -18,6 +20,8 @@ ADMMPG<D>::ADMMPG(double dt, Mesh<D> &a) {
     x = new Eigen::VectorXd(D*a.getNPnts());
     xPrev = new Eigen::VectorXd(D*a.getNPnts());
     xBar = new Eigen::VectorXd(D*a.getNPnts());
+
+    this->stepsTaken = 0;
 
     // Assign initial values to x and z (xBar must be assigned at each step)
     a.copyX(*x);
@@ -37,9 +41,7 @@ ADMMPG<D>::ADMMPG(double dt, Mesh<D> &a) {
     t = t + dtsq*((*WD_T * (*(this->a)->W) * (*(this->a)->Dmat)));
 
     // Compute the sparse Cholseky factorization.
-    cout << "Performing sparse cholesky" << endl;
     cgSol = new Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>>(t);
-    cout << "FINISHED Performing sparse cholesky" << endl;
 
     DXpU = new Eigen::VectorXd(*z);
     vec = new Eigen::VectorXd(*z);
@@ -49,7 +51,7 @@ ADMMPG<D>::ADMMPG(double dt, Mesh<D> &a) {
  * Assumes a constant mass matrix for now
 */
 template <int D>
-double ADMMPG<D>::step(int nIters, double tol) {
+double MeshIntegrator<D>::step(int nIters, double tol) {
     // Get xBar, the predicted (explicit) location of the nodes independent of constraints
     double dtsq = dt*dt;
 
@@ -101,22 +103,27 @@ double ADMMPG<D>::step(int nIters, double tol) {
         // double primalRes = ((*a->Dmat)*(*x) - *z).norm();
         // cout << "Primal res = " << primalRes << endl;
         cout << "check " << abs((IhPrev - IhCur)/(IhPrev)) << endl;
+        IhPrev = IhCur;
+
+        string zOutStr = "./gifout/Z"+to_string(stepsTaken)+"-"+to_string(i);
+        cout << zOutStr << endl;
+        outputZ(zOutStr.c_str());
         if (i >= 1 && abs((IhPrev - IhCur)/(IhPrev)) < tol) {
             break;
         }
 
-        IhPrev = IhCur;
     }
 
     // Update the assembly using the new locations
     start = clock();
     a->updateAfterStep(dt, *xPrev, *x);
 
+    stepsTaken++;
     return IhCur;
 }
 
 template <int D>
-ADMMPG<D>::~ADMMPG() {
+MeshIntegrator<D>::~MeshIntegrator() {
     delete x;
     delete xBar;
     delete z;
@@ -127,5 +134,40 @@ ADMMPG<D>::~ADMMPG() {
     delete vec;
 }
 
-template class ADMMPG<2>;
-template class ADMMPG<3>;
+template <int D>
+void MeshIntegrator<D>::outputX(const char *fname) {
+    std::ofstream outFile;
+    outFile.open(fname);
+    cout << "outputting x" << endl;
+    cout << "size of x (" << x->rows() << ", " << x->cols() << endl;
+
+    for (int i = 0; i < x->rows()/D; i++) {
+        for (int j = 0; j < D-1; j++) {
+            outFile << (*x)(i*D+j) << ", ";
+        }
+        outFile << (*x)(i*D+(D-1)) << endl;
+    }
+
+    outFile.close();
+    cout << "FINSIEHD outputting x" << endl;
+}
+
+template <int D>
+void MeshIntegrator<D>::outputZ(const char *fname) {
+    std::ofstream outFile;
+    outFile.open(fname);
+    cout << "outputting z" << endl;
+
+    for (int i = 0; i < z->rows()/D; i++) {
+        for (int j = 0; j < D-1; j++) {
+            outFile << (*z)(i*D+j) << ", ";
+        }
+        outFile << (*z)(i*D+(D-1)) << endl;
+    }
+
+    outFile.close();
+    cout << "finished Z" << endl;
+}
+
+template class MeshIntegrator<2>;
+template class MeshIntegrator<3>;

@@ -426,6 +426,11 @@ Mesh<D>::~Mesh() {
     // delete boundaryMask;
 }
 
+template <int D>
+void Mesh<D>::outputAfterStep() {
+    
+}
+
 // explicit instantiation for each dimension of interest
 template class Mesh<2>;
 template class Mesh<3>;

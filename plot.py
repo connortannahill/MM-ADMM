@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
-import sys
+import sys, copy
 
 mode = int(sys.argv[1])
 
@@ -54,10 +54,136 @@ elif mode == 3:
 
     # import meshio
     # meshio.write('out.stl', points, {'tetra': triangles})
+elif mode == 4:
+    """ Create a gif of the input data """
+    import os, re
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import imageio
+    
+    outdir = './gifout/'
+
+    files = os.listdir(outdir)
+
+    rx = re.compile('X.*')
+    rz = re.compile('Z.*')
+
+    xNames = list(filter(rx.match, files))
+    xNames = [outdir + xName for xName in xNames]
+
+    zNames = list(filter(rz.match, files))
+    zNames = [outdir + zName for zName in zNames]
+
+    print(xNames)
+    print(zNames)
+
+    triangles = np.genfromtxt('triangles.txt', delimiter=',')
+
+    """ Build the image set for the mesh """
+
+    xFiles = []
+
+    # Generating the x plots
+    print('genning x')
+    for xName in xNames:
+        x = np.genfromtxt(xName, delimiter=',')
+
+        triang = mtri.Triangulation(x[:,0], x[:,1], triangles=triangles)
+
+        plt.triplot(triang, color='r', linewidth=0.5)
+
+        nums = [int(i) for i in re.findall(r'\d+', xName)]
+        i = nums[0]
+
+        xFiles.append('X{}.png'.format(i))
+
+        plt.savefig(xFiles[-1])
+
+        plt.clf()
+    print('done genning x')
+
+    
+    # Generating the z plots
+
+    # Building up the connectivity
+    length = triangles.shape[0]
+    triangles = []
+    # triangles[0]
+    for i in range(length):
+       triangles.append([3*i, 3*i+1, 3*i+2]) 
+
+    triangles = np.asarray(triangles)
+
+    zFiles = []
+    for zName in zNames:
+        z = np.genfromtxt(zName, delimiter=',')
+
+        triang = mtri.Triangulation(z[:,0], z[:,1], triangles=triangles)
+
+        plt.triplot(triang, color='b', linewidth=0.5)
+
+        nums = [int(i) for i in re.findall(r'\d+', zName)]
+
+        zFiles.append('Z{0}-{1}.png'.format(nums[0], nums[1]))
+
+        plt.savefig(zFiles[-1])
+
+        plt.clf()
+    
+    # Sort the lists
+    atoi = lambda x: int(x) if x.isdigit() else x
+    natural_key = lambda x: [atoi(c) for c in re.split(r'(\d+)', x)]
+    
+    xFiles.sort(key=natural_key)
+    zFiles.sort(key=natural_key)
+
+    print(xFiles)
+    print(zFiles)
+
+    xFiles_cpy = copy.deepcopy(xFiles)
+    zFiles_cpy = copy.deepcopy(zFiles)
+
+    with imageio.get_writer('meshgif.gif', mode='I') as writer:
+        # for xFile in xFiles:
+        #     image = imageio.imread(xFile)
+        #     writer.append_data(image)
+
+        n = len(xFiles)
+
+        xFile = ''
+        for i in range(n):
+            # Display the x value
+            xFile = xFiles.pop(0)
+            image = imageio.imread(xFile)
+            writer.append_data(image)
+
+            # Extract z sub-list for appropriate step
+            
+            # while (int(re.findall(r'\d+', zFiles[0])[0]) == i):
+            #     # Display the z value
+            #     zFile = zFiles.pop(0)
+            #     image = imageio.imread(zFile)
+            #     writer.append_data(image)
+
+            #     if (len(zFiles) == 0):
+            #         break
+
+        
+        # Write 30 redundant frames
+        for i in range(30):
+            image = imageio.imread(xFile)
+            writer.append_data(image)
+
+    # Remove files
+    for filename in set(xFiles_cpy):
+        os.remove(filename)
+
+    for filename in set(zFiles_cpy):
+        os.remove(filename)
 
 
 
 
 
-
-plt.show()
+if mode != 4:
+    plt.show()

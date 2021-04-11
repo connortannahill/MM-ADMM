@@ -10,11 +10,13 @@
 using namespace std;
 
 template <int D>
-class ADMMPG {
+class MeshIntegrator {
 public:
-    ADMMPG(double dt, Mesh<D> &a);
-    ~ADMMPG();
+    MeshIntegrator(double dt, Mesh<D> &a);
+    ~MeshIntegrator();
     double step(int nIters, double tol);
+    void outputX(const char *fname);
+    void outputZ(const char *fname);
 private:
     Mesh<D> *a;
     Eigen::VectorXd *x;
@@ -28,6 +30,8 @@ private:
     Eigen::VectorXd *DXpU;
     // bool matrixFactored;
     double dt;
+    int stepsTaken;
+
 };
 
 #endif
