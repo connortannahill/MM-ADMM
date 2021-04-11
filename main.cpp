@@ -193,10 +193,10 @@ int main()
     }
     Ihprev = Ih;
 
-    string xOut = "./gifout/X"+to_string(i);
+    // string xOut = "./gifout/X"+to_string(i);
     // string zOut = "./gifout/Z"+to_string(i);
 
-    solver.outputX(xOut.c_str());
+    // solver.outputX(xOut.c_str());
     // solver.outputZ(zOut.c_str());
   }
 

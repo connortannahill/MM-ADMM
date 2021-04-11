@@ -105,9 +105,9 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         cout << "check " << abs((IhPrev - IhCur)/(IhPrev)) << endl;
         IhPrev = IhCur;
 
-        string zOutStr = "./gifout/Z"+to_string(stepsTaken)+"-"+to_string(i);
-        cout << zOutStr << endl;
-        outputZ(zOutStr.c_str());
+        // string zOutStr = "./gifout/Z"+to_string(stepsTaken)+"-"+to_string(i);
+        // cout << zOutStr << endl;
+        // outputZ(zOutStr.c_str());
         if (i >= 1 && abs((IhPrev - IhCur)/(IhPrev)) < tol) {
             break;
         }
@@ -117,6 +117,7 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     // Update the assembly using the new locations
     start = clock();
     a->updateAfterStep(dt, *xPrev, *x);
+    a->printDiff();
 
     stepsTaken++;
     return IhCur;
@@ -138,8 +139,8 @@ template <int D>
 void MeshIntegrator<D>::outputX(const char *fname) {
     std::ofstream outFile;
     outFile.open(fname);
-    cout << "outputting x" << endl;
-    cout << "size of x (" << x->rows() << ", " << x->cols() << endl;
+    // cout << "outputting x" << endl;
+    // cout << "size of x (" << x->rows() << ", " << x->cols() << endl;
 
     for (int i = 0; i < x->rows()/D; i++) {
         for (int j = 0; j < D-1; j++) {
@@ -149,14 +150,14 @@ void MeshIntegrator<D>::outputX(const char *fname) {
     }
 
     outFile.close();
-    cout << "FINSIEHD outputting x" << endl;
+    // cout << "FINSIEHD outputting x" << endl;
 }
 
 template <int D>
 void MeshIntegrator<D>::outputZ(const char *fname) {
     std::ofstream outFile;
     outFile.open(fname);
-    cout << "outputting z" << endl;
+    // cout << "outputting z" << endl;
 
     for (int i = 0; i < z->rows()/D; i++) {
         for (int j = 0; j < D-1; j++) {
@@ -166,7 +167,7 @@ void MeshIntegrator<D>::outputZ(const char *fname) {
     }
 
     outFile.close();
-    cout << "finished Z" << endl;
+    // cout << "finished Z" << endl;
 }
 
 template class MeshIntegrator<2>;
