@@ -36,10 +36,8 @@ public:
     void findNeighbourSimplices(int simplexId, vector<int> neighIds);
     void findNeighbourPoints(int pntId, vector<int> neighPnts);
     void checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, bool resize);
-    void evalMonitorAtPoint(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &mVal);
     void evalMonitorOnSimplex(int simplexId, Eigen::Vector<double,D> &x,
             Eigen::Matrix<double,D,D> &mVal);
-    void outputStuff();
 
     /**
      * Functions and definitions for interfacing with nanoflann KDTree generation.

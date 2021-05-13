@@ -15,8 +15,6 @@
 #define THREAD_NUM 1
 
 using namespace std;
-// using namespace LBFGSpp;
-
 
 void segmentDS(Eigen::VectorXd &x, int xOff, Eigen::Vector2d &z, int num) {
     for (int i = 0; i < num; i++) {
@@ -42,7 +40,180 @@ int Mesh<D>::getNPnts() {
 }
 
 template <int D>
-Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryMask,
+void Mesh<D>::buildFaceList() {
+    // Construct face connections vector
+    faceConnects = new vector<set<int>>(Vc->rows());
+
+    vector<vector<int>> faceTemp;
+    // Append vertices of each boundary face to this vector
+    for (int i = 0; i < F->rows(); i++) {
+        // Take sum of boundary labels
+        int sum = 0;
+        for (int j = 0; j < D+1; j++) {
+            sum += (boundaryMask->at((*F)(i, j)) != NodeType::INTERIOR) ? 1 : 0;
+        }
+
+        // If two of the virtices of this tet is on the face, it is a boundary simplex.
+        if (sum == D) {
+            vector<int> pnts;
+            for (int j = 0; j < D+1; j++) {
+                if (boundaryMask->at((*F)(i, j)) != NodeType::INTERIOR) {
+                    pnts.push_back((*F)(i, j));
+                }
+            }
+
+            faceTemp.push_back(pnts);
+        }
+    }
+
+    // Convert this into an Eigen matrix for consistency.
+    faceList = new Eigen::MatrixXi(faceTemp.size(), D);
+    for (int i = 0; i < faceTemp.size(); i++) {
+        for (int j = 0; j < D; j++) {
+            (*faceList)(i, j) = (faceTemp.at(i)).at(j);
+        }
+    }
+
+    // Build the maps for each point to keep track of boundary face membership
+    for (int i = 0; i < faceList->rows(); i++) {
+        for (int j = 0; j < D; j++) {
+            faceConnects->at((*faceList)(i, j)).insert(i);
+        }
+    }
+}
+
+static int sgn(double val) {
+    return (double(0) < val) - (val < double(0));
+}
+
+template <int D>
+void Mesh<D>::projection2D(int nodeId, Eigen::Vector<double, D> &nodeIn) {
+    if (D == 3) {
+        assert(false);
+    }
+    Eigen::Vector2d node;
+    node(0) = nodeIn(0);
+    node(1) = nodeIn(1);
+
+    Eigen::Vector2d minNodeProj = node;
+
+    double minDist = INFINITY;
+    set<int> faceIds(faceConnects->at(nodeId));
+
+    for (auto faceId = faceIds.begin(); faceId != faceIds.end(); ++faceId) {
+        Eigen::Vector<int, D> pntIds((*faceList)(*faceId, Eigen::all));
+        Eigen::Vector2d x1((*Vp)(pntIds(0), Eigen::all));
+        Eigen::Vector2d x2((*Vp)(pntIds(1), Eigen::all));
+
+        // Edge vector
+        Eigen::Vector2d u = x2 - x1;
+
+        // x - x1
+        Eigen::Vector2d w = node - x1;
+
+        // Projection from first edge point to line
+        Eigen::Vector2d proj = (u.dot(w) / u.dot(u)) * u;
+
+        // Compute the distance of the point to the projection
+        double dist = (proj - w).norm();
+
+        // Compute t
+        double t = proj.norm() / u.norm();
+
+        // If the distance is the least, and the projected point is within the segment,
+        // keep track.
+        if (dist < minDist && sgn(u(0)) == sgn(proj(0)) && sgn(u(1)) == sgn(proj(1)) &&
+                t > 0.0 && t < 1.0) {
+            minDist = dist;
+            minNodeProj = (1.0 - t)*x1 + t*x2;
+        } else if (!(sgn(u(0)) == sgn(proj(0)) && sgn(u(1)) == sgn(proj(1)))) {
+            dist = (x1 - node).norm();
+            if (dist < minDist) {
+                minDist = dist;
+                minNodeProj = x1;
+            }
+        } else if (t > 1.0) {
+            dist = (x2 - node).norm();
+            if (dist < minDist) {
+                minDist = dist;
+                minNodeProj = x2;
+            }
+        }
+    }
+    for (int i = 0; i < D; i++) {
+        nodeIn(i) = minNodeProj(i); 
+    }
+}
+
+template <int D>
+void Mesh<D>::projection3D(int nodeId, Eigen::Vector<double, D> &nodeIn) {
+    if (D == 2) {
+        assert(false);
+    }
+    Eigen::Vector3d node;
+    node(0) = nodeIn(0);
+    node(1) = nodeIn(1);
+    node(2) = nodeIn(2);
+
+    Eigen::Vector3d b;
+    Eigen::Vector3d minNodeProj;
+    bool projWorked = false;
+
+    const double CHECK_EPS = 1e-10;
+
+    double minDist = INFINITY;
+    set<int> faceIds(faceConnects->at(nodeId));
+
+    for (auto nodePnt = faceIds.begin(); nodePnt != faceIds.end(); ++nodePnt) {
+        Eigen::Vector<int, D> pntIds((*faceList)(*nodePnt, Eigen::all));
+        Eigen::Vector3d pnt0((*Vp)(pntIds(0), Eigen::all));
+        Eigen::Vector3d pnt1((*Vp)(pntIds(1), Eigen::all));
+        Eigen::Vector3d pnt2((*Vp)(pntIds(2), Eigen::all));
+
+        Eigen::Vector3d q = pnt0;
+        Eigen::Vector3d u = pnt1 - q;
+        Eigen::Vector3d v = pnt2 - q;
+        Eigen::Vector3d n = (u.cross(v));
+
+        double temp = 1.0 / n.dot(n);
+        Eigen::Vector3d w = node - q;
+
+        b(2) = (u.cross(w)).dot(n) * temp;
+        b(1) = (w.cross(v)).dot(n) * temp;
+        b(0) = 1.0 - b(1) - b(2);
+
+        Eigen::Vector3d nodeProj = b(0)*(*Vp)(pntIds(0), Eigen::all)
+            + b(1)*(*Vp)(pntIds(1), Eigen::all)
+            + b(2)*(*Vp)(pntIds(2), Eigen::all);
+
+        double dist = (nodeProj - node).norm();
+        if (dist < minDist && b(0) >= CHECK_EPS && b(1) >= CHECK_EPS && b(2) >= CHECK_EPS) {
+            minDist = dist;
+            minNodeProj = nodeProj;
+            projWorked = true;
+        }
+    }
+
+    // If the projection is on the edge, good. Otherwise, the node does not move.
+    if (projWorked) {
+        for (int i = 0; i < D; i++) {
+            nodeIn(i) = minNodeProj(i); 
+        }
+    }
+}
+
+
+template <int D>
+void Mesh<D>::projectOntoBoundary(int nodeId, Eigen::Vector<double, D> &node) {
+    if (D == 2) {
+        projection2D(nodeId, node);
+    } else if (D == 3) {
+        projection3D(nodeId, node);
+    }
+}
+
+template <int D>
+Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> &boundaryMask,
             MonitorFunction<D> *Mon, double rho, double tau) {
 
     this->Vc = &X;
@@ -52,14 +223,13 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryM
 
     this->Ih = new Eigen::VectorXd(F.rows());
 
-    //omp_set_thread_num(THREAD_NUM);
+    // faceList = new Eigen::MatrixXd();
+    buildFaceList();
 
     // Create mesh interpolator
-    cout << "Creating the mesh interpolator" << endl;
     mapEvaluator = new MeshInterpolator<D>();
     mapEvaluator->updateMesh((*this->Vc), (*this->F));
     mapEvaluator->interpolateMonitor(*Mon);
-    cout << "FINSIEHD Creating the mesh interpolator" << endl;
 
     this->nPnts = X.rows();
 
@@ -72,23 +242,17 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryM
     monitorEvals = new Eigen::MatrixXd(X.rows(), D*D);
 
     // Build the mass matrix
-    cout << "bulding the mass matrix" << endl;
     Eigen::VectorXd m(Eigen::VectorXd::Constant(nPnts*D, tau));
     buildMassMatrix(m);
-    cout << "FINISHED bulding the mass matrix" << endl;
 
-    cout << "bulding the D matrix" << endl;
     buildDMatrix();
     this->w = sqrt(rho);
     buildWMatrix(this->w);
-    cout << "FINISHED bulding the D matrix" << endl;
 
     DXpU = new Eigen::VectorXd((*Dmat)*(m));
 
     // Create the functional for each vertex
-    cout << "bulding the functional" << endl;
     I_wx = new HuangFunctional<D>(*Vc, *Vp, *(this->F), *DXpU, Mon, this->w, 0.0, 0.0);
-    cout << "FINSIEHD bulding the functional" << endl;
 }
 
 // TODO: add external forces (would be handled in this object, as the meshing object should control its own props)
@@ -126,24 +290,13 @@ void Mesh<D>::buildWMatrix(double w) {
 
 template <int D>
 void Mesh<D>::buildDMatrix() {
-    // // Temp matrix (we insert the transpose) and we keep it this way for storage reasons
+    // Temp matrix (we insert the transpose) and we keep it this way for storage reasons
     Eigen::SparseMatrix<double> Dt(D*Vp->rows(), D*(D+1)*F->rows());
 
-    // // Reserve the memory
-    // Dt.reserve(Eigen::VectorXi::Constant(D*(D+1)*F->rows(), 1));
 
     typedef Eigen::Triplet<double> T;
     std::vector<T> tripletList;
     tripletList.reserve(D*(D+1)*F->rows());
-    // for(...)
-    // {
-    // // ...
-    // tripletList.push_back(T(i,j,v_ij));
-    // }
-    // SparseMatrixType mat(rows,cols);
-    // mat.setFromTriplets(tripletList.begin(), tripletList.end());
-    // mat is ready to go!
-
 
     // Add the spring constraints to the system
     int pntIds[D+1];
@@ -201,48 +354,54 @@ double Mesh<D>::BFGSSimplex(int zId, Eigen::Vector<double,D*(D+1)> &z,
 */
 template <int D>
 double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
-        Eigen::Vector<double, D*(D+1)> &xi, int nIter) {
-    // double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
-    double h = 1e-10;
-    const int MAX_LS = 10;
+        Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol) {
+    double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
+    // const int MAX_LS = 10;
 
     Eigen::Vector<double, D*(D+1)> zPurt;
     Eigen::Vector<double, D*(D+1)> gradZ;
     Eigen::Vector<double, D*(D+1)> gradZPurt;
     Eigen::Matrix<double, D*(D+1), D*(D+1)> hess;
+    Eigen::Matrix<double, D*(D+1), D*(D+1)> hessInv;
     Eigen::Vector<double, D*(D+1)> p;
     Eigen::Vector<double, D*(D+1)> gradTemp;
 
     double Ix;
+    double IxPrev = INFINITY;
     double Ipurt;
 
     for (int iters = 0; iters < nIter; iters++) {
-        // cout << "Running block grad" << endl;
         Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator);
-        // assert(false);
+
+        if (iters != 0 && (abs((IxPrev - Ix) / IxPrev) < tol)) {
+            break;
+        }
 
         zPurt = z;
 
-        // Compute the Hessian column-wise
+        // Compute the Hessian column-wise (we use fixed Hessians for all
+        // iterations other than the first)
         if (iters == 0) {
-        for (int i = 0; i < D*(D+1); i++) {
-            // Compute purturbation
-            zPurt(i) += h;
+            for (int i = 0; i < D*(D+1); i++) {
+                // Compute purturbation
+                zPurt(i) += h;
 
-            // Compute gradient at purturbed point
-            Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator);
+                // Compute gradient at purturbed point
+                Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator);
 
-            hess.col(i) = (gradZPurt - gradZ)/h;
+                hess.col(i) = (gradZPurt - gradZ)/h;
 
-            zPurt(i) = z(i);
-        }
+                zPurt(i) = z(i);
+            }
 
+            hessInv = hess.inverse();
         }
 
         // Compute the Newton direction
-        // p = hess.colPivHouseholderQr().solve(-gradZ);
-        p = hess.lu().solve(-gradZ);
-        zPurt = z + p;
+        // p = hess.lu().solve(-gradZ);
+        p = hessInv*(-gradZ);
+        z += p;
+        // zPurt = z + p;
 
         // Perform backtracking line search in the Hessian direction (should work if Hess is pos def)
         // int lsIters = 0;
@@ -261,13 +420,12 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         //     lsIters++;
         // }
 
+        // z = zPurt;
         // if (lsIters == MAX_LS) {
         //     break;
-        // } else {
-            z = zPurt;
         // }
+        IxPrev = Ix;
     }
-    // assert(false);
 
     return Ix;
 
@@ -291,26 +449,47 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
     for (int i = 0; i < F->rows(); i++) {
         Eigen::Vector<double, D*(D+1)> z_i;
         Eigen::Vector<double, D*(D+1)> xi_i;
+        Eigen::Vector<double, D> pnt;
         for (int n = 0; n < D+1; n++) {
-            xi_i.segment(n*D, D) = (*Vc)((*F)(i,n), Eigen::all);
+            pnt = (*Vc)((*F)(i,n), Eigen::all);
+            
+            for (int l = 0; l < D; l++) {
+                xi_i(n*D+l) = pnt(l);
+            }
+            // xi_i.segment(n*D, D) = (*Vc)((*F)(i,n), Eigen::all);
         }
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
+        // for (int l = 0; l < D*(D+1); l++) {
+        //     z_i(l) = z(D*(D+1)*i+l);
+        // }
 
-        (*Ih)(i) += newtonOptSimplex(i, z_i, xi_i, 3);
+        (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 1, 1e-6);
 
-        z.segment(D*(D+1)*i, D*(D+1)) = z_i;
+        // z.segment(D*(D+1)*i, D*(D+1)) = z_i;
+        for (int l = 0; l < D*(D+1); l++) {
+            z(D*(D+1)*i+l) = z_i(l);
+        }
 
-        // Fix any boundary points
+
+        // Moving boundary points
+        Eigen::Vector<double, D> zTemp;
         for (int n = 0; n < D+1; n++) {
-            if ((*boundaryMask)((*F)(i,n))) {
+            if (boundaryMask->at((*F)(i,n)) == NodeType::BOUNDARY_FREE) {
+                zTemp = z.segment(D*(D+1)*i+n*D, D);
+                projectOntoBoundary((*F)(i,n), zTemp);
+                for (int l = 0; l < D; l++) {
+                    z(D*(D+1)*i+n*D + l) = zTemp(l);
+                }
+                // z.segment(D*(D+1)*i+n*D, D) = zTemp;
+            } else if (boundaryMask->at((*F)(i,n)) == NodeType::BOUNDARY_FIXED) { 
                 z.segment(D*(D+1)*i+n*D, D) = x.segment((*F)(i,n)*D, D);
             }
         }
+
     }
 
     return Ih->sum();
-    // cout << "Ih = " << Ih << endl;
 }
 
 template <int D>
@@ -362,7 +541,7 @@ void Mesh<D>::outputBoundaryNodes(const char *fname) {
     outFile.open(fname);
 
     for (int i = 0; i < Vc->rows(); i++) {
-        if ((*boundaryMask)(i)) {
+        if (boundaryMask->at(i) != INTERIOR) {
             for (int j = 0; j < D-1; j++) {
                 outFile << (*Vc)(i, j) << ", ";
             }
@@ -412,9 +591,6 @@ void Mesh<D>::printDiff() {
 template <int D>
 Mesh<D>::~Mesh() {
 
-    // delete Vc;
-    // delete Vp;
-    // delete F;
     delete DXpU;
     delete Ih;
 
@@ -422,13 +598,10 @@ Mesh<D>::~Mesh() {
     delete Dmat;
     delete W;
 
-    delete I_wx;
-    // delete boundaryMask;
-}
+    delete faceList;
+    delete faceConnects;
 
-template <int D>
-void Mesh<D>::outputAfterStep() {
-    
+    delete I_wx;
 }
 
 // explicit instantiation for each dimension of interest

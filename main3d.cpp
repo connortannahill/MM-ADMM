@@ -1,5 +1,5 @@
 #include <iostream>
-#include "./src/ADMMPG.h"
+#include "./src/MeshIntegrator.h"
 #include "./src/PhaseM.h"
 #include <unordered_map>
 #include <Eigen/Dense>
@@ -14,7 +14,7 @@ using namespace std;
 #define D 3
 
 void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixXd *Vc,
-      Eigen::MatrixXi *F, Eigen::VectorXi *boundaryMask) {
+      Eigen::MatrixXi *F, vector<Mesh<3>::NodeType> *boundaryMask) {
     int nx = (int) params["nx"];
     int ny = (int) params["ny"];
     int nz = (int) params["nz"];
@@ -29,7 +29,6 @@ void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixX
     double hx = (xb - xa)/((double)nx);
     double hy = (yb - ya)/((double)ny);
     double hz = (zb - za)/((double)nz);
-    cout << "Making pnts" << endl;
 
     // Append the cube vertices
     int off = 0;
@@ -57,7 +56,6 @@ void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixX
             }
         }
     }
-    cout << "FINISEDH Making pnts" << endl;
 
     int stride = (nx+1) * (ny+1) * (nz+1);
 
@@ -150,7 +148,9 @@ void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixX
         }
 
     }
-    boundaryMask->setZero();
+    for (int i = 0; i < boundaryMask->size(); i++) {
+        boundaryMask->at(i) = Mesh<3>::NodeType::INTERIOR;
+    }
     for (int k = 0; k < nz+1; k++) {
         for (int i = 0; i < (nx+1)*(ny+1); i++) {
             int iOff = i / (nx+1);
@@ -158,9 +158,30 @@ void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixX
             bool boundaryPnt = (iOff == 0) || (iOff == nx)
                 || (jOff == 0) || (jOff == ny) || (k == 0)
                 || (k == nz);
+            int off = k*(nx+1)*(ny+1) + i;
 
             if (boundaryPnt) {
-                (*boundaryMask)(i + k*(nx+1)*(ny+1)) = 1;
+                boundaryMask->at(off) = Mesh<3>::NodeType::BOUNDARY_FREE;
+            }
+
+            // Good code
+            bool corner = (iOff == 0 && jOff == 0)
+                        || (iOff == nx && jOff == 0)
+                        || (iOff == 0 && jOff == ny)
+                        || (iOff == nx && jOff == ny)  // end up
+                        || (iOff == 0 && k == 0)
+                        || (iOff == nx && k == 0)
+                        || (iOff == 0 && k == nz)
+                        || (iOff == nx && k == nz)  // end vertical
+                        || (k == 0 && jOff == 0)
+                        || (k == nz && jOff == 0)
+                        || (k == 0 && jOff == ny)
+                        || (k == nz && jOff == ny); // end horizontal
+
+
+            // Fix the corners
+            if (corner) {
+                boundaryMask->at(off) = Mesh<3>::NodeType::BOUNDARY_FIXED;
             }
         }
     }
@@ -183,7 +204,7 @@ int main()
   params["nz"] = nz;
   params["nPnts"] = (params["nx"]+1)*(params["ny"]+1)*(params["nz"]+1);
   params["d"] = D;
-  double rho = 0.1;
+  double rho = 10.0;
   params["rho"] = rho;
 
   params["xa"] = 0.0;
@@ -199,7 +220,7 @@ int main()
 
   Eigen::MatrixXd *Vc = nullptr;
   Eigen::MatrixXi *F = nullptr;
-  Eigen::VectorXi *boundaryMask = nullptr;
+  vector<Mesh<3>::NodeType> *boundaryMask = nullptr;
 
   // Generate the initial mesh
   Vc = new Eigen::MatrixXd(nPnts, D);
@@ -207,7 +228,7 @@ int main()
 
   cout << "Size of the matrix F " << F->rows() << endl;
 //   assert(false);
-  boundaryMask = new Eigen::VectorXi(Vc->rows());
+  boundaryMask = new vector<Mesh<3>::NodeType>(Vc->rows());
 
   cout << "gen init mesh" << F->rows() << endl;
   generateUniformRectMesh(params, Vc, F, boundaryMask);
@@ -218,13 +239,13 @@ int main()
   cout << "finished creating the mesh" << endl;
 
   // Create the solver
-  double dt = 0.1;
+  double dt = 0.05;
   cout << "Creating the solver" << endl;
-  ADMMPG<D> solver(dt, adaptiveMesh);
+  MeshIntegrator<D> solver(dt, adaptiveMesh);
   cout << "FINISHED Creating the solver" << endl;
 
   clock_t start = clock();
-  int nSteps = 20; 
+  int nSteps = 50; 
   cout << "Starting the time stepper" << endl;
   double Ih;
   double Ihprev = INFINITY;

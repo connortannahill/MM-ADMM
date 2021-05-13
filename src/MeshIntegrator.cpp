@@ -103,21 +103,22 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         // double primalRes = ((*a->Dmat)*(*x) - *z).norm();
         // cout << "Primal res = " << primalRes << endl;
         cout << "check " << abs((IhPrev - IhCur)/(IhPrev)) << endl;
-        IhPrev = IhCur;
 
         // string zOutStr = "./gifout/Z"+to_string(stepsTaken)+"-"+to_string(i);
         // cout << zOutStr << endl;
         // outputZ(zOutStr.c_str());
         if (i >= 1 && abs((IhPrev - IhCur)/(IhPrev)) < tol) {
+        // if (primalRes < tol) {
             break;
         }
+        IhPrev = IhCur;
 
     }
 
     // Update the assembly using the new locations
     start = clock();
     a->updateAfterStep(dt, *xPrev, *x);
-    a->printDiff();
+    // a->printDiff();
 
     stepsTaken++;
     return IhCur;

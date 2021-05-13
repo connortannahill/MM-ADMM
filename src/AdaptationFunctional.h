@@ -4,6 +4,7 @@
 #include <Eigen/Dense>
 #include "MonitorFunction.h"
 #include "MeshInterpolator.h"
+#include <Eigen/StdVector>
 
 template <int D=-1>
 class AdaptationFunctional {
@@ -13,6 +14,7 @@ protected:
     const Eigen::VectorXd *DXpU;
     double w;
     MonitorFunction<D> *M;
+    vector<Eigen::Matrix<double, D, D>> *mPre;
 
     virtual double G(Eigen::Matrix<double,D,D> &J, double det,
                         Eigen::Matrix<double,D,D> &M,

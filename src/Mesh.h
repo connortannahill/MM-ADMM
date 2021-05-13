@@ -6,13 +6,22 @@
 #include "MeshInterpolator.h"
 #include "PhaseM.h"
 #include <Eigen/Sparse>
+#include <vector>
+#include <set>
+
+using namespace std;
 
 template <int D=-1>
 class Mesh {
 public:
+    enum NodeType {
+        BOUNDARY_FIXED,
+        BOUNDARY_FREE,
+        INTERIOR
+    };
     // Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryMask,
     //         MonitorFunction<D> *M, unordered_map<string, double> params);
-    Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryMask,
+    Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
             MonitorFunction<D> *M, double rho, double tau);
     void evalMonitorAtPoint(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &mVal);
     void outputSimplices(const char *fname);
@@ -25,12 +34,13 @@ public:
     Eigen::MatrixXd *Vp;
     Eigen::MatrixXi *F;
     Eigen::VectorXd *Ih;
-    Eigen::VectorXi *boundaryMask;
+    vector<NodeType> *boundaryMask;
     Eigen::VectorXd *DXpU;
     Eigen::MatrixXd *monitorEvals;
     MonitorFunction<D> *Mon;
     MeshInterpolator<D> *mapEvaluator;
     void outputBoundaryNodes(const char *fname);
+    Eigen::FullPivLU<Eigen::Matrix<double, D*(D+1), D*(D+1)>> *lu;
 
     Eigen::SparseMatrix<double> *M;
     Eigen::SparseMatrix<double> *Dmat;
@@ -38,18 +48,21 @@ public:
 
     int a;
     double tau;
-    // void prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DxpU, Eigen::VectorXd &z) override;
-    // void updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x) override;
-    // void copyX(Eigen::VectorXd &tar) override;
-    // void predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) override;
     double prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DxpU, Eigen::VectorXd &z);
     void updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x);
     void predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar);
     double newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
-            Eigen::Vector<double, D*(D+1)> &xi, int nIter);
+            Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol);
     void printDiff();
     double BFGSSimplex(int zId, Eigen::Vector<double,D*(D+1)> &z,
         Eigen::Vector<double,D*(D+1)> &xi, int nIter);
+
+    Eigen::MatrixXi *faceList;
+    vector<set<int>> *faceConnects;
+    void buildFaceList();
+    void projectOntoBoundary(int nodeId, Eigen::Vector<double, D> &node);
+    void projection2D(int nodeId, Eigen::Vector<double, D> &node);
+    void projection3D(int nodeId, Eigen::Vector<double, D> &node);
     
     AdaptationFunctional<D> *I_wx;
 
@@ -60,14 +73,9 @@ public:
     double w;
     int nPnts;
 
-    // void buildMassMatrix(Eigen::VectorXd &m) override;
-    // void buildDMatrix() override;
-    // void buildWMatrix(double w) override;
     void buildDMatrix();
     void buildWMatrix(double w);
     void buildMassMatrix(Eigen::VectorXd &m);
-
-    void outputAfterStep();
 };
 
 #endif

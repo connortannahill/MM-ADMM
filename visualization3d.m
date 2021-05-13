@@ -15,15 +15,12 @@ zGtHalf = C(:, 3) > 0.5;
 acceptMask = ~(~yGtHalf & zGtHalf);%~(xGtHalf & zGtHalf) & ~(yGtHalf;
 acceptMask = ~(yGtHalf & zGtHalf);
 
-%C(1,:)
-
-
-
 
 off = 10;
 i = 3;
 tetramesh(T(acceptMask,:),X,'FaceAlpha',1)
-camorbit(180,0)
+%tetramesh(T(acceptMask,:),X,'FaceAlpha',1)
+%camorbit(180,0)
 
 %n = 21;
 %scatter3(X(:,1), X(:,2), X(:,3));

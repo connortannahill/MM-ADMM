@@ -16,7 +16,7 @@ using namespace std;
 #define D 2
 
 void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixXd *Vc,
-      Eigen::MatrixXi *F, Eigen::VectorXi *boundaryMask) {
+      Eigen::MatrixXi *F, vector<Mesh<2>::NodeType> *boundaryMask) {
     int nx = (int) params["nx"];
     int ny = (int) params["ny"];
 
@@ -82,43 +82,58 @@ void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixX
         }
     }
 
+    for (int i = 0; i < boundaryMask->size(); i++) {
+         boundaryMask->at(i) = Mesh<2>::NodeType::INTERIOR;
+    }
+
     for (int i = 0; i < (nx+1)*(ny+1); i++) {
         int iOff = i % (nx+1);
         int jOff = i / (ny+1);
         bool boundaryPnt = (iOff == 0) || (iOff == nx) || (jOff == 0) || (jOff == ny);
 
         if (boundaryPnt) {
-            (*boundaryMask)(i) = 1;
+            // boundaryMask->at(i) = Mesh<2>::NodeType::BOUNDARY_FIXED;
+            boundaryMask->at(i) = Mesh<2>::NodeType::BOUNDARY_FREE;
+        } else {
+            boundaryMask->at(i) = Mesh<2>::NodeType::INTERIOR;
+        }
+
+
+        // Fix the corners
+        if ((iOff == 0 && jOff == 0) || (iOff == nx && jOff == 0) 
+                || (iOff == 0 && jOff == ny) || (iOff == nx && jOff == ny)) {
+            boundaryMask->at(i)  = Mesh<2>::NodeType::BOUNDARY_FIXED;
         }
     }
+    // cout << "numBound = " << numBound << endl;
 
-    // Now that we have the points on a grid, map them to a circle
-    for (int i = 0; i < Vc->rows(); i++) {
-        Eigen::Vector<double, D> temp;// = (*Vc)(i, Eigen::all);
+    // // Now that we have the points on a grid, map them to a circle
+    // for (int i = 0; i < Vc->rows(); i++) {
+    //     Eigen::Vector<double, D> temp;// = (*Vc)(i, Eigen::all);
 
-        temp(0) = -1 + 2*(*Vc)(i, 0);
-        temp(1) = -1 + 2*(*Vc)(i, 1);
+    //     temp(0) = -1 + 2*(*Vc)(i, 0);
+    //     temp(1) = -1 + 2*(*Vc)(i, 1);
 
-        (*Vc)(i, Eigen::all) = temp;
-    }
+    //     (*Vc)(i, Eigen::all) = temp;
+    // }
 
-    for (int i = 0; i < Vc->rows(); i++) {
-        Eigen::Vector<double, D> temp;// = (*Vc)(i, Eigen::all);
+    // for (int i = 0; i < Vc->rows(); i++) {
+    //     Eigen::Vector<double, D> temp;// = (*Vc)(i, Eigen::all);
 
-        temp(0) = ((*Vc)(i, 0))*sqrt(1 - pow(((*Vc)(i, 1)), 2.0)/2.0);
-        temp(1) = ((*Vc)(i, 1))*sqrt(1 - pow(((*Vc)(i, 0)), 2.0)/2.0);
+    //     temp(0) = ((*Vc)(i, 0))*sqrt(1 - pow(((*Vc)(i, 1)), 2.0)/2.0);
+    //     temp(1) = ((*Vc)(i, 1))*sqrt(1 - pow(((*Vc)(i, 0)), 2.0)/2.0);
 
-        (*Vc)(i, Eigen::all) = temp;
-    }
+    //     (*Vc)(i, Eigen::all) = temp;
+    // }
 
-    for (int i = 0; i < Vc->rows(); i++) {
-        Eigen::Vector<double, D> temp;// = (*Vc)(i, Eigen::all);
+    // for (int i = 0; i < Vc->rows(); i++) {
+    //     Eigen::Vector<double, D> temp;// = (*Vc)(i, Eigen::all);
 
-        temp(0) = (1 + (*Vc)(i, 0))/2.0;
-        temp(1) = (1 + (*Vc)(i, 1))/2.0;
+    //     temp(0) = (1 + (*Vc)(i, 0))/2.0;
+    //     temp(1) = (1 + (*Vc)(i, 1))/2.0;
 
-        (*Vc)(i, Eigen::all) = temp;
-    }
+    //     (*Vc)(i, Eigen::all) = temp;
+    // }
 
 }
 
@@ -126,11 +141,7 @@ int main()
 {
   srand(static_cast<unsigned int>(std::time(nullptr)));
   // Specify the monitor function
-  // PhaseM<2> phaseM;
   PhaseM<2> *M = new PhaseM<2>();
-  // MonitorFunction<2> *M = (MonitorFunction<2>*) new PhaseM<2>();
-  // PhaseM M();
- // std::cout << "Number of available threads: " << omp_get_num_thread() << std::endl;
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
@@ -139,9 +150,8 @@ int main()
   int nPnts = (nx+1)*(ny+1) + nx*ny;
   params["nx"] = nx;
   params["ny"] = ny;
-  params["nPnts"] = (params["nx"]+1)*(params["ny"]+1);
   params["d"] = D;
-  double rho = 50;
+  double rho = 30;
   params["rho"] = rho;
 
   params["xa"] = 0.0;
@@ -150,41 +160,34 @@ int main()
   params["yb"] = 1.0;
   params["theta"] = 0.5;
   params["p"] = 1;
-  double tau = 1e-1;
+  double tau = 1e-3;
   params["tau"] = tau;
 
   Eigen::MatrixXd *Vc = nullptr;
   Eigen::MatrixXi *F = nullptr;
-  Eigen::VectorXi *boundaryMask = nullptr;
+  vector<Mesh<2>::NodeType> *boundaryMask = nullptr;
 
   // Generate the initial mesh
   Vc = new Eigen::MatrixXd(nPnts, D);
   F = new Eigen::MatrixXi(4*nx*ny, D+1);
 
-  cout << "Size of the matrix F " << F->rows() << endl;
-//   assert(false);
-  boundaryMask = new Eigen::VectorXi(Vc->rows());
+  boundaryMask = new vector<Mesh<2>::NodeType>(Vc->rows());
 
   generateUniformRectMesh(params, Vc, F, boundaryMask);
 
-  cout << "Creating the mesh" << endl;
   Mesh<D> adaptiveMesh(*Vc, *F, *boundaryMask, M, rho, tau);
-  cout << "finished creating the mesh" << endl;
 
   // Create the solver
-  double dt = 0.005;
-  cout << "Creating the solver" << endl;
+  double dt = 0.5;
   MeshIntegrator<D> solver(dt, adaptiveMesh);
-  cout << "FINISHED Creating the solver" << endl;
 
   clock_t start = clock();
-  int nSteps = 50; 
-  cout << "Starting the time stepper" << endl;
+  int nSteps = 100; 
   double Ih;
   double Ihprev = INFINITY;
-  for (int i = 0; i < nSteps; i++) {
-    Ih = solver.step(100, 1e-4);
-    cout << "STEP = " << i << endl;
+  int i;
+  for (i = 0; i < nSteps; i++) {
+    Ih = solver.step(100, 1e-3);
     cout << "Ih = " << Ih << endl;
 
     if (Ih >= Ihprev) {
@@ -192,17 +195,12 @@ int main()
         break;
     }
     Ihprev = Ih;
-
-    // string xOut = "./gifout/X"+to_string(i);
-    // string zOut = "./gifout/Z"+to_string(i);
-
-    // solver.outputX(xOut.c_str());
-    // solver.outputZ(zOut.c_str());
   }
 
   nSteps = 1;
   cout << "Took " << ((double)clock() - (double)start)
-        / ((double)CLOCKS_PER_SEC) / ((double)nSteps) << " per steps" << endl;
+        / ((double)CLOCKS_PER_SEC) << " seconds" << endl;
+    cout << "Took " << i << " iters" << endl;
 
   adaptiveMesh.outputPoints("points.txt");
   adaptiveMesh.outputSimplices("triangles.txt");

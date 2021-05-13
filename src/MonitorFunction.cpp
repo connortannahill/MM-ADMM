@@ -22,32 +22,15 @@ void MonitorFunction<D>::evaluateAtVertices(Eigen::MatrixXd &X, Eigen::MatrixXi 
     for (int vId = 0; vId < X.rows(); vId++) {
         // Evaluate the montitor function at this vertex
         monTemp.setZero();
-        // cout << "extracting the point" << endl;
         xTemp = X.row(vId);
-        // cout << "FINISHED extracting the point" << endl;
-        // cout << "eval the monitor" << endl;
         (*this)(xTemp, monTemp);
-        // cout << "FINISHED eval the monitor" << endl;
 
         // Place the flattened matrix in the Monitor matrix.
-        // cout << "assign to matrix" << endl;
-        // cout << "size of monitor row " << M(vId, Eigen::all).size() << endl;
         for (int i = 0; i < D*D; i++) {
             M(vId, i) = monTemp(i/D, i%D);
         }
-        // cout << "FINISHED assign to matrix" << endl;
     }
 }
-
-/**
- * Function to smooth the monitor function. Just calls the mesh interpolator class
- * to avoid issues with keeping track of memory.
-*/
-// template <int D>
-// void MonitorFunction<D>::smoothMonitor(int nIters, Eigen::MatrixXd &X,
-//         Eigen::MatrixXi &F, Eigen::MatrixXd &M, MeshInterpolator<D> &interp) {
-//     interp.smoothMonitor(nIters, X, F, M);
-// }
 
 // explicit instantiation for each dimension of interest
 template class MonitorFunction<2>;
