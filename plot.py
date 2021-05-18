@@ -1,8 +1,8 @@
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 import sys, copy
-
 mode = int(sys.argv[1])
 
 if mode == 0:
@@ -22,6 +22,7 @@ if mode == 0:
     # import plotly.express as px
     # fig = px.scatter(x=points[:,0], y=points[:,1])
     # fig.show()
+    plt.savefig("sample_plot.png")
 elif mode == 1:
     centers = np.genfromtxt('centroid.txt', delimiter=',')
 
@@ -187,3 +188,5 @@ elif mode == 4:
 
 if mode != 4:
     plt.show()
+
+# %%
