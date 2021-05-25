@@ -68,59 +68,6 @@ AdaptationFunctional<D>::AdaptationFunctional( Eigen::MatrixXd &Vc,
     this->mPre = new vector<Eigen::Matrix<double, D, D>>(D+1);
 }
 
-// template <int D>
-// inline double Gi(Eigen::Matrix<double,D,D> &J, double detJ,
-//             Eigen::Matrix<double,D,D> &Minv, Eigen::Vector<double,D> &x) {
-//     double d = (double) D;
-//     double p = 1.5;
-//     double theta = 1.0/3.0;
-//     double detM = 1.0 / Minv.determinant();
-//     return theta * detM * pow((J * Minv * J.transpose()).trace(), d*p/2.0)
-//         + (1.0 - 2.0*theta) * pow(d, d*p/2.0) * detM * pow(detJ/detM, p);
-// }
-
-// template <int D>
-// inline void dGdJi(Eigen::Matrix<double,D,D> &J, double detJ,
-//             Eigen::Matrix<double,D,D> &Minv, Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &out) {
-//     double d = (double) D;
-//     double p = 1.5;
-//     double theta = 1.0/3.0;
-//     double detM = 1.0 / Minv.determinant();
-//     Eigen::Matrix<double,D,D> Jt(J.transpose());
-//     out = d*p*theta*detM * pow((J * Minv * Jt).trace(), d*p/2.0 - 1) * Minv * Jt;
-// }
-
-// template <int D>
-// inline double dGddeti(Eigen::Matrix<double,D,D> &J, double detJ,
-//             Eigen::Matrix<double,D,D> &Minv, Eigen::Vector<double,D> &x) {
-//     double d = (double) D;
-//     double p = 1.5;
-//     double theta = 1.0/3.0;
-//     double detM = 1.0 / Minv.determinant();
-//     return p*(1.0 - 2.0*theta)*pow(d, (d*p)/2.0)*pow(detM, 1.0 - p)*pow(detJ, p-1);
-//     // return 0.0;
-// }
-
-// template <int D>
-// inline void dGdMi(Eigen::Matrix<double,D,D> &J, double detJ,
-//             Eigen::Matrix<double,D,D> &Minv, Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &out) {
-//     double d = (double) D;
-//     double p = 1.5;
-//     double theta = 1.0/3.0;
-//     double detM = 1.0 / Minv.determinant();
-//     Eigen::Matrix<double,D,D> Jt(J.transpose());
-//     double tr = (J * Minv * Jt).trace();
-//     out = -0.5*theta*d*p * detM * pow(tr, d*p/2.0 - 1) * Minv.transpose() * Jt * J * Minv 
-//         + 0.5*theta * detM * pow(tr, d*p/2.0) * Minv 
-//         + ((0.5-theta)*(1.0-p)*pow(d, d*p/2.0)) * pow(detM, 1-p) * pow(detJ, p) * Minv;
-// }
-
-// template <int D>
-// inline void dGdXi(Eigen::Matrix<double,D,D> &J, double detJ,
-//             Eigen::Matrix<double,D,D> &Minv, Eigen::Vector<double,D> &x, Eigen::Vector<double,D> &out) {
-//     out.setZero();
-// }
-
 /**
  * Method for computing the block gradient of a simplex for the objective function
 */
@@ -165,14 +112,20 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     xK /= ((double) D + 1.0);
 
     // Interpolate the monitor function
-    interp.evalMonitorOnSimplex(zId, xK, M);
+    // cout << "zId = " << zId << endl;
+    Eigen::Vector<double, D+1> bCoords;
+    // int sId = interp.evalWithKnn(xK, bCoords);
+    int sId = zId;
+    interp.evalMonitorOnSimplex(sId, xK, bCoords, M);
+    // interp.evalMonitorOnSimplex(zId, xK, M);
     Eigen::Matrix<double, D, D> Minv(M.inverse());
     // Eigen::Matrix<double, D, D> Minv;
 
     for (int i = 0; i < D+1; i++) {
         Eigen::Matrix<double, D, D> mTemp;
         xTemp = z.segment(i*D, D);
-        interp.evalMonitorOnSimplex(zId, xTemp, mTemp);
+        // sId = interp.evalWithKnn(xTemp, bCoords);
+        interp.evalMonitorOnSimplex(sId, xTemp, bCoords, mTemp);
         mPre->at(i) = mTemp;
     }
 
@@ -243,7 +196,7 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     }
 
     // Now add the constraint regularization
-    Ih += 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
+    // Ih += 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
 
     grad += -w*w*(*DXpU).segment(D*(D+1)*zId, D*(D+1)) + w*w*z;
 

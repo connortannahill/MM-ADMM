@@ -7,13 +7,13 @@ using namespace std;
 
 template <int D>
 void PhaseM<D>::operator()(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &M) {
-    // double mu_1 = 20;
-    // double mu_2 = 20;
+    double mu_1 = 20;
+    double mu_2 = 20;
 
-    // Eigen::Vector<double,D> center(Eigen::Vector<double,D>::Constant(0.5));
+    Eigen::Vector<double,D> center(Eigen::Vector<double,D>::Constant(0.5));
 
-    // M = Eigen::Matrix<double,D,D>::Identity(M.rows(), M.cols());
-    // M *= (1 + mu_1/( 1 + mu_2*((x - center).squaredNorm()) ));
+    M = Eigen::Matrix<double,D,D>::Identity(M.rows(), M.cols());
+    M *= (1 + mu_1/( 1 + mu_2*((x - center).squaredNorm()) ));
 
     // return;
 
@@ -37,13 +37,13 @@ void PhaseM<D>::operator()(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D>
     // double theta = atan((x(1) - 0.5) / (x(0) - 0.7) );
     // M *= sqrt(2.0/(5.0 * r * pow(cos(theta - 10.0*r*r), 2.0) + 1.0)  + 1.0);
 
-    const double PI = 3.141592653589793238462643383;
-    M = Eigen::Matrix<double,D,D>::Identity(M.rows(), M.cols());
-    if (D == 2) {
-        M *= sqrt(0.01/(2.0 + cos(8.0*PI*sqrt(pow(x(0) - 0.5, 2) + pow(x(1) - 0.5, 2)))));
-    } else {
-        M *= pow(0.01/(2.0 + cos(8.0*PI*sqrt(pow(x(0) - 0.5, 2) + pow(x(1) - 0.5, 2) + pow(x(2) - 0.5, 2)))), 1.0/2.0);
-    }
+    // const double PI = 3.141592653589793238462643383;
+    // M = Eigen::Matrix<double,D,D>::Identity(M.rows(), M.cols());
+    // if (D == 2) {
+    //     M *= sqrt(0.01/(2.0 + cos(8.0*PI*sqrt(pow(x(0) - 0.5, 2) + pow(x(1) - 0.5, 2)))));
+    // } else {
+    //     M *= pow(0.01/(2.0 + cos(8.0*PI*sqrt(pow(x(0) - 0.5, 2) + pow(x(1) - 0.5, 2) + pow(x(2) - 0.5, 2)))), 1.0/2.0);
+    // }
 
     // M = Eigen::Matrix<double,D,D>::Identity(M.rows(), M.cols());
     // double R = 4.5;

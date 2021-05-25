@@ -137,21 +137,20 @@ void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixX
 
 }
 
-int main()
-{
+int main() {
   srand(static_cast<unsigned int>(std::time(nullptr)));
   // Specify the monitor function
   PhaseM<2> *M = new PhaseM<2>();
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
-  int nx = 80;
-  int ny = 80;
+  int nx = 20;
+  int ny = 20;
   int nPnts = (nx+1)*(ny+1) + nx*ny;
   params["nx"] = nx;
   params["ny"] = ny;
   params["d"] = D;
-  double rho = 30;
+  double rho = 20.0;
   params["rho"] = rho;
 
   params["xa"] = 0.0;
@@ -160,7 +159,7 @@ int main()
   params["yb"] = 1.0;
   params["theta"] = 0.5;
   params["p"] = 1;
-  double tau = 1e-3;
+  double tau = 1e-2;
   params["tau"] = tau;
 
   Eigen::MatrixXd *Vc = nullptr;
@@ -178,22 +177,22 @@ int main()
   Mesh<D> adaptiveMesh(*Vc, *F, *boundaryMask, M, rho, tau);
 
   // Create the solver
-  double dt = 0.5;
+  double dt = 0.1;
   MeshIntegrator<D> solver(dt, adaptiveMesh);
 
   clock_t start = clock();
-  int nSteps = 100; 
+  int nSteps = 20; 
   double Ih;
   double Ihprev = INFINITY;
   int i;
   for (i = 0; i < nSteps; i++) {
-    Ih = solver.step(100, 1e-3);
+    Ih = solver.step(100, 1e-5);
     cout << "Ih = " << Ih << endl;
 
-    if (Ih >= Ihprev) {
-        cout << "converged" << endl;
-        break;
-    }
+    // if (Ih >= Ihprev) {
+    //     cout << "converged" << endl;
+    //     break;
+    // }
     Ihprev = Ih;
   }
 

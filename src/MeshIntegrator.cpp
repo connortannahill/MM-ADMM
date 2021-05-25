@@ -102,7 +102,7 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         // Compute the primal residual. If it is beneath the tolerance, exit
         // double primalRes = ((*a->Dmat)*(*x) - *z).norm();
         // cout << "Primal res = " << primalRes << endl;
-        cout << "check " << abs((IhPrev - IhCur)/(IhPrev)) << endl;
+        // cout << "check " << abs((IhPrev - IhCur)/(IhPrev)) << endl;
 
         // string zOutStr = "./gifout/Z"+to_string(stepsTaken)+"-"+to_string(i);
         // cout << zOutStr << endl;

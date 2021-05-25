@@ -8,7 +8,7 @@
 
 using namespace std;
 
-// const int NUM_RESULTS = 1;
+const int NUM_RESULTS = 5;
 
 template<int D>
 MeshInterpolator<D>::MeshInterpolator() {
@@ -52,7 +52,6 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
 
     // If the size changed, update the connectivity
     if (sizeChanged) {
-	/**
         connectivity->clear();
 
         for (int i = 0; i < X.rows(); i++) {
@@ -61,7 +60,6 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
 
             connectivity->push_back(neighs);
         }
-	*/
     }
 }
 
@@ -80,20 +78,20 @@ void MeshInterpolator<D>::updateMesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F) {
     *(this->F) = F;
 
     // Compute the new centroids
-    // Eigen::Vector<double,D> temp;
-    // Eigen::Vector<double,D> x;
-    // for (int i = 0; i < F.rows(); i++) {
-    //     temp.setZero();
-    //     for (int k = 0; k < D+1; k++) {
-    //         x = X(F(i,k), Eigen::all);
-    //         temp += x;
-    //     }
-    //     temp /= (D+1);
+    Eigen::Vector<double,D> temp;
+    Eigen::Vector<double,D> x;
+    for (int i = 0; i < F.rows(); i++) {
+        temp.setZero();
+        for (int k = 0; k < D+1; k++) {
+            x = X(F(i,k), Eigen::all);
+            temp += x;
+        }
+        temp /= (D+1);
 
-    //     for (int j = 0; j < D; j++)  {
-    //         (*centroids)(i, j) = temp(j);
-    //     }
-    // }
+        for (int j = 0; j < D; j++)  {
+            (*centroids)(i, j) = temp(j);
+        }
+    }
 
     // Update the index
     // centroidSearchTree->buildIndex();
@@ -140,14 +138,30 @@ void MeshInterpolator<D>::interpolateMonitor(MonitorFunction<D> &Mon) {
     smoothMonitor(NUM_SMOOTH);
 }
 
+const double CHECK_EPS = 1e-10;
+
 template <int D>
-void MeshInterpolator<D>::evalMonitorOnSimplex(int simplexId, Eigen::Vector<double,D> &x,
+void MeshInterpolator<D>::evalMonitorOnSimplex(int simplexId, Eigen::Vector<double, D> &x, Eigen::Vector<double,D+1> &bCoords,
         Eigen::Matrix<double,D,D> &mVal) {
     // Use the mesh interpolator to find the simplex this point lays on, as well
     // as its barycentric coordaintes,
-    Eigen::Vector<double, D+1> bCoords;
+    // Eigen::Vector<double, D+1> bCoords;
 
     computeBarycentricCoordinates(simplexId, x, bCoords);
+
+    // If inside this simplex, stop. Else, perform knn search for proper simplex
+    // bool inTriangle = true;
+    // for (int i = 0; i < D+1; i++)
+    //     inTriangle *= bCoords(i) >= -CHECK_EPS;
+
+    // // cout << "inTriangle " << inTriangle << endl;
+
+    // int sId;
+    // if (!inTriangle) {
+        // int sId = evalWithKnn(x, bCoords);
+    // } else {
+    //     sId = simplexId;
+    // }
 
     // Now, interpolate the monitor function at this point
     Eigen::Vector<int, D+1> pntIds((*F)(simplexId, Eigen::all));
@@ -167,58 +181,74 @@ void MeshInterpolator<D>::evalMonitorOnSimplex(int simplexId, Eigen::Vector<doub
 
 /**
  * NOTE: unused
- *
 */
 template <int D>
-int MeshInterpolator<D>::eval(Eigen::Vector<double, D> &x) {
-    assert(false);
-    return -1;
+int MeshInterpolator<D>::evalWithKnn(Eigen::Vector<double, D> &x, Eigen::Vector<double, D+1> &bCoords) {
+    // assert(false);
+    // return -1;
     // Do a nearest neighbours search for the nearest centroid
-    // std::vector<size_t> ret_index(NUM_RESULTS);
-    // std::vector<double> out_dist_sqr(NUM_RESULTS);
-    // double query_pt[D];
-    // for (int i = 0; i < D; i++) {
-    //     query_pt[i] = x(i);
-    // }
+    std::vector<size_t> ret_index(NUM_RESULTS);
+    std::vector<double> out_dist_sqr(NUM_RESULTS);
+    // Eigen::Vector<double, D+1> bCoords;
+    double query_pt[D];
+    for (int i = 0; i < D; i++) {
+        query_pt[i] = x(i);
+    }
 
-    // int numFound = centroidSearchTree->knnSearch(&query_pt[0], NUM_RESULTS, &ret_index[0], &out_dist_sqr[0]);
+    int numFound = centroidSearchTree->knnSearch(&query_pt[0], NUM_RESULTS, &ret_index[0], &out_dist_sqr[0]);
+    // cout << "nfound = " << numFound << endl;
 
-    // // Now, compute the Barycentric coordinates of this point. We check to make sure that
-    // // the point is in the correct triangle.
-    // bool inTriangle;
-    // int simplexId;
-    // Eigen::Vector<double, D> roid;
-    // const double CHECK_EPS = 1e-8;
-    // for (int match = 0; match < numFound; match++) {
+    // Now, compute the Barycentric coordinates of this point. We check to make sure that
+    // the point is in the correct triangle.
+    bool inTriangle;
+    int simplexId;
+    Eigen::Vector<double, D> roid;
+    for (int match = 0; match < numFound; match++) {
 
-    //     // Compute the barycentric coordinates of this point in the matched simplex.
-    //     simplexId = ret_index.at(match);
-    //     roid = (*centroids)(simplexId, Eigen::all);
+        // Compute the barycentric coordinates of this point in the matched simplex.
+        simplexId = ret_index.at(match);
+        roid = (*centroids)(simplexId, Eigen::all);
+        computeBarycentricCoordinates(simplexId, x, bCoords);
+        // cout << "sId = " << simplexId << endl;
 
-    //     // Ensure we are in the simplex with this centroid
-    //     inTriangle = true;
+        // Ensure we are in the simplex with this centroid
+        // inTriangle = true;
+        inTriangle = true;
+        for (int i = 0; i < D+1; i++) {
+            inTriangle &= bCoords(i) > -CHECK_EPS;
+        }
         
-    //     if (inTriangle) {
-    //         // Compute difference in Barycentric reconstruction and the input point
-    //         // Eigen::Vector<double, D> test(Eigen::Vector<double, D>::Constant(0.0));
-    //         // for (int i = 0; i < D+1; i++) {
-    //         //     test += bCoords(i) * (*X)((*F)(simplexId, i), Eigen::all);
-    //         // }
+        if (inTriangle) {
+            // Compute difference in Barycentric reconstruction and the input point
+            // Eigen::Vector<double, D> test(Eigen::Vector<double, D>::Constant(0.0));
+            // eval.setZero();
+            // for (int i = 0; i < D+1; i++) {
+            //     eval += bCoords(i) * (*X)((*F)(simplexId, i), Eigen::all);
+            // }
 
-    //         // cout << "In compute barycentric coordintes " << bCoords.transpose() << endl;
+            // cout << "In compute barycentric coordintes " << bCoords.transpose() << endl;
 
-    //         // cout << "Difference in temp vs x " << (test - x).norm() << endl;
-    //         // cout << "err = " << (temp - x).norm() << endl;
-    //         break;
-    //     }
-    // }
+            // cout << "Difference in temp vs x " << (test - x).norm() << endl;
+            // cout << "err = " << (temp - x).norm() << endl;
+            break;
+        }
+    }
 
-    // if (!inTriangle) {
-    //     cout << "Error in interpolation! Need to handle this case" << endl;
-    //     assert(false);
-    // }
+    if (!inTriangle) {
+        // cout << "Error in interpolation! Need to handle this case" << endl;
+        // assert(false);
+        // Clip to nearest
+        simplexId = ret_index.at(0);
+        computeBarycentricCoordinates(simplexId, x, bCoords);
 
-    // return simplexId;
+        for (int i = 0; i < D+1; i++) {
+            if (bCoords(i) < -CHECK_EPS) {
+                bCoords(i) = 0.0; 
+            }
+        }
+    }
+
+    return simplexId;
 }
 
 template <int D>
@@ -324,7 +354,7 @@ void MeshInterpolator<D>::smoothMonitor(int nIters) {
     double weightNeigh;
     for (int iter = 0; iter < nIters; iter++) {
         for (int pId = 0; pId < monVals->rows(); pId++) {
-            // neighIds = connectivity->at(pId);
+            neighIds = connectivity->at(pId);
 
 
             // Find all of the neighbours to this simplex

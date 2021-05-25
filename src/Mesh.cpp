@@ -464,7 +464,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
         //     z_i(l) = z(D*(D+1)*i+l);
         // }
 
-        (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 1, 1e-6);
+        (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 5, 1e-6);
 
         // z.segment(D*(D+1)*i, D*(D+1)) = z_i;
         for (int l = 0; l < D*(D+1); l++) {
@@ -530,6 +530,7 @@ void Mesh<D>::updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd
     int cols = Vp->cols();
     for (int i = 0; i < Vp->rows(); i++) {
         for (int j = 0; j < cols; j++) {
+            // (*Vc)(i, j) = x(i*cols+j);
             (*Vp)(i, j) = x(i*cols+j);
         }
     }
