@@ -68,6 +68,7 @@ AdaptationFunctional<D>::AdaptationFunctional( Eigen::MatrixXd &Vc,
     this->mPre = new vector<Eigen::Matrix<double, D, D>>(D+1);
 }
 
+
 /**
  * Method for computing the block gradient of a simplex for the objective function
 */
@@ -202,6 +203,9 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
 
     return Ih;
 }
+
+
+
 /**
  * Method for computing the block gradient of a simplex for the objective function
 */
@@ -212,23 +216,25 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
             MeshInterpolator<D> &interp) {
     double Ih = 0.0;;
     double detFJ;
-    Eigen::Vector<double,D> gradSimplex;
-
+    //Eigen::Vector<double,D> gradSimplex;
+    double gradSimplex[D] = {0};  
     Eigen::Matrix<double,D,D> E;
     Eigen::Matrix<double,D,D> FJ;
     Eigen::Matrix<double,D,D> Ehat;
+    //double Ehat1[D][D] = {0};
     Eigen::Matrix<double,D,D> M;
     Eigen::Vector<double,D> xK;
     Eigen::Matrix<double,D,D> vLoc;
     Eigen::Vector<double,D> xTemp;
     Eigen::Matrix<double,D,D> Einv;
     Eigen::Matrix<double,D,D> dGdJ;
-    Eigen::Matrix<double,D,D> Mt0;
-    Eigen::Matrix<double,D,D> Mtn;
+    //Eigen::Matrix<double,D,D> Mt0;
+    //Eigen::Matrix<double,D,D> Mtn;
     Eigen::Vector<double,D> dGdX;
     Eigen::Matrix<double,D,D> dGdM;
-    Eigen::Vector<double,D> basisComb;
-    Eigen::Vector<int, D+1> ids;
+    //Eigen::Vector<double,D> basisComb;
+    double basisComb[D] = {0};
+    //Eigen::Vector<int, D+1> ids;
 
     double dFact;
     if (D == 2) {
@@ -296,31 +302,53 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
         }
         
 	
-        basisComb.setZero();
+        // basisComb.setZero(); // Alrady set to zero
         j = 0;
+        Eigen::Vector<double, D> bTemp;
+        bTemp.setZero();
         for (int n = (i+1)%(D+1); n != i; n = (n+1)%(D+1)) {
-            basisComb += Einv.row(j) * ((dGdM * (mPre->at(n) - mPre->at(i))).trace());
+            bTemp += Einv.row(j) * ((dGdM * (mPre->at(n) - mPre->at(i))).trace());
             j++;
         }
+        for (int l = 0; l < D; l++){
+            basisComb[l] = bTemp(l);
+        }
+        // basisComb.setZero();
+        // j = 0;
+        // for (int n = (i+1)%(D+1); n != i; n = (n+1)%(D+1)) {
+        //     basisComb += Einv.row(j) * ((dGdM * (mPre->at(n) - mPre->at(i))).trace());
+        //     j++;
+        // }
 
-        vLoc = -G*Einv + Einv*dGdJ*Ehat*Einv + dGddet*detFJ*Einv;
+         vLoc = -G*Einv + Einv*dGdJ*Ehat*Einv + dGddet*detFJ*Einv;
+
         for (int n = 0; n < D; n++) {
-            vLoc.row(n) -= (basisComb + dGdX)/((double) D + 1.0);
+            for (int l = 0; l < D; l++){
+                vLoc(n,l) -= (basisComb[l] + dGdX(l))/((double) D + 1.0);
+            }
         }
 
         // Compute the gradient for current simplex
-        gradSimplex.setZero();
+        
+        //gradSimplex.setZero(); // already initialized to 0
 
         for (int n = 0; n < D; n++) {
-            gradSimplex += vLoc.row(n);
+            for (int l = 0; l < D; l++){
+                gradSimplex[l] += vLoc(n,l);
+            }
+            //gradSimplex += vLoc.row(n);
         }
-        gradSimplex += basisComb + dGdX;
 
-        gradSimplex *= absK;
+        for (int n = 0; n < D; n++){
+            gradSimplex[n] += basisComb[n] + dGdX(n);
+        }
 
+        for (int n = 0; n < D; n++){
+            gradSimplex[n] *= absK;
+        }
         // Compute the gradient
         for (int l = 0; l < D; l++) {
-            grad(D*i + l) = gradSimplex(l);
+            grad(D*i + l) = gradSimplex[l];
         }
 
         // Update the energy

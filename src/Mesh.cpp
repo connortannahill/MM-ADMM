@@ -371,8 +371,8 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
     double Ipurt;
 
     for (int iters = 0; iters < nIter; iters++) {
-        Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator);
-
+        //Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator);
+        Ix = I_wx->blockGradC(zId, z, xi, gradZ, *mapEvaluator);
         if (iters != 0 && (abs((IxPrev - Ix) / IxPrev) < tol)) {
             break;
         }
@@ -387,8 +387,8 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
                 zPurt(i) += h;
 
                 // Compute gradient at purturbed point
-                Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator);
-
+                //Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator);
+                Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradZPurt, *mapEvaluator);
                 hess.col(i) = (gradZPurt - gradZ)/h;
 
                 zPurt(i) = z(i);

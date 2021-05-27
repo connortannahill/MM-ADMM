@@ -47,4 +47,13 @@ public:
 private:
 };
 
+// template <int D=-1>
+// struct Mat{
+//     Mat();
+// };
+
+// template <int D=-1>
+// struct Vec{
+//     Vec();
+// };
 #endif
