@@ -30,6 +30,76 @@ double HuangFunctional<D>::G(Eigen::Matrix<double,D,D> &J, double detJ,
 
     // return (J * Minv * J.transpose()).trace();
 }
+template <int D>
+double HuangFunctional<D>::GC(double (&J)[D][D], double detJ, double (&M)[D][D], double (&x)[D]) {
+    double d = (double) D;
+    double p = 1.5;
+    double theta = 1.0/3.0;
+    double deterMinv = 0;
+    if(D == 2){
+        deterMinv = M[0][0]*M[1][1] - M[0][1]*M[1][0];
+    } else {
+        double tmp1, tmp2, tmp3;
+        tmp1 = M[1][1]*M[2][2] - M[1][2]*M[2][1];
+        tmp2 = M[1][0]*M[2][2] - M[1][2]*M[2][0];
+        tmp3 = M[1][0]*M[2][1] - M[1][1]*M[2][0];
+        deterMinv = M[0][0]*tmp1 - M[0][1]*tmp2 + M[0][2]*tmp3;
+    }
+    double detM = sqrt(1.0 / deterMinv);
+    if(D == 2){
+        double I[D][D] = {{J[0][0]*M[0][0]+J[0][1]*M[1][0],J[0][0]*M[0][1]+J[0][1]*M[1][1]},
+                            {J[1][0]*M[0][0]+J[1][1]*M[1][0],J[1][0]*M[0][1]+J[1][1]*M[1][1]}};
+        // I is J*Minv
+        double K[D][D] = {0};
+        for(int l = 0; l < D; l++){
+            for(int p = 0; p < D; p++){
+                double xg = 0;
+                for(int o = 0; o < D; o++ ){
+                    xg += I[l][o]*J[p][o];
+                }
+                K[l][p] = xg;
+            }
+        }
+        // K is I*J.T
+        double trace = K[0][0] + K[1][1];
+    return theta * detM * pow(trace, d*p/2.0)
+        + (1.0 - 2.0*theta) * pow(d, d*p/2.0) * detM * pow(detJ/detM, p);
+    } else {
+        // dimension 3
+        double I[D][D] = {0};
+        double K[D][D] = {0};
+        
+        for(int l = 0; l < D; l++){
+            for(int p = 0; p < D; p++){
+                double xg = 0;
+                for(int o = 0; o < D; o++ ){
+                    xg += J[l][o]*M[o][p];
+                }
+                I[l][p] = xg;
+            }
+        }
+        // I is J*Minv
+        
+        for(int l = 0; l < D; l++){
+            for(int p = 0; p < D; p++){
+                double xg = 0;
+                for(int o = 0; o < D; o++ ){
+                    xg += I[l][o]*J[p][o];
+                }
+                K[l][p] = xg;
+            }
+        }
+        // K is I*J.T
+        double trace = K[0][0] + K[1][1]+ K[2][2];
+    return theta * detM * pow(trace, d*p/2.0)
+        + (1.0 - 2.0*theta) * pow(d, d*p/2.0) * detM * pow(detJ/detM, p);
+
+    }
+    //3D under construction
+    //return theta * detM * pow((J * M * J.transpose()).trace(), d*p/2.0)
+    //    + (1.0 - 2.0*theta) * pow(d, d*p/2.0) * detM * pow(detJ/detM, p);
+    // return (J * Minv * J.transpose()).trace();
+}
 
 template <int D>
 void HuangFunctional<D>::dGdJ(Eigen::Matrix<double,D,D> &J, double detJ,

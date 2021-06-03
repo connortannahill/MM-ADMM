@@ -19,6 +19,9 @@ protected:
     virtual double G(Eigen::Matrix<double,D,D> &J, double det,
                         Eigen::Matrix<double,D,D> &M,
                         Eigen::Vector<double,D> &x)=0;
+    virtual double GC(double (&J)[D][D], double det,
+                        double (&M)[D][D],
+                        double (&x)[D])=0;                        
     virtual void dGdJ(Eigen::Matrix<double,D,D> &J, double det,
                         Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x,
                         Eigen::Matrix<double,D,D> &out)=0;

@@ -26,6 +26,7 @@ protected:
     double w;
     double G(Eigen::Matrix<double,D,D> &J, double det, Eigen::Matrix<double,D,D> &M,
                 Eigen::Vector<double,D> &x) override;
+    double GC(double (&J)[D][D], double det, double (&M)[D][D], double (&x)[D]) override;  
     void dGdJ(Eigen::Matrix<double,D,D> &J, double det, Eigen::Matrix<double,D,D> &M,
                 Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &out) override;
     double dGddet(Eigen::Matrix<double,D,D> &J, double det, Eigen::Matrix<double,D,D> &M,

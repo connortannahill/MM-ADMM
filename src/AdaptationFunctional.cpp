@@ -294,7 +294,21 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
         absK = abs(Edet/dFact);
 
         if (i == 0) {
-            G = this->G(FJ, detFJ, Minv, xK);
+            double FJ1[D][D] = {0};
+            double Minv1[D][D] = {0};
+            double xK1[D] = {0};            
+            for(int n = 0; n < D; n++){
+                xK1[n] = xK(n);
+                for(int l = 0; l < D; l++){
+                    FJ1[n][l] = FJ(n,l);
+                    Minv1[n][l] = Minv(n,l);
+                }
+            }
+            // //G = this->G(FJ, detFJ, Minv, xK);
+            //     G = this->GC(FJ1,detFJ, Minv1, xk1);  
+            // }          
+            //G = this->G(FJ, detFJ, Minv, xK);
+            G = this->GC(FJ1,detFJ, Minv1, xK1);
             this->dGdJ(FJ, detFJ, Minv, xK, dGdJ);
             dGddet = this->dGddet(FJ, detFJ, Minv, xK);
             this->dGdX(FJ, detFJ, Minv, xK, dGdX);
