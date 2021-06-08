@@ -262,7 +262,8 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
     interp.evalMonitorOnSimplex(sId, xK, bCoords, M);
     // interp.evalMonitorOnSimplex(zId, xK, M);
     Eigen::Matrix<double, D, D> Minv(M.inverse());
-    // Eigen::Matrix<double, D, D> Minv;
+    double Minv1[D][D] = {0};
+
 
     for (int i = 0; i < D+1; i++) {
         Eigen::Matrix<double, D, D> mTemp;
@@ -309,7 +310,8 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
             }
             // //G = this->G(FJ, detFJ, Minv, xK);
             //     G = this->GC(FJ1,detFJ, Minv1, xk1);  
-            // }          
+            // }  
+                    
             //G = this->G(FJ, detFJ, Minv, xK);
             G = this->GC(FJ1,detFJ, Minv1, xK1);
             //this->dGdJ(FJ, detFJ, Minv, xK, dGdJ);
@@ -365,7 +367,7 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
             for (int l = 0; l < D; l++){
                 double xg = 0;
                 for (int p = 0; p < D; p++){
-                xg += Einv(n,p) * dGdJ1[p][l];
+                    xg += Einv(n,p) * dGdJ1[p][l];
                     //xg += Einv(n,p) * dGdJ(p,l);
                 }
             tmp(n,l) = xg;
