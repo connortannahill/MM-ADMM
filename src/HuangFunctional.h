@@ -29,12 +29,21 @@ protected:
     double GC(double (&J)[D][D], double det, double (&M)[D][D], double (&x)[D]) override;  
     void dGdJ(Eigen::Matrix<double,D,D> &J, double det, Eigen::Matrix<double,D,D> &M,
                 Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &out) override;
+    void dGdJC(double (&J)[D][D], double det, double (&M)[D][D], double (&x)[D], double (&out)[D][D]) override; 
     double dGddet(Eigen::Matrix<double,D,D> &J, double det, Eigen::Matrix<double,D,D> &M,
                 Eigen::Vector<double,D> &x) override;
+    double dGddetC(double (&J)[D][D], double det,
+                        double (&M)[D][D], double (&x)[D]) override;
     void dGdM(Eigen::Matrix<double,D,D> &J, double det, Eigen::Matrix<double,D,D> &M,
                 Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &out) override;
+    void dGdMC(double (&J)[D][D], double det,
+                        double (&M)[D][D], double (&x)[D],
+                        double (&out)[D][D]) override;
     void dGdX(Eigen::Matrix<double,D,D> &J, double det, Eigen::Matrix<double,D,D> &M,
                 Eigen::Vector<double,D> &x, Eigen::Vector<double,D> &out) override;
+    void dGdXC(double (&J)[D][D], double det,
+                        double (&M)[D][D], double (&x)[D],
+                        double (&out)[D]) override;
 };
 
 #endif

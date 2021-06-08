@@ -228,10 +228,13 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
     Eigen::Vector<double,D> xTemp;
     Eigen::Matrix<double,D,D> Einv;
     Eigen::Matrix<double,D,D> dGdJ;
+    double dGdJ1[D][D] = {0};
     //Eigen::Matrix<double,D,D> Mt0;
     //Eigen::Matrix<double,D,D> Mtn;
-    Eigen::Vector<double,D> dGdX;
-    Eigen::Matrix<double,D,D> dGdM;
+    //Eigen::Vector<double,D> dGdX;
+    double dGdX1[D] = {0};
+    //Eigen::Matrix<double,D,D> dGdM;
+    double dGdM1[D][D] = {0};
     //Eigen::Vector<double,D> basisComb;
     double basisComb[D] = {0};
     //Eigen::Vector<int, D+1> ids;
@@ -309,19 +312,40 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
             // }          
             //G = this->G(FJ, detFJ, Minv, xK);
             G = this->GC(FJ1,detFJ, Minv1, xK1);
-            this->dGdJ(FJ, detFJ, Minv, xK, dGdJ);
-            dGddet = this->dGddet(FJ, detFJ, Minv, xK);
-            this->dGdX(FJ, detFJ, Minv, xK, dGdX);
-            this->dGdM(FJ, detFJ, Minv, xK, dGdM);
+            //this->dGdJ(FJ, detFJ, Minv, xK, dGdJ);
+            this->dGdJC(FJ1,detFJ,Minv1,xK1,dGdJ1);
+            //dGddet = this->dGddet(FJ, detFJ, Minv, xK);
+            dGddet = this->dGddetC(FJ1, detFJ, Minv1, xK1);
+            //this->dGdX(FJ, detFJ, Minv, xK, dGdX);
+            this->dGdXC(FJ1, detFJ, Minv1, xK1, dGdX1);
+            //this->dGdM(FJ, detFJ, Minv, xK, dGdM);
+            this->dGdMC(FJ1, detFJ, Minv1, xK1, dGdM1);
         }
         
 	
         // basisComb.setZero(); // Alrady set to zero
         j = 0;
         Eigen::Vector<double, D> bTemp;
+        Eigen::Matrix<double, D,D> mpretemp;
         bTemp.setZero();
         for (int n = (i+1)%(D+1); n != i; n = (n+1)%(D+1)) {
-            bTemp += Einv.row(j) * ((dGdM * (mPre->at(n) - mPre->at(i))).trace());
+            mpretemp = (mPre->at(n) - mPre->at(i));
+            double dgdm_mpre[D][D] = {0};
+            for(int l = 0; l < D; ++l){
+                for(int q = 0; q < D; ++q){
+                    double xg = 0;
+                    for(int o = 0; o < D; ++o){
+                        xg += dGdM1[l][o] * mpretemp(o,q);
+                    }
+                    dgdm_mpre[l][q] = xg;
+                }
+            }
+            double tr = 0;
+            for(int l = 0; l < D; ++l){
+                tr += dgdm_mpre[l][l];
+            }
+            //bTemp += Einv.row(j) * ((dGdM * (mPre->at(n) - mPre->at(i))).trace());
+            bTemp += Einv.row(j)*tr;
             j++;
         }
         for (int l = 0; l < D; l++){
@@ -334,11 +358,24 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
         //     j++;
         // }
 
-         vLoc = -G*Einv + Einv*dGdJ*Ehat*Einv + dGddet*detFJ*Einv;
 
+        vLoc = -G*Einv;
+        Eigen::Matrix<double, D,D> tmp;
         for (int n = 0; n < D; n++) {
             for (int l = 0; l < D; l++){
-                vLoc(n,l) -= (basisComb[l] + dGdX(l))/((double) D + 1.0);
+                double xg = 0;
+                for (int p = 0; p < D; p++){
+                xg += Einv(n,p) * dGdJ1[p][l];
+                    //xg += Einv(n,p) * dGdJ(p,l);
+                }
+            tmp(n,l) = xg;
+            }
+        }
+        vLoc += tmp*Ehat*Einv + dGddet*detFJ*Einv;
+        //vLoc = -G*Einv + Einv*dGdJ*Ehat*Einv + dGddet*detFJ*Einv;
+        for (int n = 0; n < D; n++) {
+            for (int l = 0; l < D; l++){
+                vLoc(n,l) -= (basisComb[l] + dGdX1[l])/((double) D + 1.0);
             }
         }
 
@@ -354,7 +391,7 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
         }
 
         for (int n = 0; n < D; n++){
-            gradSimplex[n] += basisComb[n] + dGdX(n);
+            gradSimplex[n] += basisComb[n] + dGdX1[n];
         }
 
         for (int n = 0; n < D; n++){

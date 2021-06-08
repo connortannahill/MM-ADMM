@@ -25,14 +25,25 @@ protected:
     virtual void dGdJ(Eigen::Matrix<double,D,D> &J, double det,
                         Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x,
                         Eigen::Matrix<double,D,D> &out)=0;
+    virtual void dGdJC(double (&J)[D][D], double det,
+                        double (&M)[D][D], double (&x)[D],
+                        double (&out)[D][D])=0;
     virtual double dGddet(Eigen::Matrix<double,D,D> &J, double det,
                         Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x)=0;
+    virtual double dGddetC(double (&J)[D][D], double det,
+                        double (&M)[D][D], double (&x)[D])=0;
     virtual void dGdM(Eigen::Matrix<double,D,D> &J, double det,
                         Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x,
                         Eigen::Matrix<double,D,D> &out)=0;
+    virtual void dGdMC(double (&J)[D][D], double det,
+                        double (&M)[D][D], double (&x)[D],
+                        double (&out)[D][D])=0;
     virtual void dGdX(Eigen::Matrix<double,D,D> &J, double det,
                         Eigen::Matrix<double,D,D> &M, Eigen::Vector<double,D> &x,
                         Eigen::Vector<double,D> &out)=0;
+    virtual void dGdXC(double (&J)[D][D], double det,
+                        double (&M)[D][D], double (&x)[D],
+                        double (&out)[D])=0;
 public:
     bool boundaryNode;
     AdaptationFunctional(Eigen::MatrixXd &Vc, Eigen::MatrixXd &Vp,
