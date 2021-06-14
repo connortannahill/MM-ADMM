@@ -216,12 +216,10 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
             MeshInterpolator<D> &interp) {
     double Ih = 0.0;;
     double detFJ;
-    //Eigen::Vector<double,D> gradSimplex;
     double gradSimplex[D] = {0};  
     Eigen::Matrix<double,D,D> E;
     Eigen::Matrix<double,D,D> FJ;
     Eigen::Matrix<double,D,D> Ehat;
-    //double Ehat1[D][D] = {0};
     Eigen::Matrix<double,D,D> M;
     Eigen::Vector<double,D> xK;
     Eigen::Matrix<double,D,D> vLoc;
@@ -229,15 +227,10 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
     Eigen::Matrix<double,D,D> Einv;
     Eigen::Matrix<double,D,D> dGdJ;
     double dGdJ1[D][D] = {0};
-    //Eigen::Matrix<double,D,D> Mt0;
-    //Eigen::Matrix<double,D,D> Mtn;
-    //Eigen::Vector<double,D> dGdX;
     double dGdX1[D] = {0};
-    //Eigen::Matrix<double,D,D> dGdM;
     double dGdM1[D][D] = {0};
-    //Eigen::Vector<double,D> basisComb;
     double basisComb[D] = {0};
-    //Eigen::Vector<int, D+1> ids;
+
 
     double dFact;
     if (D == 2) {
@@ -308,19 +301,10 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
                     Minv1[n][l] = Minv(n,l);
                 }
             }
-            // //G = this->G(FJ, detFJ, Minv, xK);
-            //     G = this->GC(FJ1,detFJ, Minv1, xk1);  
-            // }  
-                    
-            //G = this->G(FJ, detFJ, Minv, xK);
             G = this->GC(FJ1,detFJ, Minv1, xK1);
-            //this->dGdJ(FJ, detFJ, Minv, xK, dGdJ);
             this->dGdJC(FJ1,detFJ,Minv1,xK1,dGdJ1);
-            //dGddet = this->dGddet(FJ, detFJ, Minv, xK);
             dGddet = this->dGddetC(FJ1, detFJ, Minv1, xK1);
-            //this->dGdX(FJ, detFJ, Minv, xK, dGdX);
             this->dGdXC(FJ1, detFJ, Minv1, xK1, dGdX1);
-            //this->dGdM(FJ, detFJ, Minv, xK, dGdM);
             this->dGdMC(FJ1, detFJ, Minv1, xK1, dGdM1);
         }
         
@@ -368,7 +352,6 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
                 double xg = 0;
                 for (int p = 0; p < D; p++){
                     xg += Einv(n,p) * dGdJ1[p][l];
-                    //xg += Einv(n,p) * dGdJ(p,l);
                 }
             tmp(n,l) = xg;
             }
