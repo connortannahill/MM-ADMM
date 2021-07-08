@@ -254,8 +254,9 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
     int sId = zId;
     interp.evalMonitorOnSimplex(sId, xK, bCoords, M);
     // interp.evalMonitorOnSimplex(zId, xK, M);
-    Eigen::Matrix<double, D, D> Minv(M.inverse());
-    double Minv1[D][D] = {0};
+    //Eigen::Matrix<double, D, D> Minv(M.inverse());
+    double Minv[D][D] = {0};
+    Boost_Inverse(M, Minv);
 
 
     for (int i = 0; i < D+1; i++) {
@@ -292,23 +293,24 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
 
         if (i == 0) {
             double FJ1[D][D] = {0};
-            double Minv1[D][D] = {0};
-            double xK1[D] = {0};            
-            for(int n = 0; n < D; n++){
-                xK1[n] = xK(n);
-                for(int l = 0; l < D; l++){
-                    FJ1[n][l] = FJ(n,l);
-                    Minv1[n][l] = Minv(n,l);
-                }
-            }
-            G = this->GC(FJ1,detFJ, Minv1, xK1);
-            this->dGdJC(FJ1,detFJ,Minv1,xK1,dGdJ1);
-            dGddet = this->dGddetC(FJ1, detFJ, Minv1, xK1);
-            this->dGdXC(FJ1, detFJ, Minv1, xK1, dGdX1);
-            this->dGdMC(FJ1, detFJ, Minv1, xK1, dGdM1);
+            //double Minv1[D][D] = {0};
+            double xK1[D] = {0};
+            Eigen::Map<Eigen::Matrix<double,D,D>>(&FJ1[0][0],D,D) = FJ;            
+            Eigen::Map<Eigen::Vector<double, D>>(&xK1[0], D) = xK;
+            // for(int n = 0; n < D; n++){
+            //     xK1[n] = xK(n);
+            //     for(int l = 0; l < D; l++){
+            //         FJ1[n][l] = FJ(n,l);
+            // //        Minv1[n][l] = Minv(n,l);
+            //     }
+            // }
+            G = this->GC(FJ1,detFJ, Minv, xK1);
+            this->dGdJC(FJ1,detFJ,Minv,xK1,dGdJ1);
+            dGddet = this->dGddetC(FJ1, detFJ, Minv, xK1);
+            this->dGdXC(FJ1, detFJ, Minv, xK1, dGdX1);
+            this->dGdMC(FJ1, detFJ, Minv, xK1, dGdM1);
         }
         
-	
         // basisComb.setZero(); // Alrady set to zero
         j = 0;
         Eigen::Vector<double, D> bTemp;
@@ -317,36 +319,18 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
         for (int n = (i+1)%(D+1); n != i; n = (n+1)%(D+1)) {
             mpretemp = (mPre->at(n) - mPre->at(i));
             double dgdm_mpre[D][D] = {0};
-            for(int l = 0; l < D; ++l){
-                for(int q = 0; q < D; ++q){
-                    double xg = 0;
-                    for(int o = 0; o < D; ++o){
-                        xg += dGdM1[l][o] * mpretemp(o,q);
-                    }
-                    dgdm_mpre[l][q] = xg;
-                }
-            }
-            double tr = 0;
-            for(int l = 0; l < D; ++l){
-                tr += dgdm_mpre[l][l];
-            }
+            Boost_Multi(dGdM1, mpretemp, dgdm_mpre);
+            double tr = Boost_Trace(dgdm_mpre);
             //bTemp += Einv.row(j) * ((dGdM * (mPre->at(n) - mPre->at(i))).trace());
             bTemp += Einv.row(j)*tr;
             j++;
         }
-        for (int l = 0; l < D; l++){
-            basisComb[l] = bTemp(l);
-        }
-        // basisComb.setZero();
-        // j = 0;
-        // for (int n = (i+1)%(D+1); n != i; n = (n+1)%(D+1)) {
-        //     basisComb += Einv.row(j) * ((dGdM * (mPre->at(n) - mPre->at(i))).trace());
-        //     j++;
-        // }
-
+        Eigen::Map<Eigen::Vector<double,D>>(&basisComb[0],D) = bTemp;
 
         vLoc = -G*Einv;
         Eigen::Matrix<double, D,D> tmp;
+        //double tmp[D][D] = {0};
+        //Boost_Multi(Einv, dGdJ1, tmp);
         for (int n = 0; n < D; n++) {
             for (int l = 0; l < D; l++){
                 double xg = 0;
@@ -367,13 +351,7 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
         // Compute the gradient for current simplex
         
         //gradSimplex.setZero(); // already initialized to 0
-
-        for (int n = 0; n < D; n++) {
-            for (int l = 0; l < D; l++){
-                gradSimplex[l] += vLoc(n,l);
-            }
-            //gradSimplex += vLoc.row(n);
-        }
+        Boost_row(vLoc, gradSimplex);
 
         for (int n = 0; n < D; n++){
             gradSimplex[n] += basisComb[n] + dGdX1[n];

@@ -2,6 +2,7 @@
 #define ADAPTATION_FUNCTIONAL_H
 
 #include <Eigen/Dense>
+#include "compute_boost.h"
 #include "MonitorFunction.h"
 #include "MeshInterpolator.h"
 #include <Eigen/StdVector>
