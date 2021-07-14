@@ -67,16 +67,17 @@ void HuangFunctional<D>::dGdJC(double (&J)[D][D], double detJ, double (&M)[D][D]
     double theta = 1.0/3.0;
     double detM = sqrt(1.0 / Boost_determinant(M));
     
-        double I[D][D] = {0};
-        // I is J*Minv
-        Boost_Multi(J, M, I);
-        double K[D][D] = {0};
-        Boost_Multi(I, J, K, true);
-        // K is I*J.T
-        double trace = Boost_Trace(K);
-        double constant_scalar = d*p*theta*detM * pow(trace, d*p/2.0 - 1);
-        Boost_Multi(M, J, out, true, constant_scalar);
-        return;
+    double I[D][D] = {0};
+    // I is J*Minv
+    Boost_Multi(J, M, I);
+    double K[D][D] = {0};
+    Boost_Multi(I, J, K, true);
+    // K is I*J.T
+    double trace = Boost_Trace(K);
+    double constant_scalar = d*p*theta*detM * pow(trace, d*p/2.0 - 1);
+    Boost_Multi(M, J, out, true, constant_scalar);
+
+    return;
 }
 
 template <int D>

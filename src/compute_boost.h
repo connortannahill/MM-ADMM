@@ -92,6 +92,7 @@ template<int D = -1>
 inline void Boost_Multi(Eigen::Matrix<double, D,D> &M, double (&B)[D][D], double (&result)[D][D],bool B_transpose=false, double constant=1.0){
     double A[D][D] = {0};
     Eigen::Map<Eigen::Matrix<double, D,D>>(&A[0][0],D,D) = M;
+    // Boost_cast_EtoS(M, A);
     if(!B_transpose){
         for(int i = 0; i < D; i++){
             for (int j = 0; j < D; j++){

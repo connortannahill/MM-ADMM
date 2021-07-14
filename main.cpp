@@ -138,6 +138,35 @@ void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixX
 }
 
 int main() {
+//   Eigen::Matrix2d m;
+//   m(0, 0) = 1;
+//   m(0, 1) = 2;
+//   m(1, 0) = 3;
+//   m(1, 1) = 4;
+//   cout << m << endl;
+
+//   double m2[2][2];
+//   Eigen::Map<Eigen::Matrix2d>(&m2[0][0], 2, 2) = m;
+
+
+//   for (int j = 0; j < 2; j++) {
+//     for (int i = 0; i < 2; i++) {
+//         cout << m2[i][j] << " ";
+//     }
+//     cout << endl;
+//   }
+//   assert(false);
+
+//   Eigen::Map<Eigen::Matrix2d, Eigen::ColMajor>(&m2[0][0], 2, 2) = m;
+//   for (int j = 0; j < 2; j++) {
+//     for (int i = 0; i < 2; i++) {
+//         cout << m2[i][j] << " ";
+//     }
+//     cout << endl;
+//   }
+
+
+
   srand(static_cast<unsigned int>(std::time(nullptr)));
   // Specify the monitor function
   PhaseM<2> *M = new PhaseM<2>();
@@ -150,7 +179,7 @@ int main() {
   params["nx"] = nx;
   params["ny"] = ny;
   params["d"] = D;
-  double rho = 20.0;
+  double rho = 25.0;
   params["rho"] = rho;
 
   params["xa"] = 0.0;
