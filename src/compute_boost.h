@@ -34,13 +34,12 @@ inline void Boost_Inverse(Eigen::Matrix<double,D,D> &M, double (&Minv)[D][D]){
     Eigen::Map<Eigen::Matrix<double,D,D>>(&tmp[0][0], D, D) = M;
     if(D == 2){
         Minv[0][0] = tmp[1][1] / detM;
-        Minv[0][1] = -1*tmp[1][0] / detM;
-        Minv[1][0] = -1*tmp[0][1] / detM;
+        Minv[0][1] = -1*tmp[0][1] / detM;
+        Minv[1][0] = -1*tmp[1][0] / detM;
         Minv[1][1] = tmp[0][0] / detM;
     } else {
         for(int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
-              //Minv[i][j] = ((tmp[(j+1)%3][(i+1)%3] * tmp[(j+2)%3][(i+2)%3]) - (tmp[(j+1)%3][(i+2)%3] * tmp[(j+2)%3][(i+1)%3])) / detM;
               Minv[i][j] = ((tmp[(i+1)%3][(j+1)%3] * tmp[(i+2)%3][(j+2)%3]) - (tmp[(i+1)%3][(j+2)%3] * tmp[(i+2)%3][(j+1)%3])) / detM;
             }
         }
