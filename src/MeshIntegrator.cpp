@@ -78,17 +78,13 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     int i;
     double IhCur, IhPrev;
     for (i = 0; i < nIters; i++) {
-        // cout << "Running prox" << endl;
         // Update z_{n+1} using the assembly prox algorithm
         start = clock();
         *DXpU = (*(a->Dmat))*(*x) + (*uBar);
         // a->updateAfterStep(dt, *xPrev, *x);
-        // cout << "running prox" << endl;
         IhCur = a->prox(dt, *x, *DXpU, *z);
         // assert(false);
-        // cout << "FINSIEHD running prox" << endl;
         prox += clock() - start;
-        // cout << "Finished prox" << endl;
 
         // Update the Lagrange multiplier uBar^{n+1}
         *uBar = *DXpU - *z;
@@ -99,16 +95,7 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         *x = cgSol->solve(*vec);
         xUpdate += clock() - start;
 
-        // Compute the primal residual. If it is beneath the tolerance, exit
-        // double primalRes = ((*a->Dmat)*(*x) - *z).norm();
-        // cout << "Primal res = " << primalRes << endl;
-        // cout << "check " << abs((IhPrev - IhCur)/(IhPrev)) << endl;
-
-        // string zOutStr = "./gifout/Z"+to_string(stepsTaken)+"-"+to_string(i);
-        // cout << zOutStr << endl;
-        // outputZ(zOutStr.c_str());
         if (i >= 1 && abs((IhPrev - IhCur)/(IhPrev)) < tol) {
-        // if (primalRes < tol) {
             break;
         }
         IhPrev = IhCur;
@@ -118,7 +105,6 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     // Update the assembly using the new locations
     start = clock();
     a->updateAfterStep(dt, *xPrev, *x);
-    // a->printDiff();
 
     stepsTaken++;
     return IhCur;
@@ -140,8 +126,6 @@ template <int D>
 void MeshIntegrator<D>::outputX(const char *fname) {
     std::ofstream outFile;
     outFile.open(fname);
-    // cout << "outputting x" << endl;
-    // cout << "size of x (" << x->rows() << ", " << x->cols() << endl;
 
     for (int i = 0; i < x->rows()/D; i++) {
         for (int j = 0; j < D-1; j++) {
@@ -151,14 +135,12 @@ void MeshIntegrator<D>::outputX(const char *fname) {
     }
 
     outFile.close();
-    // cout << "FINSIEHD outputting x" << endl;
 }
 
 template <int D>
 void MeshIntegrator<D>::outputZ(const char *fname) {
     std::ofstream outFile;
     outFile.open(fname);
-    // cout << "outputting z" << endl;
 
     for (int i = 0; i < z->rows()/D; i++) {
         for (int j = 0; j < D-1; j++) {
@@ -168,7 +150,6 @@ void MeshIntegrator<D>::outputZ(const char *fname) {
     }
 
     outFile.close();
-    // cout << "finished Z" << endl;
 }
 
 template class MeshIntegrator<2>;

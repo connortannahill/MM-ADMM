@@ -150,7 +150,7 @@ int main() {
   params["nx"] = nx;
   params["ny"] = ny;
   params["d"] = D;
-  double rho = 20.0;
+  double rho = 25.0;
   params["rho"] = rho;
 
   params["xa"] = 0.0;

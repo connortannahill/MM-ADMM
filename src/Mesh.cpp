@@ -11,6 +11,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <algorithm>
+#include <Eigen/LU>
 
 #define THREAD_NUM 1
 
@@ -356,7 +357,7 @@ template <int D>
 double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol) {
     double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
-    // const int MAX_LS = 10;
+    const int MAX_LS = 10;
 
     Eigen::Vector<double, D*(D+1)> zPurt;
     Eigen::Vector<double, D*(D+1)> gradZ;
@@ -369,10 +370,10 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
     double Ix;
     double IxPrev = INFINITY;
     double Ipurt;
+    Eigen::PartialPivLU<Eigen::Matrix<double, D*(D+1), D*(D+1)>> hessLU;
 
     for (int iters = 0; iters < nIter; iters++) {
-        //Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator);
-        Ix = I_wx->blockGradC(zId, z, xi, gradZ, *mapEvaluator);
+        Ix = I_wx->blockGradC(zId, z, xi, gradZ, *mapEvaluator, true);
         if (iters != 0 && (abs((IxPrev - Ix) / IxPrev) < tol)) {
             break;
         }
@@ -387,42 +388,41 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
                 zPurt(i) += h;
 
                 // Compute gradient at purturbed point
-                //Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator);
-                Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradZPurt, *mapEvaluator);
+                Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradZPurt, *mapEvaluator, true);
                 hess.col(i) = (gradZPurt - gradZ)/h;
 
                 zPurt(i) = z(i);
             }
 
-            hessInv = hess.inverse();
+            // hessInv = hess.inverse();
+            hessLU = hess.lu();
         }
 
+
         // Compute the Newton direction
-        // p = hess.lu().solve(-gradZ);
-        p = hessInv*(-gradZ);
+        p = hessLU.solve(-gradZ);
+        // p = hessInv*(-gradZ);
         z += p;
-        // zPurt = z + p;
 
         // Perform backtracking line search in the Hessian direction (should work if Hess is pos def)
         // int lsIters = 0;
         // double alpha = 1.0;
-        // double c1 = 0.1;
-        // double c2 = 0.9;
-        // Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp, *mapEvaluator);
+        // double c1 = 0.0;
+        // Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, true);
 
-        // while (Ipurt >= Ix - c1*alpha*(gradZ.dot(p)) &&
-        //         -p.dot(gradTemp) >= -c2*p.dot(gradZ)  && lsIters < MAX_LS) {
+        // while (Ipurt >= Ix && lsIters < MAX_LS) {
         //     alpha /= 10.0;
 
         //     zPurt = z + alpha*p;
-        //     Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp, *mapEvaluator);
+        //     Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, false);
 
         //     lsIters++;
         // }
 
-        // z = zPurt;
         // if (lsIters == MAX_LS) {
         //     break;
+        // } else {
+        //     z = zPurt;
         // }
         IxPrev = Ix;
     }
@@ -435,12 +435,6 @@ template <int D>
 double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen::VectorXd &z) {
     // Copy DXpU address to local pointer
     *this->DXpU = DXpU;
-
-    // mapEvaluator->interpolateMonitor(*this->Mon);
-    // mapEvaluator->outputStuff();
-    // assert(false);
-
-    // computeXGradients(x);
 
     // Run Newton's method on each simplex
     Ih->setZero();
@@ -456,21 +450,15 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
             for (int l = 0; l < D; l++) {
                 xi_i(n*D+l) = pnt(l);
             }
-            // xi_i.segment(n*D, D) = (*Vc)((*F)(i,n), Eigen::all);
         }
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
-        // for (int l = 0; l < D*(D+1); l++) {
-        //     z_i(l) = z(D*(D+1)*i+l);
-        // }
 
         (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 5, 1e-6);
 
-        // z.segment(D*(D+1)*i, D*(D+1)) = z_i;
         for (int l = 0; l < D*(D+1); l++) {
             z(D*(D+1)*i+l) = z_i(l);
         }
-
 
         // Moving boundary points
         Eigen::Vector<double, D> zTemp;
@@ -481,7 +469,6 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
                 for (int l = 0; l < D; l++) {
                     z(D*(D+1)*i+n*D + l) = zTemp(l);
                 }
-                // z.segment(D*(D+1)*i+n*D, D) = zTemp;
             } else if (boundaryMask->at((*F)(i,n)) == NodeType::BOUNDARY_FIXED) { 
                 z.segment(D*(D+1)*i+n*D, D) = x.segment((*F)(i,n)*D, D);
             }
@@ -506,23 +493,8 @@ template <int D>
 void Mesh<D>::setUp() {
 
     // Update the mesh in the interpolator.
-    // cout << "Updating the mesh" << endl;
     mapEvaluator->updateMesh((*this->Vp), (*this->F));
-    // cout << "FINISHED Updating the mesh" << endl;
-    // cout << "inteprolating the monitor function" << endl;
     mapEvaluator->interpolateMonitor(*Mon);
-
-    // cout << "FINSIHED interpolating the monitor function" << endl;
-
-    // Mon->interpolateMonitor(*mapEvaluator, *Vc, *F, *monitorEvals);
-
-    // // Evaluate and smooth the monitor function.
-    // cout << "Eval at vertices" << endl;
-    // Mon->evaluateAtVertices(*Vc, *F, *monitorEvals);;
-    // cout << "FINISHED Eval at vertices" << endl;
-    // cout << "smmooth monitor" << endl;
-    // Mon->smoothMonitor(NUM_SMOOTH, (*this->Vc), (*this->F), *monitorEvals, *mapEvaluator);
-    // cout << "Finished setting up" << endl;
 }
 
 template <int D>
@@ -530,7 +502,6 @@ void Mesh<D>::updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd
     int cols = Vp->cols();
     for (int i = 0; i < Vp->rows(); i++) {
         for (int j = 0; j < cols; j++) {
-            // (*Vc)(i, j) = x(i*cols+j);
             (*Vp)(i, j) = x(i*cols+j);
         }
     }
