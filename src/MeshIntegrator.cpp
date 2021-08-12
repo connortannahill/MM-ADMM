@@ -67,33 +67,34 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     *x = *xBar;
     // uBar->setZero();
 
-    time_t start, prox, xUpdate, admm;
-    prox = 0;
-    start = 0;
-    xUpdate = 0;
-    admm = 0;
+    // time_t start, prox, xUpdate, admm;
+    // prox = 0;
+    // start = 0;
+    // xUpdate = 0;
+    // admm = 0;
 
-    admm = clock();
+    // admm = clock();
 
     int i;
-    double IhCur, IhPrev;
+    double IhCur = 0;
+    double IhPrev = 0;
     for (i = 0; i < nIters; i++) {
         // Update z_{n+1} using the assembly prox algorithm
-        start = clock();
+        // start = clock();
         *DXpU = (*(a->Dmat))*(*x) + (*uBar);
         // a->updateAfterStep(dt, *xPrev, *x);
         IhCur = a->prox(dt, *x, *DXpU, *z);
         // assert(false);
-        prox += clock() - start;
+        // prox += clock() - start;
 
         // Update the Lagrange multiplier uBar^{n+1}
         *uBar = *DXpU - *z;
 
         // Update the solution x^{n+1}
-        start = clock();
+        // start = clock();
         *vec =  ((*a->M) * (*xBar)) + dtsq*(( *WD_T * (*a->W) * (*z - *uBar)));
         *x = cgSol->solve(*vec);
-        xUpdate += clock() - start;
+        // xUpdate += clock() - start;
 
         if (i >= 1 && abs((IhPrev - IhCur)/(IhPrev)) < tol) {
             break;
@@ -101,9 +102,10 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         IhPrev = IhCur;
 
     }
+    cout << "ADMM in " << i << " iters" << endl;
 
     // Update the assembly using the new locations
-    start = clock();
+    // start = clock();
     a->updateAfterStep(dt, *xPrev, *x);
 
     stepsTaken++;

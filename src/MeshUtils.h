@@ -25,7 +25,13 @@ namespace utils {
     */
     inline int findLimInfMeshPoint(double w, vector<double> &w_mesh)
     {
-        return int((w - w_mesh.at(0))/(w_mesh.at(1) - w_mesh.at(0)));
+        int guess =  (int)((w - w_mesh.at(0))/(w_mesh.at(1) - w_mesh.at(0)));
+        if (guess < 0) {
+            guess = 0;
+        } else if (guess > (int)((w_mesh.back() - w_mesh.at(0))/(w_mesh.at(1) - w_mesh.at(0)))) {
+            guess = (int)((w_mesh.back() - w_mesh.at(0))/(w_mesh.at(1) - w_mesh.at(0)));
+        }
+        return guess;
     }
 
     inline void biLinearInterpolation(double x, double y, vector<double> &xMesh,

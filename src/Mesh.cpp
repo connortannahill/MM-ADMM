@@ -69,7 +69,7 @@ void Mesh<D>::buildFaceList() {
 
     // Convert this into an Eigen matrix for consistency.
     faceList = new Eigen::MatrixXi(faceTemp.size(), D);
-    for (int i = 0; i < faceTemp.size(); i++) {
+    for (uint32_t i = 0; i < faceTemp.size(); i++) {
         for (int j = 0; j < D; j++) {
             (*faceList)(i, j) = (faceTemp.at(i)).at(j);
         }
@@ -225,14 +225,20 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
     this->Ih = new Eigen::VectorXd(F.rows());
 
     // faceList = new Eigen::MatrixXd();
+    cout << "building the face list" << endl;
     buildFaceList();
 
     // Create mesh interpolator
+    cout << "Creating the mesh interpolator" << endl;
     mapEvaluator = new MeshInterpolator<D>();
+    cout << "FINISHED Creating the mesh interpolator" << endl;
+    cout << "Updating the mesh" << endl;
     mapEvaluator->updateMesh((*this->Vc), (*this->F));
+    cout << "FINSIHED Updating the mesh" << endl;
     stepTaken = true; // TODO: add a setting where we know if the monitor is constant or not
+    cout << "Interpolating the Mon" << endl;
     mapEvaluator->interpolateMonitor(*Mon);
-
+    cout << "FINSIHED Interpolating the Mon" << endl;
     this->nPnts = X.rows();
 
     this->Mon = Mon;
@@ -358,7 +364,7 @@ template <int D>
 double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol) {
     double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
-    const int MAX_LS = 10;
+    // const int MAX_LS = 10;
 
     Eigen::Vector<double, D*(D+1)> zPurt;
     Eigen::Vector<double, D*(D+1)> gradZ;
@@ -368,13 +374,14 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
     Eigen::Vector<double, D*(D+1)> p;
     Eigen::Vector<double, D*(D+1)> gradTemp;
 
-    double Ix;
+    double Ix = 0;
+    // double Ipurt = 0;
     double IxPrev = INFINITY;
-    double Ipurt;
     Eigen::PartialPivLU<Eigen::Matrix<double, D*(D+1), D*(D+1)>> hessLU;
 
     for (int iters = 0; iters < nIter; iters++) {
-        Ix = I_wx->blockGradC(zId, z, xi, gradZ, *mapEvaluator, true);
+        // Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator, true);
+        Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator);
 
         if (iters != 0 && (abs((IxPrev - Ix) / IxPrev) < tol)) {
             break;
@@ -390,7 +397,8 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
                 zPurt(i) += h;
 
                 // Compute gradient at purturbed point
-                Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradZPurt, *mapEvaluator, true);
+                // I_wx->blockGradC(zId, zPurt, xi, gradZPurt, *mapEvaluator, true);
+                I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator);
                 hess.col(i) = (gradZPurt - gradZ)/h;
 
                 zPurt(i) = z(i);
@@ -407,25 +415,26 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         z += p;
 
         // Perform backtracking line search in the Hessian direction (should work if Hess is pos def)
-        int lsIters = 0;
-        double alpha = 1.0;
-        double c1 = 0.0;
-        Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, true);
+        // int lsIters = 0;
+        // double alpha = 1.0;
+        // double c1 = 0.0;
+        // zPurt = z;
+        // Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, true);
 
-        while (Ipurt >= Ix && lsIters < MAX_LS) {
-            alpha /= 10.0;
+        // while (Ipurt >= Ix && lsIters < MAX_LS) {
+        //     alpha /= 10.0;
 
-            zPurt = z + alpha*p;
-            Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, false);
+        //     zPurt = z + alpha*p;
+        //     Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, false);
 
-            lsIters++;
-        }
+        //     lsIters++;
+        // }
 
-        if (lsIters == MAX_LS) {
-            break;
-        } else {
-            z = zPurt;
-        }
+        // if (lsIters == MAX_LS) {
+        //     break;
+        // } else {
+        //     z = zPurt;
+        // }
         IxPrev = Ix;
     }
 
@@ -456,7 +465,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
 
-        (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 5, 1e-6);
+        (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 2, 1e-6);
 
         for (int l = 0; l < D*(D+1); l++) {
             z(D*(D+1)*i+l) = z_i(l);
