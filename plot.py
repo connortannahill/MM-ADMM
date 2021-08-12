@@ -24,14 +24,17 @@ if mode == 0:
     # fig.show()
     plt.savefig("sample_plot.png")
 elif mode == 1:
-    centers = np.genfromtxt('centroid.txt', delimiter=',')
+    gridData = np.genfromtxt('gridMesh.txt', delimiter=',')
 
-    x = centers[:,0]
-    y = centers[:,1]
+    x = gridData[:,0]
+    y = gridData[:,1]
+    M = gridData[:,2]
 
-    print(x)
+    n = int(np.sqrt(x.size))
 
-    plt.scatter(x, y, s=1)
+    M = np.reshape(M, (n, n))
+
+    plt.imshow(M)
 elif mode == 2:
     from mpl_toolkits.mplot3d import Axes3D 
 

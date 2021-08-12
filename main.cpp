@@ -150,7 +150,7 @@ int main() {
   params["nx"] = nx;
   params["ny"] = ny;
   params["d"] = D;
-  double rho = 25.0;
+  double rho = 10.0;
   params["rho"] = rho;
 
   params["xa"] = 0.0;
@@ -181,7 +181,7 @@ int main() {
   MeshIntegrator<D> solver(dt, adaptiveMesh);
 
   clock_t start = clock();
-  int nSteps = 20; 
+  int nSteps = 50; 
   double Ih;
   double Ihprev = INFINITY;
   int i;
@@ -189,10 +189,10 @@ int main() {
     Ih = solver.step(100, 1e-5);
     cout << "Ih = " << Ih << endl;
 
-    // if (Ih >= Ihprev) {
-    //     cout << "converged" << endl;
-    //     break;
-    // }
+    if (Ih >= Ihprev) {
+        cout << "converged" << endl;
+        break;
+    }
     Ihprev = Ih;
   }
 

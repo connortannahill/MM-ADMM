@@ -26,16 +26,26 @@ public:
     Eigen::MatrixXd *X;
     Eigen::MatrixXi *F;
     vector<vector<int>> *connectivity;
+    vector<double> *x;
+    vector<double> *y;
+    vector<double> *z;
+    Eigen::MatrixXd *monGridVals;
+    Eigen::MatrixXd *monGridTemp;
+    int nx, ny, nz;
+    void outputGridMesh();
 
     void updateMesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F);
     int evalWithKnn(Eigen::Vector<double, D> &x, Eigen::Vector<double,D+1> &bCoords);
     void computeBarycentricCoordinates(int simplexId, Eigen::Vector<double, D> &pnt,
             Eigen::Vector<double, D+1> &bCoords);
     void interpolateMonitor(MonitorFunction<D> &Mon);
+    void nearestNeighGridMap();
     void smoothMonitor(int nIters);
+    void smoothMonitorGrid(int nIters);
     void findNeighbourSimplices(int simplexId, vector<int> neighIds);
     void findNeighbourPoints(int pntId, vector<int> neighPnts);
     void checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, bool resize);
+    void evalMonitorOnGrid(Eigen::Vector<double, D> &x, Eigen::Matrix<double, D, D> &mVal);
     void evalMonitorOnSimplex(int simplexId, Eigen::Vector<double, D> &x, Eigen::Vector<double,D+1> &b,
             Eigen::Matrix<double,D,D> &mVal);
 
@@ -44,12 +54,12 @@ public:
      * These functions use nearest neighbour search for the closest centroid
     */
     KDTreeSingleIndexAdaptor<L2_Simple_Adaptor<double, MeshInterpolator<D>>,
-            MeshInterpolator<D>, D> *centroidSearchTree;
+            MeshInterpolator<D>, D> *vertexSearchTree;
     // vector<size_t> *ret_index;
     // vector<double> *out_dist_sqr;
 
     size_t kdtree_get_point_count() const {
-		return centroids->rows();
+		return X->rows();
     }
 
     // Returns the dim'th component of the idx'th point in the class:
@@ -57,7 +67,7 @@ public:
     //  "if/else's" are actually solved at compile time.
     // inline double kdtree_get_pt(const size_t idx, const size_t dim) const;
     double kdtree_get_pt(const size_t idx, const size_t dim) const {
-        return (*centroids)(idx, dim);
+        return (*X)(idx, dim);
     }
 
     // Optional bounding-box computation: return false to default to a standard bbox computation loop.

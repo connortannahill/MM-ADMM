@@ -373,25 +373,19 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
             MeshInterpolator<D> &interp, bool compGrad) {
     double Ih = 0.0;;
     double detFJ;
-    //Eigen::Vector<double,D> gradSimplex;
     double gradSimplex[D] = {0};  
     Eigen::Matrix<double,D,D> E;
     Eigen::Matrix<double,D,D> FJ;
     Eigen::Matrix<double,D,D> Ehat;
-    //double Ehat1[D][D] = {0};
     Eigen::Matrix<double,D,D> M;
     Eigen::Vector<double,D> xK;
     Eigen::Matrix<double,D,D> vLoc;
     Eigen::Vector<double,D> xTemp;
     Eigen::Matrix<double,D,D> Einv;
     Eigen::Matrix<double,D,D> dGdJ;
-    //Eigen::Matrix<double,D,D> Mt0;
-    //Eigen::Matrix<double,D,D> Mtn;
     Eigen::Vector<double,D> dGdX;
     Eigen::Matrix<double,D,D> dGdM;
-    //Eigen::Vector<double,D> basisComb;
     double basisComb[D] = {0};
-    //Eigen::Vector<int, D+1> ids;
 
     double dFact;
     if (D == 2) {
@@ -409,20 +403,13 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
     xK /= ((double) D + 1.0);
 
     // Interpolate the monitor function
-    // cout << "zId = " << zId << endl;
-    Eigen::Vector<double, D+1> bCoords;
-    // int sId = interp.evalWithKnn(xK, bCoords);
-    int sId = zId;
-    interp.evalMonitorOnSimplex(sId, xK, bCoords, M);
-    // interp.evalMonitorOnSimplex(zId, xK, M);
+    interp.evalMonitorOnGrid(xK, M);
     Eigen::Matrix<double, D, D> Minv(M.inverse());
-    // Eigen::Matrix<double, D, D> Minv;
 
     for (int i = 0; i < D+1; i++) {
         Eigen::Matrix<double, D, D> mTemp;
         xTemp = z.segment(i*D, D);
-        // sId = interp.evalWithKnn(xTemp, bCoords);
-        interp.evalMonitorOnSimplex(sId, xTemp, bCoords, mTemp);
+        interp.evalMonitorOnGrid(xTemp, mTemp);
         mPre->at(i) = mTemp;
     }
 
@@ -510,7 +497,7 @@ double AdaptationFunctional<D>::blockGradC(int zId, Eigen::Vector<double, D*(D+1
     }
 
     // Now add the constraint regularization
-    // Ih += 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
+    Ih += 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
 
     grad += -w*w*(*DXpU).segment(D*(D+1)*zId, D*(D+1)) + w*w*z;
 

@@ -230,6 +230,7 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
     // Create mesh interpolator
     mapEvaluator = new MeshInterpolator<D>();
     mapEvaluator->updateMesh((*this->Vc), (*this->F));
+    stepTaken = true; // TODO: add a setting where we know if the monitor is constant or not
     mapEvaluator->interpolateMonitor(*Mon);
 
     this->nPnts = X.rows();
@@ -374,6 +375,7 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
 
     for (int iters = 0; iters < nIter; iters++) {
         Ix = I_wx->blockGradC(zId, z, xi, gradZ, *mapEvaluator, true);
+
         if (iters != 0 && (abs((IxPrev - Ix) / IxPrev) < tol)) {
             break;
         }
@@ -405,25 +407,25 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         z += p;
 
         // Perform backtracking line search in the Hessian direction (should work if Hess is pos def)
-        // int lsIters = 0;
-        // double alpha = 1.0;
-        // double c1 = 0.0;
-        // Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, true);
+        int lsIters = 0;
+        double alpha = 1.0;
+        double c1 = 0.0;
+        Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, true);
 
-        // while (Ipurt >= Ix && lsIters < MAX_LS) {
-        //     alpha /= 10.0;
+        while (Ipurt >= Ix && lsIters < MAX_LS) {
+            alpha /= 10.0;
 
-        //     zPurt = z + alpha*p;
-        //     Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, false);
+            zPurt = z + alpha*p;
+            Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, false);
 
-        //     lsIters++;
-        // }
+            lsIters++;
+        }
 
-        // if (lsIters == MAX_LS) {
-        //     break;
-        // } else {
-        //     z = zPurt;
-        // }
+        if (lsIters == MAX_LS) {
+            break;
+        } else {
+            z = zPurt;
+        }
         IxPrev = Ix;
     }
 
@@ -491,10 +493,12 @@ void Mesh<D>::copyX(Eigen::VectorXd &tar) {
 
 template <int D>
 void Mesh<D>::setUp() {
-
-    // Update the mesh in the interpolator.
-    mapEvaluator->updateMesh((*this->Vp), (*this->F));
-    mapEvaluator->interpolateMonitor(*Mon);
+    if (!stepTaken) {
+        // Update the mesh in the interpolator.
+        mapEvaluator->updateMesh((*this->Vp), (*this->F));
+        mapEvaluator->interpolateMonitor(*Mon);
+        stepTaken = true;
+    }
 }
 
 template <int D>

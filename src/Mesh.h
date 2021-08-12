@@ -38,6 +38,7 @@ public:
     Eigen::VectorXd *DXpU;
     Eigen::MatrixXd *monitorEvals;
     MonitorFunction<D> *Mon;
+    bool stepTaken = false;
     MeshInterpolator<D> *mapEvaluator;
     void outputBoundaryNodes(const char *fname);
     Eigen::FullPivLU<Eigen::Matrix<double, D*(D+1), D*(D+1)>> *lu;
