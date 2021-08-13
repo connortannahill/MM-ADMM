@@ -38,7 +38,7 @@ public:
     double blockGrad(int zId, Eigen::Vector<double, D*(D+1)> &z,
                 Eigen::Vector<double, D*(D+1)> &xi,
                 Eigen::Vector<double, D*(D+1)> &grad,
-                MeshInterpolator<D> &interp);
+                MeshInterpolator<D> &interp, bool computeGrad);
     double blockGradC(int zId, Eigen::Vector<double, D*(D+1)> &z,
                 Eigen::Vector<double, D*(D+1)> &xi,
                 Eigen::Vector<double, D*(D+1)> &grad,

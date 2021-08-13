@@ -25,12 +25,11 @@ namespace utils {
     */
     inline int findLimInfMeshPoint(double w, vector<double> &w_mesh)
     {
-        int guess =  (int)((w - w_mesh.at(0))/(w_mesh.at(1) - w_mesh.at(0)));
+        uint32_t guess =  (int)((w - w_mesh.at(0))/(w_mesh.at(1) - w_mesh.at(0)));
         if (guess < 0) {
             guess = 0;
-        } else if (guess > (int)((w_mesh.back() - w_mesh.at(0))/(w_mesh.at(1) - w_mesh.at(0)))-1) {
-            guess = (int)((w_mesh.back() - w_mesh.at(0))/(w_mesh.at(1) - w_mesh.at(0)))-1;
-            assert(int(w_mesh.back()) == 1);
+        } else if (guess > w_mesh.size()-2) {
+            guess = w_mesh.size() - 2;
         }
         return guess;
     }

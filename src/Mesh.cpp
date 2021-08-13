@@ -364,7 +364,7 @@ template <int D>
 double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol) {
     double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
-    // const int MAX_LS = 10;
+    const int MAX_LS = 10;
 
     Eigen::Vector<double, D*(D+1)> zPurt;
     Eigen::Vector<double, D*(D+1)> gradZ;
@@ -375,13 +375,12 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
     Eigen::Vector<double, D*(D+1)> gradTemp;
 
     double Ix = 0;
-    // double Ipurt = 0;
+    double Ipurt = 0;
     double IxPrev = INFINITY;
-    Eigen::PartialPivLU<Eigen::Matrix<double, D*(D+1), D*(D+1)>> hessLU;
+    // Eigen::PartialPivLU<Eigen::Matrix<double, D*(D+1), D*(D+1)>> hessLU;
 
     for (int iters = 0; iters < nIter; iters++) {
-        // Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator, true);
-        Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator);
+        Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator, true);
 
         if (iters != 0 && (abs((IxPrev - Ix) / IxPrev) < tol)) {
             break;
@@ -397,34 +396,35 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
                 zPurt(i) += h;
 
                 // Compute gradient at purturbed point
-                // I_wx->blockGradC(zId, zPurt, xi, gradZPurt, *mapEvaluator, true);
-                I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator);
+                I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator, true);
                 hess.col(i) = (gradZPurt - gradZ)/h;
 
                 zPurt(i) = z(i);
             }
 
             // hessInv = hess.inverse();
-            hessLU = hess.lu();
+            // hessLU = hess.lu();
         }
 
 
         // Compute the Newton direction
-        p = hessLU.solve(-gradZ);
+        // p = hessLU.solve(-gradZ);
+        p = hess.lu().solve(-gradZ);
         // p = hessInv*(-gradZ);
         z += p;
 
         // Perform backtracking line search in the Hessian direction (should work if Hess is pos def)
         // int lsIters = 0;
         // double alpha = 1.0;
-        // double c1 = 0.0;
-        // Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, true);
+        // // double c1 = 0.0
+        // zPurt = z;
+        // Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp, *mapEvaluator, false);
 
         // while (Ipurt >= Ix && lsIters < MAX_LS) {
         //     alpha /= 10.0;
 
         //     zPurt = z + alpha*p;
-        //     Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, false);
+        //     Ipurt = I_wx->blockGrad(zId, zPurt, xi, gradTemp, *mapEvaluator, false);
 
         //     lsIters++;
         // }
@@ -464,7 +464,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
 
-        (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 1, 1e-6);
+        (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 5, 1e-6);
 
         for (int l = 0; l < D*(D+1); l++) {
             z(D*(D+1)*i+l) = z_i(l);
