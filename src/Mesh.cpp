@@ -407,25 +407,25 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         z += p;
 
         // Perform backtracking line search in the Hessian direction (should work if Hess is pos def)
-        int lsIters = 0;
-        double alpha = 1.0;
-        double c1 = 0.0;
-        Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, true);
+        // int lsIters = 0;
+        // double alpha = 1.0;
+        // double c1 = 0.0;
+        // Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, true);
 
-        while (Ipurt >= Ix && lsIters < MAX_LS) {
-            alpha /= 10.0;
+        // while (Ipurt >= Ix && lsIters < MAX_LS) {
+        //     alpha /= 10.0;
 
-            zPurt = z + alpha*p;
-            Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, false);
+        //     zPurt = z + alpha*p;
+        //     Ipurt = I_wx->blockGradC(zId, zPurt, xi, gradTemp, *mapEvaluator, false);
 
-            lsIters++;
-        }
+        //     lsIters++;
+        // }
 
-        if (lsIters == MAX_LS) {
-            break;
-        } else {
-            z = zPurt;
-        }
+        // if (lsIters == MAX_LS) {
+        //     break;
+        // } else {
+        //     z = zPurt;
+        // }
         IxPrev = Ix;
     }
 
