@@ -25,15 +25,28 @@ namespace utils {
     */
     inline int findLimInfMeshPoint(double w, vector<double> &w_mesh)
     {
-        return int((w - w_mesh.at(0))/(w_mesh.at(1) - w_mesh.at(0)));
+        int guess =  (int)((w - w_mesh.at(0))/(w_mesh.at(1) - w_mesh.at(0)));
+        if (guess < 0) {
+            guess = 0;
+        } else if (guess > (int)((w_mesh.back() - w_mesh.at(0))/(w_mesh.at(1) - w_mesh.at(0)))-1) {
+            guess = (int)((w_mesh.back() - w_mesh.at(0))/(w_mesh.at(1) - w_mesh.at(0)))-1;
+            assert(int(w_mesh.back()) == 1);
+        }
+        return guess;
     }
 
-    inline void biLinearInterpolation(double x, double y, vector<double> &xMesh,
-                                            vector<double> &yMesh, double *coefs) {
-        coefs[0] = (1/((xMesh.at(1)-xMesh.at(0))*(yMesh.at(1) - yMesh.at(0)))) * (xMesh.at(1) - x)*(yMesh.at(1) - y);
-        coefs[1] = (1/((xMesh.at(1)-xMesh.at(0))*(yMesh.at(1) - yMesh.at(0)))) * (x - xMesh.at(0))*(yMesh.at(1) - y);
-        coefs[2] = (1/((xMesh.at(1)-xMesh.at(0))*(yMesh.at(1) - yMesh.at(0)))) * (xMesh.at(1) - x)*(y - yMesh.at(0));
-        coefs[3] = (1/((xMesh.at(1)-xMesh.at(0))*(yMesh.at(1) - yMesh.at(0)))) * (x - xMesh.at(0))*(y - yMesh.at(0));
+    inline void biLinearInterpolation(double x, double y, double xMesh[2],
+                                            double yMesh[2], double *coefs) {
+        double norm = (1/((xMesh[1]-xMesh[0])*(yMesh[1] - yMesh[0])));
+        // x = (x - xMesh.at(0))/(xMesh.back() - xMesh.at(0));
+        // y = (y - yMesh.at(0))/(yMesh.back() - yMesh.at(0));
+        // cout << "norm = " << norm <<  endl;
+        // cout << "x.size = " << xMesh.size() <<  endl;
+        // cout << "(x, y) = (" << x << ", " << y << ")" << endl;
+        coefs[0] = norm * (xMesh[1] - x)*(yMesh[1] - y);
+        coefs[1] = norm * (x - xMesh[0])*(yMesh[1] - y);
+        coefs[2] = norm * (xMesh[1] - x)*(y - yMesh[0]);
+        coefs[3] = norm * (x - xMesh[0])*(y - yMesh[0]);
             
         // return (1/((xMesh[1]-xMesh[0])*(yMesh[1] - yMesh[0])))*(
         //             f[0]*(xMesh[1] - x)*(yMesh[1] - y)
