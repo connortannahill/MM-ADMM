@@ -239,7 +239,7 @@ void MeshInterpolator<D>::interpolateMonitor(MonitorFunction<D> &Mon) {
     // cout << "FINISHED Inteprolating monitor funtion" << endl;
 }
 
-const double CHECK_EPS = 1e-10;
+// const double CHECK_EPS = 1e-10;
 
 template <int D>
 void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &x, Eigen::Matrix<double, D, D> &mVal) {

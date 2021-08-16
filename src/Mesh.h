@@ -39,9 +39,12 @@ public:
     Eigen::MatrixXd *monitorEvals;
     MonitorFunction<D> *Mon;
     bool stepTaken = false;
+    bool hessComputed = false;
     MeshInterpolator<D> *mapEvaluator;
     void outputBoundaryNodes(const char *fname);
-    Eigen::FullPivLU<Eigen::Matrix<double, D*(D+1), D*(D+1)>> *lu;
+//    Eigen::FullPivLU<Eigen::Matrix<double, D*(D+1), D*(D+1)>> *lu;
+    vector<Eigen::Matrix<double, D*(D+1), D*(D+1)>> *hessInvs;
+    vector<Eigen::Vector<double, D*(D+1)>> *gradCurrs;
 
     Eigen::SparseMatrix<double> *M;
     Eigen::SparseMatrix<double> *Dmat;
@@ -54,6 +57,8 @@ public:
     void predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar);
     double newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
             Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol);
+    double bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
+            Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol, bool firstStep);
     void printDiff();
     double BFGSSimplex(int zId, Eigen::Vector<double,D*(D+1)> &z,
         Eigen::Vector<double,D*(D+1)> &xi, int nIter);

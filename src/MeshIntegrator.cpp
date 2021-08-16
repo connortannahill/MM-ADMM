@@ -83,7 +83,11 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         // start = clock();
         *DXpU = (*(a->Dmat))*(*x) + (*uBar);
         // a->updateAfterStep(dt, *xPrev, *x);
+        // if (i == 0) {
+        //     a->hessComputed = false;
+        // }
         IhCur = a->prox(dt, *x, *DXpU, *z);
+        // a->hessComputed = true;
         // assert(false);
         // prox += clock() - start;
 

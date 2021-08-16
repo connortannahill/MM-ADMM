@@ -149,7 +149,7 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     absK = abs(Edet/dFact);
 
     if (!computeGrad) {
-        return absK * G;
+        return absK * G + 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
     }
 
     this->dGdJ(FJ, detFJ, Minv, xK, dGdJ);
