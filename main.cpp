@@ -144,8 +144,8 @@ int main() {
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
-  int nx = 80;
-  int ny = 80;
+  int nx = 20;
+  int ny = 20;
   int nPnts = (nx+1)*(ny+1) + nx*ny;
   params["nx"] = nx;
   params["ny"] = ny;
@@ -179,7 +179,7 @@ int main() {
   cout << "Finished Creating the mesh object" << endl;
 
   // Create the solver
-  double dt = 0.5;
+  double dt = 0.1;
   cout << "Creating the sovler" << endl;
   MeshIntegrator<D> solver(dt, adaptiveMesh);
   cout << "FINISHED Creating the sovler" << endl;
