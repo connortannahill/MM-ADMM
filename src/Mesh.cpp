@@ -225,20 +225,13 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
     this->Ih = new Eigen::VectorXd(F.rows());
 
     // faceList = new Eigen::MatrixXd();
-    cout << "building the face list" << endl;
     buildFaceList();
 
     // Create mesh interpolator
-    cout << "Creating the mesh interpolator" << endl;
     mapEvaluator = new MeshInterpolator<D>();
-    cout << "FINISHED Creating the mesh interpolator" << endl;
-    cout << "Updating the mesh" << endl;
     mapEvaluator->updateMesh((*this->Vc), (*this->F));
-    cout << "FINSIHED Updating the mesh" << endl;
     stepTaken = true; // TODO: add a setting where we know if the monitor is constant or not
-    cout << "Interpolating the Mon" << endl;
     mapEvaluator->interpolateMonitor(*Mon);
-    cout << "FINSIHED Interpolating the Mon" << endl;
     this->nPnts = X.rows();
 
     this->Mon = Mon;
@@ -274,6 +267,7 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
 // TODO: add external forces (would be handled in this object, as the meshing object should control its own props)
 template <int D>
 void Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) {
+    // Compute the gradient at each point
     xBar = 2.0*x - xPrev;
 }
 
@@ -360,90 +354,47 @@ void Mesh<D>::buildDMatrix() {
  * BFGS quasi-Newton's method over a single simplex
 */
 template <int D>
-double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
+inline double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol, bool firstStep) {
     double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
     // const int MAX_LS = 10;
 
     Eigen::Vector<double, D*(D+1)> zPurt;
-    Eigen::Vector<double, D*(D+1)> gradZ;
-    Eigen::Vector<double, D*(D+1)> gradZPurt;
-    Eigen::Matrix<double, D*(D+1), D*(D+1)> hess;
-    // Eigen::Matrix<double, D*(D+1), D*(D+1)> hessInv;
-    Eigen::Vector<double, D*(D+1)> p;
-    // Eigen::Vector<double, D*(D+1)> gradTemp;
+    Eigen::Vector<double, D*(D+1)> Gkp1;
+    Eigen::Vector<double, D*(D+1)> Gk;
 
     double Ix = 0;
-    double Ipurt = 0;
-    double IxPrev = INFINITY;
 
     // If this is the first step for this simplex, compute the initial
     // Hessian and gradient
-    // cout << "hessComputed = " << hessComputed << endl;
-    I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator, true);
+    I_wx->blockGrad(zId, z, xi, Gk, *mapEvaluator, true);
     if (!hessComputed) {
-    //     // Eigen::Vector<double, D*(D+1)> Gk;
-    //     // I_wx->blockGrad(zId, z, xi, Gk, *mapEvaluator, true);
-        gradCurrs->at(zId) = gradZ;
-
         zPurt = z;
         for (int i = 0; i < D*(D+1); i++) {
             // Compute purturbation
             zPurt(i) += h;
 
             // Compute gradient at purturbed point
-            I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator, true);
-            hess.col(i) = (gradZPurt - gradZ)/h;
+            I_wx->blockGrad(zId, zPurt, xi, Gkp1, *mapEvaluator, true);
+            hessInvs->at(zId).col(i) = (Gkp1 - Gk)/h;
 
             zPurt(i) = z(i);
         }
-    //     // cout << "Hess compute" << endl;
-    //     // assert(false);
-        hessInvs->at(zId) = hess.inverse();
-    //     // Eigen::Matrix<double, D*(D+1), D*(D+1)> Bkinv = hess.inverse();
-    //     // hessInv = hess.inverse();
+        hessInvs->at(zId) = hessInvs->at(zId).inverse();
     }
 
-    // if (!firstStep) {
-    //     hessInvs->at(zId) = Eigen::Matrix<double, D*(D+1), D*(D+1)>::Identity(D*(D+1), D*(D+1));
-    // }
-
-
     // Get the existing information
-    // Gk = gradZ;
     Eigen::Matrix<double, D*(D+1), D*(D+1)> Bkinv = hessInvs->at(zId);
-    Eigen::Vector<double, D*(D+1)> Gk = gradZ;
-    // Eigen::Vector<double, D*(D+1)> Gk = gradCurrs->at(zId);
     Eigen::Vector<double, D*(D+1)> pk;
-    Eigen::Vector<double, D*(D+1)> Gkp1;
     Eigen::Vector<double, D*(D+1)> yk;
     Eigen::Vector<double, D*(D+1)> zTemp;
     double c1, c2;
     double alpha = 1.0;
-    const int MAX_ITERS = 50;
-    nIter = 1;
 
     for (int iter = 0; iter < nIter; iter++) {
         // Compute the Newton direction
         alpha = 1;
         pk = - Bkinv * Gk; 
-
-        // Perform a line search
-        // if (iter == 0) {
-        //     zTemp = z + alpha*pk;
-        //     Ix = I_wx->blockGrad(zId, zTemp, xi, Gkp1, *mapEvaluator, true);
-        // }
-        // int ls_iters = 0;
-        // double I_ls = INFINITY;
-
-        // while (ls_iters < MAX_ITERS && I_ls > Ix) {
-        //     zTemp = z + alpha*pk;
-        //     I_ls = I_wx->blockGrad(zId, zTemp, xi, Gkp1, *mapEvaluator, true);
-        //     alpha /= 2.0;
-        //     ls_iters++;
-        // }
-
-        // cout << "in " << ls_iters << " val = " << I_ls << " valPrev = " << Ix << endl;
 
         // Update the solution
         z += alpha*pk;
@@ -463,10 +414,8 @@ double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         c1 = (pk.dot(yk) + yk.dot(Bkinv*yk))/(pow(c2, 2.0));
         Bkinv += c1 * (pk * pk.transpose()) - Bkinv*(yk*pk.transpose()) / c2 - pk*(yk.transpose()*Bkinv) / c2; 
         Gk = Gkp1;
-        // IxPrev = Ix;
     }
 
-    gradCurrs->at(zId) = Gk;
     hessInvs->at(zId) = Bkinv;
 
     // Return the updated objective function value on this simplex
@@ -491,9 +440,7 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
     Eigen::Vector<double, D*(D+1)> gradTemp;
 
     double Ix = 0;
-    double Ipurt = 0;
     double IxPrev = INFINITY;
-    // Eigen::PartialPivLU<Eigen::Matrix<double, D*(D+1), D*(D+1)>> hessLU;
 
     for (int iters = 0; iters < nIter; iters++) {
         Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator, true);
@@ -517,16 +464,11 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
 
                 zPurt(i) = z(i);
             }
-
-            // hessInv = hess.inverse();
-            // hessLU = hess.lu();
         }
 
 
         // Compute the Newton direction
-        // p = hessLU.solve(-gradZ);
         p = hess.lu().solve(-gradZ);
-        // p = hessInv*(-gradZ);
         z += p;
 
         IxPrev = Ix;
@@ -562,7 +504,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         // (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 3, 1e-6);
         // (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 50, 1e-6, stepTaken);
-        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 50, 1e-4, hessComputed);
+        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 100, 1e-8, hessComputed);
 
         for (int l = 0; l < D*(D+1); l++) {
             z(D*(D+1)*i+l) = z_i(l);

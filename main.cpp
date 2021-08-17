@@ -144,13 +144,13 @@ int main() {
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
-  int nx = 160;
-  int ny = 160;
+  int nx = 80;
+  int ny = 80;
   int nPnts = (nx+1)*(ny+1) + nx*ny;
   params["nx"] = nx;
   params["ny"] = ny;
   params["d"] = D;
-  double rho = 25.0;
+  double rho = 5.0;
   params["rho"] = rho;
 
   params["xa"] = 0.0;
@@ -159,7 +159,7 @@ int main() {
   params["yb"] = 1.0;
   params["theta"] = 0.5;
   params["p"] = 1;
-  double tau = 1e-2;
+  double tau = 1e-3;
   params["tau"] = tau;
 
   Eigen::MatrixXd *Vc = nullptr;
@@ -179,19 +179,19 @@ int main() {
   cout << "Finished Creating the mesh object" << endl;
 
   // Create the solver
-  double dt = 0.1;
+  double dt = 0.5;
   cout << "Creating the sovler" << endl;
   MeshIntegrator<D> solver(dt, adaptiveMesh);
   cout << "FINISHED Creating the sovler" << endl;
 
   clock_t start = clock();
-  int nSteps = 50; 
+  int nSteps = 100; 
   double Ih;
   double Ihprev = INFINITY;
   int i;
   cout << "Running the solver" << endl;
   for (i = 0; i < nSteps; i++) {
-    Ih = solver.step(100, 1e-3);
+    Ih = solver.step(100, 1e-4);
     cout << "Ih = " << Ih << endl;
 
     if (Ih >= Ihprev) {

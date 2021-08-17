@@ -62,6 +62,7 @@ public:
     void printDiff();
     double BFGSSimplex(int zId, Eigen::Vector<double,D*(D+1)> &z,
         Eigen::Vector<double,D*(D+1)> &xi, int nIter);
+    double approximateGrads();
 
     Eigen::MatrixXi *faceList;
     vector<set<int>> *faceConnects;

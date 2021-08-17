@@ -242,11 +242,11 @@ void MeshInterpolator<D>::interpolateMonitor(MonitorFunction<D> &Mon) {
 // const double CHECK_EPS = 1e-10;
 
 template <int D>
-void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &x, Eigen::Matrix<double, D, D> &mVal) {
+inline void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &x, Eigen::Matrix<double, D, D> &mVal) {
     int xInd = utils::findLimInfMeshPoint(x(0), *this->x);
     int yInd = utils::findLimInfMeshPoint(x(1), *this->y);
     Eigen::Vector<double, D*D> mTemp;
-    Eigen::Vector<double, D*D> mFlat;
+    // Eigen::Vector<double, D*D> mFlat;
 
     if (D == 2) {
         double coefs[4] = {0.0};
@@ -283,18 +283,18 @@ void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &x, Eigen::
         // mFlat += coefs[2]*(*monGridVals)((yInd+1)*(nx+1) + xInd, Eigen::all);
         // mFlat += coefs[3]*(*monGridVals)((yInd+1)*(nx+1) + xInd+1, Eigen::all);
     } else {
-        int zInd = utils::findLimInfMeshPoint(x(2), *this->z);
-        double coefs[8] = {0.0};
-        utils::triLinearInterpolation(x(0), x(1), x(2), *this->x, *this->y, *this->z, coefs);
+        // int zInd = utils::findLimInfMeshPoint(x(2), *this->z);
+        // double coefs[8] = {0.0};
+        // utils::triLinearInterpolation(x(0), x(1), x(2), *this->x, *this->y, *this->z, coefs);
 
-        mFlat += coefs[0]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
-        mFlat += coefs[1]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
-        mFlat += coefs[2]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
-        mFlat += coefs[3]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
-        mFlat += coefs[4]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
-        mFlat += coefs[5]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
-        mFlat += coefs[6]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
-        mFlat += coefs[7]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
+        // mFlat += coefs[0]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
+        // mFlat += coefs[1]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
+        // mFlat += coefs[2]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
+        // mFlat += coefs[3]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
+        // mFlat += coefs[4]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
+        // mFlat += coefs[5]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
+        // mFlat += coefs[6]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
+        // mFlat += coefs[7]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
     }
 
     // for (int i = 0; i < D*D; i++) {
