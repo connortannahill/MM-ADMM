@@ -254,22 +254,29 @@ void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &x, Eigen::
         double yMesh[2] = {this->y->at(yInd), this->y->at(yInd+1)};
         utils::biLinearInterpolation(x(0), x(1), xMesh, yMesh, coefs);
 
-        mTemp = (*monGridVals)(yInd*(nx+1) + xInd, Eigen::all);
-        mTemp *= coefs[0];
-        mFlat.setZero();
-        mFlat += mTemp;
+        for (int n = 0; n < D*D; n++) {
+            mVal(n / D, n % D) = coefs[0]*(*monGridVals)(yInd*(nx+1)+xInd, n)
+                                + coefs[1]*(*monGridVals)(yInd*(nx+1)+xInd+1, n)
+                                + coefs[2]*(*monGridVals)((yInd+1)*(nx+1)+xInd, n)
+                                + coefs[3]*(*monGridVals)((yInd+1)*(nx+1)+xInd+1, n);
+        }
 
-        mTemp = (*monGridVals)(yInd*(nx+1) + xInd+1, Eigen::all);
-        mTemp *= coefs[1];
-        mFlat += mTemp;
+        // mTemp = (*monGridVals)(yInd*(nx+1) + xInd, Eigen::all);
+        // mTemp *= coefs[0];
+        // mFlat.setZero();
+        // mFlat += mTemp;
 
-        mTemp = (*monGridVals)((yInd+1)*(nx+1) + xInd, Eigen::all);
-        mTemp *= coefs[2];
-        mFlat += mTemp;
+        // mTemp = (*monGridVals)(yInd*(nx+1) + xInd+1, Eigen::all);
+        // mTemp *= coefs[1];
+        // mFlat += mTemp;
 
-        mTemp = (*monGridVals)((yInd+1)*(nx+1) + xInd+1, Eigen::all);
-        mTemp *= coefs[3];
-        mFlat += mTemp;
+        // mTemp = (*monGridVals)((yInd+1)*(nx+1) + xInd, Eigen::all);
+        // mTemp *= coefs[2];
+        // mFlat += mTemp;
+
+        // mTemp = (*monGridVals)((yInd+1)*(nx+1) + xInd+1, Eigen::all);
+        // mTemp *= coefs[3];
+        // mFlat += mTemp;
  
         // mFlat = coefs[0]*(*monGridVals)(yInd*(nx+1) + xInd, Eigen::all);
         // mFlat += coefs[1]*(*monGridVals)(yInd*(nx+1) + xInd+1, Eigen::all);
@@ -290,9 +297,9 @@ void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &x, Eigen::
         mFlat += coefs[7]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
     }
 
-    for (int i = 0; i < D*D; i++) {
-        mVal(i/D, i%D) = mFlat(i);
-    }
+    // for (int i = 0; i < D*D; i++) {
+    //     mVal(i/D, i%D) = mFlat(i);
+    // }
     // cout << "FINISHED Evalling monitor on gird" << endl;
 }
 
