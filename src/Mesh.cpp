@@ -230,7 +230,7 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
     // Create mesh interpolator
     mapEvaluator = new MeshInterpolator<D>();
     mapEvaluator->updateMesh((*this->Vc), (*this->F));
-    stepTaken = true; // TODO: add a setting where we know if the monitor is constant or not
+    // stepTaken = true; // TODO: add a setting where we know if the monitor is constant or not
     mapEvaluator->interpolateMonitor(*Mon);
     this->nPnts = X.rows();
 
@@ -357,7 +357,6 @@ template <int D>
 inline double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol, bool firstStep) {
     double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
-    // const int MAX_LS = 10;
 
     Eigen::Vector<double, D*(D+1)> zPurt;
     Eigen::Vector<double, D*(D+1)> Gkp1;
@@ -369,6 +368,7 @@ inline double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z
     // Hessian and gradient
     I_wx->blockGrad(zId, z, xi, Gk, *mapEvaluator, true);
     if (!hessComputed) {
+        // cout << "on step " << nSteps << endl;
         zPurt = z;
         for (int i = 0; i < D*(D+1); i++) {
             // Compute purturbation
@@ -391,7 +391,8 @@ inline double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z
     double c1, c2;
     double alpha = 1.0;
 
-    for (int iter = 0; iter < nIter; iter++) {
+    int iter;
+    for (iter = 0; iter < nIter; iter++) {
         // Compute the Newton direction
         alpha = 1;
         pk = - Bkinv * Gk; 
@@ -559,6 +560,7 @@ void Mesh<D>::updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd
             (*Vp)(i, j) = x(i*cols+j);
         }
     }
+    nSteps++;
 }
 
 template <int D>

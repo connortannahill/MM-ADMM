@@ -30,6 +30,7 @@ public:
     void setUp();
     int getNPnts();
     ~Mesh();
+    int nSteps = 0;
     Eigen::MatrixXd *Vc;
     Eigen::MatrixXd *Vp;
     Eigen::MatrixXi *F;
