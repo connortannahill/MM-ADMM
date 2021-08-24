@@ -561,7 +561,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         // (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 3, 1e-6);
         // (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 50, 1e-6, stepTaken);
-        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 100, 1e-6, hessComputed);
+        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 100, 1e-5, hessComputed);
 
         for (int l = 0; l < D*(D+1); l++) {
             z(D*(D+1)*i+l) = z_i(l);
