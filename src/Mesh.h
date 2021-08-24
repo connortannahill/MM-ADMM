@@ -4,7 +4,6 @@
 #include "AdaptationFunctional.h"
 #include "MonitorFunction.h"
 #include "MeshInterpolator.h"
-#include "PhaseM.h"
 #include <Eigen/Sparse>
 #include <vector>
 #include <set>
@@ -27,6 +26,7 @@ public:
     void outputSimplices(const char *fname);
     void copyX(Eigen::VectorXd &tar);
     void outputPoints(const char *fname);
+    void computeNodalGrads(Eigen::VectorXd &grad);
     void setUp();
     int getNPnts();
     ~Mesh();

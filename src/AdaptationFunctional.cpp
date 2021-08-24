@@ -19,10 +19,10 @@ AdaptationFunctional<D>::AdaptationFunctional(const AdaptationFunctional &obj) {
     assert(false);
 
     // assert(false);
-    mPre = new vector<Eigen::Matrix<double, D, D>>(D+1);
-    for (int i = 0; i < D+1; i++) {
-        mPre->at(i) = obj.mPre->at(i);
-    }
+    // mPre = new vector<Eigen::Matrix<double, D, D>>(D+1);
+    // for (int i = 0; i < D+1; i++) {
+    //     mPre->at(i) = obj.mPre->at(i);
+    // }
     // for (int i = 0; i < D+1; i++) {
     //     // Eigen::Matrix<double, D, D> temp = Eigen::Matrix<double, D, D>::Zero();
     //     // mPre->push_back(temp);
@@ -65,7 +65,7 @@ AdaptationFunctional<D>::AdaptationFunctional( Eigen::MatrixXd &Vc,
 
     this->M = m;
 
-    this->mPre = new vector<Eigen::Matrix<double, D, D>>(D+1);
+    // this->mPre = new vector<Eigen::Matrix<double, D, D>>(D+1);
 }
 
 
@@ -76,8 +76,8 @@ template <int D>
 inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)> &z,
             Eigen::Vector<double, D*(D+1)> &xi,
             Eigen::Vector<double, D*(D+1)> &grad,
-            MeshInterpolator<D> &interp, bool computeGrad) {
-    double Ih = 0.0;;
+            MeshInterpolator<D> &interp, bool computeGrad, bool regularize) {
+    double Ih = 0.0;
     double detFJ;
     Eigen::Vector<double,D> gradSimplex;
     // Eigen::Vector<double,D*(D+1)> gradLocal;
@@ -116,12 +116,13 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
     // Interpolate the monitor function
     interp.evalMonitorOnGrid(xK, M);
     Eigen::Matrix<double, D, D> Minv(M.inverse());
+    vector<Eigen::Matrix<double, D, D>> mPre(D+1);
 
     Eigen::Matrix<double, D, D> mTemp;
     for (int i = 0; i < D+1; i++) {
         xTemp = z.segment(i*D, D);
         interp.evalMonitorOnGrid(xTemp, mTemp);
-        mPre->at(i) = mTemp;
+        mPre.at(i) = mTemp;
     }
 
     double G, dGddet;
@@ -155,6 +156,7 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
 
     G = theta * detM * pow(trJMJt, d*p/2.0)
         + (1.0 - 2.0*theta) * pow(d, d*p/2.0) * detM * pow(detFJ/detM, p);
+    // G = this->G(FJ, detFJ, M, xK);
 
     absK = abs(Edet/dFact);
 
@@ -162,16 +164,22 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
         return absK * G + 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
     }
 
+    // this->dGdJ(FJ, detFJ, M, xK, dGdJ);
+    // dGddet = this->dGddet(FJ, detFJ, M, xK);
+    // this->dGdM(FJ, detFJ, M, xK, dGdM);
+    // this->dGdX(FJ, detFJ, M, xK, dGdX);
+
     dGdJ = d*p*theta*detM * pow(trJMJt, d*p/2.0 - 1) * MinvJt;
     dGddet = p*(1.0 - 2.0*theta)*pow(d, (d*p)/2.0)*pow(detM, 1.0 - p)*pow(detFJ, p-1);
     dGdM = (-0.5*theta*d*p * detM * pow(trJMJt, d*p/2.0 - 1) * Minv.transpose() * FJt * FJ * Minv)
         + (( 0.5*theta * detM * pow(trJMJt, d*p/2.0) 
         + ((0.5-theta)*(1.0-p)*pow(d, d*p/2.0)) * pow(detM, 1-p) * pow(detFJ, p) ) * Minv);
+    dGdX.setZero();
 
     basisComb.setZero();
     j = 0;
     for (int n = (i+1)%(D+1); n != i; n = (n+1)%(D+1)) {
-        basisComb += Einv.row(j) * ((dGdM * (mPre->at(n) - mPre->at(i))).trace());
+        basisComb += Einv.row(j) * ((dGdM * (mPre.at(n) - mPre.at(i))).trace());
         j++;
     }
 
@@ -202,22 +210,30 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
 
     grad *= absK;
 
+    // cout << "IN BLOCKGRAD" << endl;
+    // cout << "z_i " << z.transpose() << endl;
+    // cout << "xi_i " << z.transpose() << endl;
+    // cout << "grad norm z " << grad.norm() << endl;
+    // cout << "grad " << grad.transpose() << endl;
+    // cout << "OUT BLOCKGRAD" << endl;
+
     // Update the energy
     if (i == 0) {
-        Ih += absK * G;
+        Ih = absK * G;
     }
 
     // Now add the constraint regularization
-    Ih += 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
+    if (regularize) {
+        Ih += 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
 
-    grad += -w*w*(*DXpU).segment(D*(D+1)*zId, D*(D+1)) + w*w*z;
+        grad += w*w*(-(*DXpU).segment(D*(D+1)*zId, D*(D+1)) + z);
+    }
 
     return Ih;
 }
 
 template <int D>
 AdaptationFunctional<D>::~AdaptationFunctional() {
-    delete mPre;
 }
 
 template class AdaptationFunctional<2>;

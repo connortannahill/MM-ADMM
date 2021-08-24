@@ -28,7 +28,7 @@ MeshInterpolator<D>::MeshInterpolator() {
     vertexSearchTree
         = new KDTreeSingleIndexAdaptor<L2_Simple_Adaptor<double, MeshInterpolator<D>>,
                 MeshInterpolator<D>, D>
-                (3 /*dim*/, *this, KDTreeSingleIndexAdaptorParams(5 /* max leaf */) );
+                (2 /*dim*/, *this, KDTreeSingleIndexAdaptorParams(5 /* max leaf */) );
 }
 
 template <int D>

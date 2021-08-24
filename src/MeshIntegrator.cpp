@@ -62,7 +62,8 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     (this->a)->predictX(dt, *this->xPrev, *this->x, *this->xBar);
 
     *xPrev = *x;
-    *z = (*a->Dmat) * *x;
+    // *z = (*a->Dmat) * *x;
+    *z = (*a->Dmat) * *this->xBar;
 
     *x = *xBar;
     // uBar->setZero();
@@ -87,6 +88,7 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         //     a->hessComputed = false;
         // }
         IhCur = a->prox(dt, *x, *DXpU, *z);
+        a->stepTaken = true;
         // a->hessComputed = true;
         // assert(false);
         // prox += clock() - start;
@@ -101,6 +103,7 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         // xUpdate += clock() - start;
 
         if (i >= 1 && abs((IhPrev - IhCur)/(IhPrev)) < tol) {
+        // if (((*a->W).coeff(0,0)*((*a->Dmat)*(*x))).norm() < tol) {
             break;
         }
         IhPrev = IhCur;

@@ -13,7 +13,9 @@
 #include <algorithm>
 #include <Eigen/LU>
 
-#define THREAD_NUM 1
+#ifdef NUM_THREADS
+#include <omp.h>
+#endif
 
 using namespace std;
 
@@ -222,10 +224,16 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
     this->F = &F;
     this->boundaryMask = &boundaryMask;
 
+    this->tau = tau;
+
     this->Ih = new Eigen::VectorXd(F.rows());
 
     // faceList = new Eigen::MatrixXd();
     buildFaceList();
+
+#ifdef NUMTHREADS
+    omp_set_num_threads(NUMTHREADS);
+#endif
 
     // Create mesh interpolator
     mapEvaluator = new MeshInterpolator<D>();
@@ -267,8 +275,70 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
 // TODO: add external forces (would be handled in this object, as the meshing object should control its own props)
 template <int D>
 void Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) {
-    // Compute the gradient at each point
-    xBar = 2.0*x - xPrev;
+    if (stepTaken == false) {
+        // If the step is not taken we do Euler's method
+        Eigen::Vector<double, D*(D+1)> x_i;
+        Eigen::Vector<double, D*(D+1)> xi_i;
+        Eigen::Vector<double, D*(D+1)> gradSimp;
+        Eigen::Vector<double, D> pnt;
+
+        Eigen::VectorXd grad(D*Vp->rows());
+        grad.setZero();
+
+        for (int i = 0; i < F->rows(); i++) {
+            for (int n = 0; n < D+1; n++) {
+                pnt = (*Vc)((*F)(i,n), Eigen::all);
+                
+                for (int l = 0; l < D; l++) {
+                    xi_i(n*D+l) = pnt(l);
+                }
+            }
+
+            for (int n = 0; n < D+1; n++) {
+                pnt = (*Vp)((*F)(i,n), Eigen::all);
+
+                for (int l = 0; l < D; l++) {
+                    x_i(n*D+l) = pnt(l);
+                }
+            }
+
+            // Compute the local gradient
+            // cout << "CALLING BLOCKGRAD FROM MESH SETUP" << endl;
+            I_wx->blockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, true, false);
+            // cout << "DATA AFTER BLOCK GRAD" << endl;
+            // cout << "x_i = " << x_i.transpose() << endl;
+            // cout << "xi_i = " << xi_i.transpose() << endl << endl;
+            // cout << "||gradSimp_i|| = " << gradSimp.norm() << endl << endl;
+            // cout << "gradSimp_i = " << gradSimp.transpose() << endl << endl;
+            // cout << "FINISHED DATA AFTER BLOCK GRAD" << endl;
+
+            // For place into the respective gradients
+            for (int n = 0; n < D+1; n++) {
+                int off = (*F)(i,n);
+
+                 
+                if (boundaryMask->at((*F)(i,n)) == NodeType::INTERIOR) {
+                    grad.segment(D*off, D) += gradSimp.segment(D*n, D);
+                }
+            }
+        }
+
+        // cout << "norm grad = " << grad << endl;
+        // cout << "norm grad = " << grad.norm() << endl;
+
+        // cout << "tau = " << tau << endl;
+        // cout << "dt = " << dt << endl;
+        xBar = x - (dt / tau) * grad;
+
+        // cout << "diff " << (xBar - x).norm() << endl;
+
+        // assert(false);
+    } else {
+        // Compute the gradient at each point
+        xBar = 2.0*x - xPrev;
+    }
+    // xBar = 2.0*x - xPrev;
+
 }
 
 template <int D>
@@ -366,21 +436,24 @@ inline double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z
 
     // If this is the first step for this simplex, compute the initial
     // Hessian and gradient
-    I_wx->blockGrad(zId, z, xi, Gk, *mapEvaluator, true);
+    Ix = I_wx->blockGrad(zId, z, xi, Gk, *mapEvaluator, true, true);
     if (!hessComputed) {
-        // cout << "on step " << nSteps << endl;
         zPurt = z;
         for (int i = 0; i < D*(D+1); i++) {
             // Compute purturbation
             zPurt(i) += h;
 
             // Compute gradient at purturbed point
-            I_wx->blockGrad(zId, zPurt, xi, Gkp1, *mapEvaluator, true);
+            I_wx->blockGrad(zId, zPurt, xi, Gkp1, *mapEvaluator, true, true);
             hessInvs->at(zId).col(i) = (Gkp1 - Gk)/h;
 
             zPurt(i) = z(i);
         }
         hessInvs->at(zId) = hessInvs->at(zId).inverse();
+    }
+
+    if (Gk.norm() < tol) {
+        return Ix;
     }
 
     // Get the existing information
@@ -389,21 +462,19 @@ inline double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z
     Eigen::Vector<double, D*(D+1)> yk;
     Eigen::Vector<double, D*(D+1)> zTemp;
     double c1, c2;
-    double alpha = 1.0;
 
     int iter;
     for (iter = 0; iter < nIter; iter++) {
         // Compute the Newton direction
-        alpha = 1;
         pk = - Bkinv * Gk; 
 
         // Update the solution
-        z += alpha*pk;
+        z += pk;
 
         // Update the secant direction, first computing the new gradient
-        Ix = I_wx->blockGrad(zId, z, xi, Gkp1, *mapEvaluator, true);
+        Ix = I_wx->blockGrad(zId, z, xi, Gkp1, *mapEvaluator, true, true);
 
-        if (iter != 0 && Gkp1.norm() < tol) {
+        if (Gkp1.norm() < tol) {
             Gk = Gkp1;
             break;
         }
@@ -444,7 +515,7 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
     double IxPrev = INFINITY;
 
     for (int iters = 0; iters < nIter; iters++) {
-        Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator, true);
+        Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator, true, true);
 
         if (iters != 0 && (abs((IxPrev - Ix) / IxPrev) < tol)) {
             break;
@@ -460,7 +531,7 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
                 zPurt(i) += h;
 
                 // Compute gradient at purturbed point
-                I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator, true);
+                I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator, true, true);
                 hess.col(i) = (gradZPurt - gradZ)/h;
 
                 zPurt(i) = z(i);
@@ -487,11 +558,14 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
     // Run Newton's method on each simplex
     Ih->setZero();
 
-    // #pragma omp parallel for
     Eigen::Vector<double, D*(D+1)> z_i;
     Eigen::Vector<double, D*(D+1)> xi_i;
     Eigen::Vector<double, D> pnt;
     Eigen::Vector<double, D> zTemp;
+
+#ifdef NUMTHREADS
+    #pragma omp parallel for
+#endif
     for (int i = 0; i < F->rows(); i++) {
         for (int n = 0; n < D+1; n++) {
             pnt = (*Vc)((*F)(i,n), Eigen::all);
@@ -505,7 +579,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         // (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 3, 1e-6);
         // (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 50, 1e-6, stepTaken);
-        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 100, 1e-8, hessComputed);
+        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 100, 1e-4, hessComputed);
 
         for (int l = 0; l < D*(D+1); l++) {
             z(D*(D+1)*i+l) = z_i(l);
@@ -527,9 +601,9 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
     }
     hessComputed = true;
 
-    stepTaken = true;
+    // stepTaken = true;
 
-    return Ih->sum() / F->rows();
+    return Ih->sum();// / F->rows();
 }
 
 template <int D>
@@ -548,7 +622,7 @@ void Mesh<D>::setUp() {
         // Update the mesh in the interpolator.
         mapEvaluator->updateMesh((*this->Vp), (*this->F));
         mapEvaluator->interpolateMonitor(*Mon);
-        stepTaken = true;
+        // stepTaken = true;
     }
 }
 
@@ -560,7 +634,6 @@ void Mesh<D>::updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd
             (*Vp)(i, j) = x(i*cols+j);
         }
     }
-    nSteps++;
 }
 
 template <int D>

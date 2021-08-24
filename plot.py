@@ -7,9 +7,12 @@ mode = int(sys.argv[1])
 
 if mode == 0:
 
-    points = np.genfromtxt('points.txt', delimiter=',')
+    testName = sys.argv[2]
+    outDir = 'Experiments/Results/' + testName
+
+    points = np.genfromtxt('{}/points.txt'.format(outDir), delimiter=',')
     # print(points)
-    triangles = np.genfromtxt('triangles.txt', delimiter=',')
+    triangles = np.genfromtxt('{}/triangles.txt'.format(outDir), delimiter=',')
     # X = np.genfromtxt('pointsPerfect.txt', delimiter=',')
 
     triang = mtri.Triangulation(points[:,0], points[:,1], triangles=triangles)
