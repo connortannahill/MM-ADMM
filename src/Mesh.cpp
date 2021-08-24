@@ -17,6 +17,10 @@
 #include <omp.h>
 #endif
 
+#ifndef NUM_THREADS
+#define NUM_THREADS 1
+#endif
+
 using namespace std;
 
 void segmentDS(Eigen::VectorXd &x, int xOff, Eigen::Vector2d &z, int num) {
@@ -264,7 +268,7 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
     gradCurrs = new vector<Eigen::Vector<double, D*(D+1)>>(this->F->rows());
     // Set the Hessians to the identity intiially
     Eigen::Matrix<double, D*(D+1), D*(D+1)> eye = Eigen::Matrix<double, D*(D+1), D*(D+1)>::Identity(D*(D+1), D*(D+1));
-    for (int i = 0; i < hessInvs->size(); i++) {
+    for (uint32_t i = 0; i < hessInvs->size(); i++) {
         hessInvs->at(i) = eye;
     }
 
@@ -540,15 +544,24 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
     // Run Newton's method on each simplex
     Ih->setZero();
 
+#if NUMTHREADS == 1
     Eigen::Vector<double, D*(D+1)> z_i;
     Eigen::Vector<double, D*(D+1)> xi_i;
     Eigen::Vector<double, D> pnt;
     Eigen::Vector<double, D> zTemp;
+#endif
 
-#ifdef NUMTHREADS
+#if NUMTHREADS > 1
     #pragma omp parallel for
 #endif
     for (int i = 0; i < F->rows(); i++) {
+
+#if NUMTHREADS > 1
+        Eigen::Vector<double, D*(D+1)> z_i;
+        Eigen::Vector<double, D*(D+1)> xi_i;
+        Eigen::Vector<double, D> pnt;
+        Eigen::Vector<double, D> zTemp;
+#endif
         for (int n = 0; n < D+1; n++) {
             pnt = (*Vc)((*F)(i,n), Eigen::all);
             
