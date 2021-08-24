@@ -5,6 +5,7 @@ import glob
 import matplotlib.pyplot
 import matplotlib.tri as mtri
 import numpy as np
+import time
 
 """
 TEMPLATES AND MISC
@@ -14,6 +15,7 @@ FUNS = """
 create_input()
 grid_scale_test_2d()
 output_grid_scale_test_2d()
+run_parallel_experiment()
 """
 
 FUNS_LIST = FUNS.split()
@@ -21,6 +23,7 @@ FUNS_LIST = FUNS.split()
 def getTemplate2D():
     TEMPLATE_2D = """$testType
     $monType
+    $boundaryType
     $nSteps
     $dt
     $tau
@@ -36,6 +39,7 @@ def getTemplate2D():
 def getTemplate3D():
     TEMPLATE_3D = """$testType
     $monType
+    $boundaryType
     $nSteps
     $dt
     $tau
@@ -80,6 +84,20 @@ def outputPng(outDir):
 """
 Functions to be called
 """
+
+def run_parallel_experiment():
+    testName = input('test name = ')
+
+    HIGHEST_POW = 6
+
+    pows = [2**i for i in range(HIGHEST_POW+1)]
+
+    subprocess.run('make par'.split())
+
+    exes = ['meshP{1}.exe'.format(mesh, str(pow)) for pow in pows]
+
+    for exe in exes:
+        subprocess.run('./{0} {1}'.format(exe, testName).split())
 
 def output_grid_scale_test_2d():
     testName = input('test name = ')

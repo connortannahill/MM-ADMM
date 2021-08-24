@@ -23,6 +23,16 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
   double dt, tau, rho;
   double xa, xb, ya, yb;
 
+  int boundaryType
+  inputFile >> boundaryType;
+
+  Mesh<D>::NodeType type;
+  if (boundaryType == 0) {
+    type = Mesh<D>::NodeType::BOUNDARY_FREE;
+  } else {
+    type = Mesh<D>::NodeType::BOUNDARY_FIXED;
+  }
+
   inputFile >> nSteps;
   inputFile >> dt;
   inputFile >> tau;
@@ -58,7 +68,7 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
   boundaryMask = new vector<Mesh<2>::NodeType>(Vc->rows());
 
   utils::generateUniformRectMesh(params, Vc, F, boundaryMask,
-      Mesh<2>::NodeType::BOUNDARY_FIXED);
+      type);
 
   Mesh<D> adaptiveMesh(*Vc, *F, *boundaryMask, mon, rho, tau);
 

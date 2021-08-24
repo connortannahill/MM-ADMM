@@ -191,11 +191,8 @@ void MeshInterpolator<D>::nearestNeighGridMap() {
     if (D == 2) {
         for (int i = 0; i < nx+1; i++) {
             for (int j = 0; j < ny+1; j++) {
-                // cout << "(i, j) = (" << i << ", " << j << ")" << endl;
                 query_pt[0] = x->at(i);
-                // cout << "got x" << endl;
                 query_pt[1] = y->at(j);
-                // cout << "got y" << endl;
 
                 int numFound = vertexSearchTree->knnSearch(&query_pt[0],
                     1, &ret_index[0], &out_dist_sqr[0]);
