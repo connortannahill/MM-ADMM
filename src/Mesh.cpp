@@ -275,7 +275,8 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
 // TODO: add external forces (would be handled in this object, as the meshing object should control its own props)
 template <int D>
 void Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) {
-    if (stepTaken == false) {
+    // if (!stepTaken) {
+    if (!stepTaken) {
         // If the step is not taken we do Euler's method
         Eigen::Vector<double, D*(D+1)> x_i;
         Eigen::Vector<double, D*(D+1)> xi_i;
@@ -303,19 +304,11 @@ void Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Ei
             }
 
             // Compute the local gradient
-            // cout << "CALLING BLOCKGRAD FROM MESH SETUP" << endl;
             I_wx->blockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, true, false);
-            // cout << "DATA AFTER BLOCK GRAD" << endl;
-            // cout << "x_i = " << x_i.transpose() << endl;
-            // cout << "xi_i = " << xi_i.transpose() << endl << endl;
-            // cout << "||gradSimp_i|| = " << gradSimp.norm() << endl << endl;
-            // cout << "gradSimp_i = " << gradSimp.transpose() << endl << endl;
-            // cout << "FINISHED DATA AFTER BLOCK GRAD" << endl;
 
             // For place into the respective gradients
             for (int n = 0; n < D+1; n++) {
                 int off = (*F)(i,n);
-
                  
                 if (boundaryMask->at((*F)(i,n)) == NodeType::INTERIOR) {
                     grad.segment(D*off, D) += gradSimp.segment(D*n, D);
@@ -323,22 +316,11 @@ void Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Ei
             }
         }
 
-        // cout << "norm grad = " << grad << endl;
-        // cout << "norm grad = " << grad.norm() << endl;
-
-        // cout << "tau = " << tau << endl;
-        // cout << "dt = " << dt << endl;
         xBar = x - (dt / tau) * grad;
-
-        // cout << "diff " << (xBar - x).norm() << endl;
-
-        // assert(false);
     } else {
         // Compute the gradient at each point
         xBar = 2.0*x - xPrev;
     }
-    // xBar = 2.0*x - xPrev;
-
 }
 
 template <int D>
@@ -579,7 +561,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         // (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 3, 1e-6);
         // (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 50, 1e-6, stepTaken);
-        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 100, 1e-4, hessComputed);
+        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 100, 1e-6, hessComputed);
 
         for (int l = 0; l < D*(D+1); l++) {
             z(D*(D+1)*i+l) = z_i(l);

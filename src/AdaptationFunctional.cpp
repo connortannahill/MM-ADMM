@@ -225,7 +225,6 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
     // Now add the constraint regularization
     if (regularize) {
         Ih += 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
-
         grad += w*w*(-(*DXpU).segment(D*(D+1)*zId, D*(D+1)) + z);
     }
 

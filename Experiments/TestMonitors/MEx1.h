@@ -16,6 +16,7 @@ public:
         M = Eigen::Matrix<double,D,D>::Identity(M.rows(), M.cols());
         M *= (1 + mu_1/( 1 + mu_2*((x - center).squaredNorm()) ));
     }
+    
 };
 
 template class MEx1<2>;

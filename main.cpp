@@ -58,7 +58,7 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
   boundaryMask = new vector<Mesh<2>::NodeType>(Vc->rows());
 
   utils::generateUniformRectMesh(params, Vc, F, boundaryMask,
-      Mesh<2>::NodeType::BOUNDARY_FREE);
+      Mesh<2>::NodeType::BOUNDARY_FIXED);
 
   Mesh<D> adaptiveMesh(*Vc, *F, *boundaryMask, mon, rho, tau);
 
@@ -70,7 +70,7 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
   double Ihprev = INFINITY;
   int i;
   for (i = 0; i < nSteps; i++) {
-    Ih = solver.step(100, 1e-5);
+    Ih = solver.step(100, 1e-4);
 
 
     if (Ih >= Ihprev) {
@@ -114,8 +114,8 @@ int main(int argc, char *argv[]) {
 
   // Specify the monitor function
   auto *M1 = new MEx1<D>();
-  auto *M2 = new MEx1<D>();
-  auto *M3 = new MEx1<D>();
+  auto *M2 = new MEx2<D>();
+  auto *M3 = new MEx3<D>();
   vector<MonitorFunction<D>*> Mvals;
   Mvals.push_back(M1);
   Mvals.push_back(M2);
@@ -124,6 +124,7 @@ int main(int argc, char *argv[]) {
   // Get monitor id
   int monType;
   inputFile >> monType;
+  cout << "mon type = " << monType << endl;
 
   if (testType.compare("SquareGrid") == 0) {
     setUpBoxExperiment(inFileName, inputFile, Mvals.at(monType-1));
