@@ -221,7 +221,7 @@ void Mesh<D>::projectOntoBoundary(int nodeId, Eigen::Vector<double, D> &node) {
 
 template <int D>
 Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> &boundaryMask,
-            MonitorFunction<D> *Mon, double rho, double tau) {
+            MonitorFunction<D> *Mon, int numThreads, double rho, double tau) {
 
     this->Vc = &X;
     this->Vp = new Eigen::MatrixXd(*this->Vc);
@@ -236,7 +236,7 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
     buildFaceList();
 
 #ifdef NUMTHREADS
-    omp_set_num_threads(NUMTHREADS);
+    omp_set_num_threads(numThreads);
 #endif
 
     // Create mesh interpolator

@@ -18,12 +18,12 @@ using namespace std;
 #define D 2
 
 void setUpBoxExperiment(string testName, ifstream &inputFile,
-    MonitorFunction<D> *mon) {
+    int numThreads, MonitorFunction<D> *mon) {
   int nx, ny, nSteps;
   double dt, tau, rho;
   double xa, xb, ya, yb;
 
-  int boundaryType
+  int boundaryType;
   inputFile >> boundaryType;
 
   Mesh<D>::NodeType type;
@@ -70,7 +70,8 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
   utils::generateUniformRectMesh(params, Vc, F, boundaryMask,
       type);
 
-  Mesh<D> adaptiveMesh(*Vc, *F, *boundaryMask, mon, rho, tau);
+  Mesh<D> adaptiveMesh(*Vc, *F, *boundaryMask, mon,
+      numThreads, rho, tau);
 
   // Create the solver
   MeshIntegrator<D> solver(dt, adaptiveMesh);
@@ -81,7 +82,6 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
   int i;
   for (i = 0; i < nSteps; i++) {
     Ih = solver.step(100, 1e-4);
-
 
     if (Ih >= Ihprev) {
         cout << "converged" << endl;
@@ -113,9 +113,14 @@ int main(int argc, char *argv[]) {
   srand(static_cast<unsigned int>(std::time(nullptr)));
 
   // Read in the input file
-  assert(argc == 2);
+  assert(argc <= 3);
   string inFileName = argv[1];
   cout << inFileName << endl;
+
+  int numThreads = 1;
+  if (argc == 3) {
+    numThreads = atoi(argv[2]);
+  }
 
   ifstream inputFile("Experiments/InputFiles/" + inFileName);
 
@@ -137,7 +142,7 @@ int main(int argc, char *argv[]) {
   cout << "mon type = " << monType << endl;
 
   if (testType.compare("SquareGrid") == 0) {
-    setUpBoxExperiment(inFileName, inputFile, Mvals.at(monType-1));
+    setUpBoxExperiment(inFileName, inputFile, numThreads, Mvals.at(monType-1));
   } else {
     assert(false);
   }

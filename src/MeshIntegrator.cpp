@@ -98,7 +98,7 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
 
         // Update the solution x^{n+1}
         // start = clock();
-        *vec =  ((*a->M) * (*xBar)) + dtsq*(( *WD_T * (*a->W) * (*z - *uBar)));
+        *vec =  ((*a->M) * (*xBar)) + dtsq*(( *WD_T * ((*a->W) * (*z - *uBar))));
         *x = cgSol->solve(*vec);
         // xUpdate += clock() - start;
 
