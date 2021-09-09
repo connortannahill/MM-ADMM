@@ -1,11 +1,14 @@
-import matplotlib as plt
+import matplotlib
 from string import Template
 import subprocess
 import glob
-import matplotlib.pyplot
+import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 import numpy as np
+from matplotlib.pyplot import cm
 import time
+from pathlib import Path
+import json
 
 """
 TEMPLATES AND MISC
@@ -16,6 +19,7 @@ create_input()
 grid_scale_test_2d()
 output_grid_scale_test_2d()
 run_parallel_experiment()
+create_parallel_plot()
 """
 
 FUNS_LIST = FUNS.split()
@@ -81,24 +85,140 @@ def outputPng(outDir):
 
     plt.savefig("./Experiments/PngOutput/{}.png".format(testName))
 
+def plot_parallel_experiment(testName, pows, times, ax, color, label):
+    
+    import statsmodels.stats.api as sms
+
+    # Build each of the confidence intervals
+    mean = []
+    low_int = []
+    high_int = []
+    mean_max = 0
+    low_max = 0
+    high_max = 0
+    i = 0
+    for pow, time_list in times.items():
+        interval = sms.DescrStatsW(time_list).tconfint_mean()
+        mean.append(np.mean(time_list))
+        low_int.append(interval[0])
+        high_int.append(interval[1])
+        if i == 0:
+            mean_max = mean[0]
+            low_max = low_int[0]
+            high_max = high_int[0]
+        i += 1
+    
+    ax.plot(np.log2(pows), mean / mean_max, label=label, color=color)
+    ax.fill_between(np.log2(pows), low_int / low_max, high_int / high_max, color=color, alpha=.1)
+
 """
 Functions to be called
 """
 
-def run_parallel_experiment():
+def create_parallel_plot():
     testName = input('test name = ')
 
-    HIGHEST_POW = 6
+    plotAll = input('All on one plot? ') == 'True'
+    print(plotAll)
+
+    # Get all input file names
+    dataFilesJson = [file[file.rfind('/')+1:] for file in glob.glob('./Experiments/Data/{0}/*'.format(testName))]
+    dataFiles = [file[:file.rfind('.')] for file in dataFilesJson]
+    num_list = [int(file[len(testName):]) for file in dataFiles]
+    sort_list = np.argsort(num_list)
+    num_list = list(np.array(num_list)[sort_list])
+    dataFiles = list(np.array(dataFiles)[sort_list])
+    dataFilesJson = list(np.array(dataFilesJson)[sort_list])
+
+    color=cm.rainbow(np.linspace(0,1,len(dataFiles)))
+    num_simplices = [4*(i**2) for i in num_list]
+    fig, ax = plt.subplots()
+
+    for i, dataFileJson in enumerate(dataFilesJson):
+        times = {}
+        print(dataFileJson)
+        with open('./Experiments/Data/{0}/{1}'.format(testName, dataFileJson)) as f:
+            times = json.loads(f.read())
+        
+        pows = [int(i) for i in times.keys()]
+
+        if not plotAll:
+            fig, ax = plt.subplots()
+        
+        # Dump the data file
+        label = str(num_simplices[i])
+        plot_parallel_experiment(dataFiles[i], pows, times, ax, color[i], label)
+
+        if not plotAll:
+            # Make modified ticks
+            ticks = ['${}$'.format(int(2**np.log2(pow-1))) for pow in pows]
+            ax.set_xticklabels(ticks)
+
+            plt.xlabel('Log Number of CPU Cores')
+            plt.ylabel('Average CPU Time')
+            plt.title('{}'.format(testName))
+            plt.legend()
+
+            pName = "Experiments/Results/{0}{1}/".format(testName, num_list[i])
+            print(pName)
+            Path(pName).mkdir(parents=True, exist_ok=True)
+            plt.savefig('{0}ParTest{1}{2}.png'.format(pName, testName, num_list[i]))
+
+    if plotAll:
+        plt.xlabel('Log Number of CPU Cores')
+        plt.ylabel('Average CPU Time')
+        plt.title('{}'.format(testName))
+        plt.legend()
+
+        pName = "Experiments/Results/{0}/".format(testName)
+        Path(pName).mkdir(parents=True, exist_ok=True)
+        plt.savefig('{0}ParTest{1}.png'.format(pName, testName))
+    
+
+def run_parallel_experiment():
+
+    testName = input('test name = ')
+
+    # Get all input file names
+    inputFiles = [file[file.rfind('/')+1:] for file in glob.glob('./Experiments/InputFiles/{0}*'.format(testName))]
+    num_list = np.argsort([int(file[len(testName):]) for file in inputFiles])
+    inputFiles = list(np.array(inputFiles)[num_list])
+
+    HIGHEST_POW = 5
 
     pows = [2**i for i in range(HIGHEST_POW+1)]
 
-    subprocess.run('make par'.split())
+    subprocess.run('make')
 
-    exes = ['meshP{1}.exe'.format(mesh, str(pow)) for pow in pows]
+    color=cm.rainbow(np.linspace(0,1,len(inputFiles)))
+    num_simplices = [4*((2**i * 10)**2) for i in range(1, HIGHEST_POW+5)]
+    fig, ax = plt.subplots()
+    for i, inputFile in enumerate(inputFiles):
+        times = {}
+        num_runs = 10
+        for pow in pows:
+            times[pow] = []
+            for run in range(num_runs):
+                start = time.time()
+                subprocess.run('./mesh.exe {0} {1}'.format(inputFile, pow).split())
+                times[pow].append(time.time() - start)
+        
+        # Dump the data file
+        Path("Experiments/Data/{0}/".format(testName)).mkdir(parents=True, exist_ok=True)
 
-    for exe in exes:
-        subprocess.run('./{0} {1}'.format(exe, testName).split())
+        with open('Experiments/Data/{0}/{1}.json'.format(testName, inputFile), 'w+') as f:
+            f.write(json.dumps(times))
+        
+        label = str(num_simplices[i])
+        plot_parallel_experiment(inputFile, pows, times, ax, color[i], label)
 
+    plt.xlabel('Number of CPU Cores')
+    plt.ylabel('Average Execution times')
+    plt.title('{}'.format(testName))
+    plt.legend()
+
+    plt.savefig('ParTest{0}.png'.format(testName))
+    
 def output_grid_scale_test_2d():
     testName = input('test name = ')
 

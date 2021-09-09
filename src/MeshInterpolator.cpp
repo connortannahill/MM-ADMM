@@ -239,17 +239,34 @@ void MeshInterpolator<D>::interpolateMonitor(MonitorFunction<D> &Mon) {
 // const double CHECK_EPS = 1e-10;
 
 template <int D>
-inline void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &x, Eigen::Matrix<double, D, D> &mVal) {
-    int xInd = utils::findLimInfMeshPoint(x(0), *this->x);
-    int yInd = utils::findLimInfMeshPoint(x(1), *this->y);
+void MeshInterpolator<D>::biLinearInterpolation(double x, double y, double xMesh[2],
+                                            double yMesh[2], double *coefs) {
+        double norm = (1/((xMesh[1]-xMesh[0])*(yMesh[1] - yMesh[0])));
+        coefs[0] = norm * (xMesh[1] - x)*(yMesh[1] - y);
+        coefs[1] = norm * (x - xMesh[0])*(yMesh[1] - y);
+        coefs[2] = norm * (xMesh[1] - x)*(y - yMesh[0]);
+        coefs[3] = norm * (x - xMesh[0])*(y - yMesh[0]);
+}
+
+template <int D>
+inline void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &pnt, Eigen::Matrix<double, D, D> &mVal) {
+    int xInd = utils::findLimInfMeshPoint(pnt(0), *this->x);
+    int yInd = utils::findLimInfMeshPoint(pnt(1), *this->y);
     Eigen::Vector<double, D*D> mTemp;
-    // Eigen::Vector<double, D*D> mFlat;
+    Eigen::Vector<double, D*D> mFlat;
 
     if (D == 2) {
-        double coefs[4] = {0.0};
         double xMesh[2] = {this->x->at(xInd), this->x->at(xInd+1)};
         double yMesh[2] = {this->y->at(yInd), this->y->at(yInd+1)};
-        utils::biLinearInterpolation(x(0), x(1), xMesh, yMesh, coefs);
+        double x = pnt(0);
+        double y = pnt(1);
+        double norm = (1/((xMesh[1]-xMesh[0])*(yMesh[1] - yMesh[0])));
+        double coefs[4] = {norm * (xMesh[1] - x)*(yMesh[1] - y), 
+                           norm * (x - xMesh[0])*(yMesh[1] - y),
+                           norm * (xMesh[1] - x)*(y - yMesh[0]),
+                           norm * (x - xMesh[0])*(y - yMesh[0])};
+        // utils::biLinearInterpolation(x(0), x(1), xMesh, yMesh, coefs);
+        // biLinearInterpolation(x(0), x(1), xMesh, yMesh, coefs);
 
         for (int n = 0; n < D*D; n++) {
             mVal(n / D, n % D) = coefs[0]*(*monGridVals)(yInd*(nx+1)+xInd, n)
@@ -257,28 +274,6 @@ inline void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &x, 
                                 + coefs[2]*(*monGridVals)((yInd+1)*(nx+1)+xInd, n)
                                 + coefs[3]*(*monGridVals)((yInd+1)*(nx+1)+xInd+1, n);
         }
-
-        // mTemp = (*monGridVals)(yInd*(nx+1) + xInd, Eigen::all);
-        // mTemp *= coefs[0];
-        // mFlat.setZero();
-        // mFlat += mTemp;
-
-        // mTemp = (*monGridVals)(yInd*(nx+1) + xInd+1, Eigen::all);
-        // mTemp *= coefs[1];
-        // mFlat += mTemp;
-
-        // mTemp = (*monGridVals)((yInd+1)*(nx+1) + xInd, Eigen::all);
-        // mTemp *= coefs[2];
-        // mFlat += mTemp;
-
-        // mTemp = (*monGridVals)((yInd+1)*(nx+1) + xInd+1, Eigen::all);
-        // mTemp *= coefs[3];
-        // mFlat += mTemp;
- 
-        // mFlat = coefs[0]*(*monGridVals)(yInd*(nx+1) + xInd, Eigen::all);
-        // mFlat += coefs[1]*(*monGridVals)(yInd*(nx+1) + xInd+1, Eigen::all);
-        // mFlat += coefs[2]*(*monGridVals)((yInd+1)*(nx+1) + xInd, Eigen::all);
-        // mFlat += coefs[3]*(*monGridVals)((yInd+1)*(nx+1) + xInd+1, Eigen::all);
     } else {
         // int zInd = utils::findLimInfMeshPoint(x(2), *this->z);
         // double coefs[8] = {0.0};
@@ -293,51 +288,7 @@ inline void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &x, 
         // mFlat += coefs[6]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
         // mFlat += coefs[7]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
     }
-
-    // for (int i = 0; i < D*D; i++) {
-    //     mVal(i/D, i%D) = mFlat(i);
-    // }
-    // cout << "FINISHED Evalling monitor on gird" << endl;
 }
-
-// template <int D>
-// void MeshInterpolator<D>::evalMonitorOnSimplex(int simplexId, Eigen::Vector<double, D> &x, Eigen::Vector<double,D+1> &bCoords,
-//         Eigen::Matrix<double,D,D> &mVal) {
-//     // Use the mesh interpolator to find the simplex this point lays on, as well
-//     // as its barycentric coordaintes,
-//     // Eigen::Vector<double, D+1> bCoords;
-
-//     computeBarycentricCoordinates(simplexId, x, bCoords);
-
-//     // If inside this simplex, stop. Else, perform knn search for proper simplex
-//     // bool inTriangle = true;
-//     // for (int i = 0; i < D+1; i++)
-//     //     inTriangle *= bCoords(i) >= -CHECK_EPS;
-
-//     // // cout << "inTriangle " << inTriangle << endl;
-
-//     // int sId;
-//     // if (!inTriangle) {
-//         // int sId = evalWithKnn(x, bCoords);
-//     // } else {
-//     //     sId = simplexId;
-//     // }
-
-//     // Now, interpolate the monitor function at this point
-//     Eigen::Vector<int, D+1> pntIds((*F)(simplexId, Eigen::all));
-
-//     // Accumulate the monitor function in a flattened array
-//     Eigen::Vector<double,D*D> mFlat = Eigen::Vector<double, D*D>::Zero();
-//     for (int i = 0; i < D+1; i++) {
-//         mFlat += bCoords(i)*(*monVals)(pntIds(i), Eigen::all);
-//     }
-
-//     // Now place the value in the output array
-//     for (int i = 0; i < D*D; i++) {
-//         mVal(i/D, i%D) = mFlat(i);
-//     }
-// }
-
 
 template <int D>
 void MeshInterpolator<D>::outputGridMesh() {

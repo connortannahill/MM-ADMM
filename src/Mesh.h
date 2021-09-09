@@ -13,6 +13,7 @@ using namespace std;
 template <int D=-1>
 class Mesh {
 public:
+    double m;
     enum NodeType {
         BOUNDARY_FIXED,
         BOUNDARY_FREE,
@@ -21,7 +22,7 @@ public:
     // Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryMask,
     //         MonitorFunction<D> *M, unordered_map<string, double> params);
     Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
-            MonitorFunction<D> *M, double rho, double tau);
+            MonitorFunction<D> *M, int numThreads, double rho, double tau);
     void evalMonitorAtPoint(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &mVal);
     void outputSimplices(const char *fname);
     void copyX(Eigen::VectorXd &tar);
