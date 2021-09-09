@@ -93,14 +93,23 @@ def plot_parallel_experiment(testName, pows, times, ax, color, label):
     mean = []
     low_int = []
     high_int = []
+    mean_max = 0
+    low_max = 0
+    high_max = 0
+    i = 0
     for pow, time_list in times.items():
         interval = sms.DescrStatsW(time_list).tconfint_mean()
         mean.append(np.mean(time_list))
         low_int.append(interval[0])
         high_int.append(interval[1])
+        if i == 0:
+            mean_max = mean[0]
+            low_max = low_int[0]
+            high_max = high_int[0]
+        i += 1
     
-    ax.plot(np.log2(pows), mean, label=label)
-    ax.fill_between(np.log2(pows), low_int, high_int, color=color, alpha=.1)
+    ax.plot(np.log2(pows), mean / mean_max, label=label, color=color)
+    ax.fill_between(np.log2(pows), low_int / low_max, high_int / high_max, color=color, alpha=.1)
 
 """
 Functions to be called
@@ -108,6 +117,9 @@ Functions to be called
 
 def create_parallel_plot():
     testName = input('test name = ')
+
+    plotAll = input('All on one plot? ') == 'True'
+    print(plotAll)
 
     # Get all input file names
     dataFilesJson = [file[file.rfind('/')+1:] for file in glob.glob('./Experiments/Data/{0}/*'.format(testName))]
@@ -129,23 +141,38 @@ def create_parallel_plot():
             times = json.loads(f.read())
         
         pows = [int(i) for i in times.keys()]
+
+        if not plotAll:
+            fig, ax = plt.subplots()
         
         # Dump the data file
         label = str(num_simplices[i])
         plot_parallel_experiment(dataFiles[i], pows, times, ax, color[i], label)
-    
-    # Make modified ticks
-    ticks = ['${}$'.format(int(2**np.log2(pow))) for pow in pows]
-    ax.set_xticklabels(ticks)
 
-    plt.xlabel('Log Number of CPU Cores')
-    plt.ylabel('Average CPU Time')
-    plt.title('{}'.format(testName))
-    plt.legend()
+        if not plotAll:
+            # Make modified ticks
+            ticks = ['${}$'.format(int(2**np.log2(pow-1))) for pow in pows]
+            ax.set_xticklabels(ticks)
 
-    pName = "Experiments/Results/{0}/".format(testName)
-    Path(pName).mkdir(parents=True, exist_ok=True)
-    plt.savefig('{0}ParTest{1}.png'.format(pName, testName))
+            plt.xlabel('Log Number of CPU Cores')
+            plt.ylabel('Average CPU Time')
+            plt.title('{}'.format(testName))
+            plt.legend()
+
+            pName = "Experiments/Results/{0}{1}/".format(testName, num_list[i])
+            print(pName)
+            Path(pName).mkdir(parents=True, exist_ok=True)
+            plt.savefig('{0}ParTest{1}{2}.png'.format(pName, testName, num_list[i]))
+
+    if plotAll:
+        plt.xlabel('Log Number of CPU Cores')
+        plt.ylabel('Average CPU Time')
+        plt.title('{}'.format(testName))
+        plt.legend()
+
+        pName = "Experiments/Results/{0}/".format(testName)
+        Path(pName).mkdir(parents=True, exist_ok=True)
+        plt.savefig('{0}ParTest{1}.png'.format(pName, testName))
     
 
 def run_parallel_experiment():
@@ -155,7 +182,7 @@ def run_parallel_experiment():
     # Get all input file names
     inputFiles = [file[file.rfind('/')+1:] for file in glob.glob('./Experiments/InputFiles/{0}*'.format(testName))]
     num_list = np.argsort([int(file[len(testName):]) for file in inputFiles])
-    inputFiles = list(np.array(inputFiles)[num_list])[:3]
+    inputFiles = list(np.array(inputFiles)[num_list])
 
     HIGHEST_POW = 5
 

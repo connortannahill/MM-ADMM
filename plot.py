@@ -17,7 +17,7 @@ if mode == 0:
 
     triang = mtri.Triangulation(points[:,0], points[:,1], triangles=triangles)
     # # plt.triplot(triang, color='r', marker='o')
-    plt.triplot(triang, color='r', linewidth=0.5)
+    plt.triplot(triang, color='r', linewidth=0.1)
     # plt.scatter(points[:,0], points[:,0])
     # X, Y = np.meshgrid(np.linspace(0, 1, 11), np.linspace(0, 1, 11))
     # plt.quiver(X[:,0], X[:,1], points[:,0], points[:,1])

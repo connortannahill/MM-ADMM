@@ -19,6 +19,8 @@ public:
     void outputZ(const char *fname);
 private:
     Mesh<D> *a;
+    Eigen::SparseMatrix<double> *t;
+    Eigen::ConjugateGradient<Eigen::SparseMatrix<double>, Eigen::Lower|Eigen::Upper> *cg;
     Eigen::VectorXd *x;
     Eigen::VectorXd *xPrev;
     Eigen::VectorXd *xBar;
@@ -26,6 +28,8 @@ private:
     Eigen::VectorXd *z;
     Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>> *cgSol;
     Eigen::SparseMatrix<double> *WD_T;
+    Eigen::SparseMatrix<double> *WD_TWD;
+    Eigen::SparseMatrix<double> *M;
     Eigen::VectorXd *vec;
     Eigen::VectorXd *DXpU;
     // bool matrixFactored;

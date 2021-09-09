@@ -256,6 +256,7 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
 
     // Build the mass matrix
     Eigen::VectorXd m(Eigen::VectorXd::Constant(nPnts*D, tau));
+    this->m = tau;
     buildMassMatrix(m);
 
     buildDMatrix();

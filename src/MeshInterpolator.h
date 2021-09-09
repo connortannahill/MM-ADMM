@@ -48,6 +48,8 @@ public:
     void evalMonitorOnGrid(Eigen::Vector<double, D> &x, Eigen::Matrix<double, D, D> &mVal);
     void evalMonitorOnSimplex(int simplexId, Eigen::Vector<double, D> &x, Eigen::Vector<double,D+1> &b,
             Eigen::Matrix<double,D,D> &mVal);
+    void biLinearInterpolation(double x, double y, double xMesh[2],
+                double yMesh[2], double *coefs);
 
     /**
      * Functions and definitions for interfacing with nanoflann KDTree generation.

@@ -13,6 +13,7 @@ using namespace std;
 template <int D=-1>
 class Mesh {
 public:
+    double m;
     enum NodeType {
         BOUNDARY_FIXED,
         BOUNDARY_FREE,
