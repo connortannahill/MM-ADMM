@@ -81,14 +81,14 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
   double Ihprev = INFINITY;
   int i;
   for (i = 0; i < nSteps; i++) {
-    Ih = solver.step(100, 1e-4);
+    Ih = solver.step(20, 1e-4);
 
-    if (Ih >= Ihprev) {
+    cout << "Ih = " << Ih << endl;
+    cout << "IhDiff = " << Ih - Ihprev << endl;
+    if (i != 0 && Ih >= Ihprev) {
         cout << "converged" << endl;
         break;
     }
-    cout << "Ih = " << Ih << endl;
-    cout << "IhDiff = " << abs(Ih - Ihprev) << endl;
     Ihprev = Ih;
   }
 
@@ -97,7 +97,11 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
   cout << "Took " << i << " iters" << endl;
 
   string outDir = "./Experiments/Results/" + testName;
-  system(("mkdir -p " + outDir).c_str());
+  int stat = system(("mkdir -p " + outDir).c_str());
+  if (stat != 0) {
+    cout << "mkdir failed" << endl;
+    assert(false);
+  }
 
   string pointsOutDir = outDir + "/points.txt";
   string triangleOutDir = outDir + "/triangles.txt";

@@ -267,6 +267,7 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
 
     hessInvs = new vector<Eigen::Matrix<double, D*(D+1), D*(D+1)>>(this->F->rows());
     gradCurrs = new vector<Eigen::Vector<double, D*(D+1)>>(this->F->rows());
+
     // Set the Hessians to the identity intiially
     Eigen::Matrix<double, D*(D+1), D*(D+1)> eye = Eigen::Matrix<double, D*(D+1), D*(D+1)>::Identity(D*(D+1), D*(D+1));
     for (uint32_t i = 0; i < hessInvs->size(); i++) {
@@ -280,7 +281,6 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
 // TODO: add external forces (would be handled in this object, as the meshing object should control its own props)
 template <int D>
 void Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) {
-    // if (!stepTaken) {
     if (!stepTaken) {
         // If the step is not taken we do Euler's method
         Eigen::Vector<double, D*(D+1)> x_i;
@@ -488,7 +488,6 @@ template <int D>
 double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol) {
     double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
-    // const int MAX_LS = 10;
 
     Eigen::Vector<double, D*(D+1)> zPurt;
     Eigen::Vector<double, D*(D+1)> gradZ;
@@ -573,8 +572,6 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
 
-        // (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 3, 1e-6);
-        // (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 50, 1e-6, stepTaken);
         (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 100, 1e-6, hessComputed);
 
         for (int l = 0; l < D*(D+1); l++) {
@@ -596,8 +593,6 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
     }
     hessComputed = true;
-
-    // stepTaken = true;
 
     return Ih->sum();// / F->rows();
 }

@@ -20,6 +20,7 @@ grid_scale_test_2d()
 output_grid_scale_test_2d()
 run_parallel_experiment()
 create_parallel_plot()
+plot_single_thread_increase()
 """
 
 FUNS_LIST = FUNS.split()
@@ -83,9 +84,10 @@ def outputPng(outDir):
     triang = mtri.Triangulation(points[:,0], points[:,1], triangles=triangles)
     plt.triplot(triang, color='r')
 
-    plt.savefig("./Experiments/PngOutput/{}.png".format(testName))
+    plt.savefig("{0}/{1}.png".format(outDir, testName))
+    plt.clf()
 
-def plot_parallel_experiment(testName, pows, times, ax, color, label):
+def plot_parallel_experiment(testName, pows, times, ax, color, label, singlePlot):
     
     import statsmodels.stats.api as sms
 
@@ -97,7 +99,13 @@ def plot_parallel_experiment(testName, pows, times, ax, color, label):
     low_max = 0
     high_max = 0
     i = 0
+
+    denom = 1
+    if singlePlot:
+        denom = np.mean(times['1'])
+
     for pow, time_list in times.items():
+        time_list = [time/denom for time in time_list]
         interval = sms.DescrStatsW(time_list).tconfint_mean()
         mean.append(np.mean(time_list))
         low_int.append(interval[0])
@@ -141,17 +149,18 @@ def create_parallel_plot():
             times = json.loads(f.read())
         
         pows = [int(i) for i in times.keys()]
+        print('pows = {}'.format(pows))
 
         if not plotAll:
             fig, ax = plt.subplots()
         
         # Dump the data file
         label = str(num_simplices[i])
-        plot_parallel_experiment(dataFiles[i], pows, times, ax, color[i], label)
+        plot_parallel_experiment(dataFiles[i], pows, times, ax, color[i], label, plotAll)
 
         if not plotAll:
             # Make modified ticks
-            ticks = ['${}$'.format(int(2**np.log2(pow-1))) for pow in pows]
+            ticks = ['${}$'.format(pow) for pow in pows]
             ax.set_xticklabels(ticks)
 
             plt.xlabel('Log Number of CPU Cores')
@@ -165,8 +174,12 @@ def create_parallel_plot():
             plt.savefig('{0}ParTest{1}{2}.png'.format(pName, testName, num_list[i]))
 
     if plotAll:
-        plt.xlabel('Log Number of CPU Cores')
-        plt.ylabel('Average CPU Time')
+        ticks = ['${}$'.format(pow) for pow in pows]
+        ticks.insert(0, '$1$')
+        print(ticks)
+        ax.set_xticklabels(ticks)
+        plt.xlabel('Number of CPU Cores')
+        plt.ylabel('Normalized Average CPU Time')
         plt.title('{}'.format(testName))
         plt.legend()
 
@@ -209,16 +222,57 @@ def run_parallel_experiment():
         with open('Experiments/Data/{0}/{1}.json'.format(testName, inputFile), 'w+') as f:
             f.write(json.dumps(times))
         
-        label = str(num_simplices[i])
-        plot_parallel_experiment(inputFile, pows, times, ax, color[i], label)
+        # label = str(num_simplices[i])
+        # plot_parallel_experiment(inputFile, pows, times, ax, color[i], label, True)
 
-    plt.xlabel('Number of CPU Cores')
-    plt.ylabel('Average Execution times')
-    plt.title('{}'.format(testName))
-    plt.legend()
+    # plt.xlabel('Number of CPU Cores')
+    # plt.ylabel('Average Execution times')
+    # plt.title('{}'.format(testName))
+    # plt.legend()
 
-    plt.savefig('ParTest{0}.png'.format(testName))
-    
+    # plt.savefig('ParTest{0}.png'.format(testName))
+
+def plot_single_thread_increase():
+
+    testName = input('test name (-1 to stop) = ')
+    testNames = []
+    while testName != '-1':
+        testNames.append(testName)
+        testName = input('test name (-1 to stop) = ')
+
+    color = cm.rainbow(np.linspace(0,1,len(testNames)))
+
+    # Add the single thread average time for each experiment to the plot
+    for j, testName in enumerate(testNames):
+        # Get all of the data files
+        dataFilesJson = [file[file.rfind('/')+1:] for file in glob.glob('./Experiments/Data/{0}/*'.format(testName))]
+        dataFiles = [file[:file.rfind('.')] for file in dataFilesJson]
+        num_list = [int(file[len(testName):]) for file in dataFiles]
+        sort_list = np.argsort(num_list)
+        num_list = list(np.array(num_list)[sort_list])
+        dataFiles = list(np.array(dataFiles)[sort_list])
+        dataFilesJson = list(np.array(dataFilesJson)[sort_list])
+
+        times_list = []
+        for i, dataFileJson in enumerate(dataFilesJson):
+            times = {}
+            with open('./Experiments/Data/{0}/{1}'.format(testName, dataFileJson)) as f:
+                times = json.loads(f.read())
+            
+            one_t_time = times['2']
+            times_list.append(np.mean(one_t_time))
+
+        # Scatter plot of the times
+        plt.scatter(num_list, times_list, color=color[j])
+
+        # Build regression
+        A = np.vstack([num_list, np.ones(len(num_list))]).T
+        m, b = np.linalg.lstsq(A, times_list, rcond=None)[0]
+        plt.plot(num_list, m*np.array(num_list) + b, color=color[j], label='{0} ($m = {1}$, $b = {2}$)'.format(testName, round(m, 2), round(b, 2)))
+
+        plt.legend()
+        plt.savefig('./Experiments/Results/{0}SingleThread.png'.format(testName))
+
 def output_grid_scale_test_2d():
     testName = input('test name = ')
 

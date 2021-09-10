@@ -48,7 +48,7 @@ MeshIntegrator<D>::MeshIntegrator(double dt, Mesh<D> &a) {
     this->cg->compute(*t);
 
     // Compute the sparse Cholseky factorization.
-    cgSol = new Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>>(*t);
+    // cgSol = new Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>>(*t);
 
     DXpU = new Eigen::VectorXd(*z);
     vec = new Eigen::VectorXd(*z);
@@ -114,7 +114,7 @@ MeshIntegrator<D>::~MeshIntegrator() {
     delete xBar;
     delete z;
     delete xPrev;
-    delete cgSol;
+    // delete cgSol;
     delete WD_T;
     delete DXpU;
     delete vec;
