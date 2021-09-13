@@ -72,6 +72,7 @@ public:
     void projectOntoBoundary(int nodeId, Eigen::Vector<double, D> &node);
     void projection2D(int nodeId, Eigen::Vector<double, D> &node);
     void projection3D(int nodeId, Eigen::Vector<double, D> &node);
+    double computeEnergy(Eigen::VectorXd &x);
     
     AdaptationFunctional<D> *I_wx;
 

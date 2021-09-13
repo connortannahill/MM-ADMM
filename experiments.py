@@ -118,6 +118,8 @@ def plot_parallel_experiment(testName, pows, times, ax, color, label, singlePlot
     
     ax.plot(np.log2(pows), mean / mean_max, label=label, color=color)
     ax.fill_between(np.log2(pows), low_int / low_max, high_int / high_max, color=color, alpha=.1)
+    # ax.plot(np.log2(pows), mean, label=label, color=color)
+    # ax.fill_between(np.log2(pows), low_int, high_int, color=color, alpha=.1)
 
 """
 Functions to be called
@@ -161,6 +163,7 @@ def create_parallel_plot():
         if not plotAll:
             # Make modified ticks
             ticks = ['${}$'.format(pow) for pow in pows]
+            ticks.insert(0, '$1$')
             ax.set_xticklabels(ticks)
 
             plt.xlabel('Log Number of CPU Cores')

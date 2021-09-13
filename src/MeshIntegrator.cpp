@@ -105,7 +105,7 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     a->updateAfterStep(dt, *xPrev, *x);
 
     stepsTaken++;
-    return IhCur;
+    return a->computeEnergy(*x);
 }
 
 template <int D>

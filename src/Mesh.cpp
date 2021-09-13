@@ -242,7 +242,6 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
     // Create mesh interpolator
     mapEvaluator = new MeshInterpolator<D>();
     mapEvaluator->updateMesh((*this->Vc), (*this->F));
-    // stepTaken = true; // TODO: add a setting where we know if the monitor is constant or not
     mapEvaluator->interpolateMonitor(*Mon);
     this->nPnts = X.rows();
 
@@ -278,6 +277,53 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
     I_wx = new HuangFunctional<D>(*Vc, *Vp, *(this->F), *DXpU, Mon, this->w, 0.0, 0.0);
 }
 
+template <int D>
+double Mesh<D>::computeEnergy(Eigen::VectorXd &x) {
+
+
+    double Ih = 0.0;
+
+// #if NUMTHREADS == 1
+    Eigen::Vector<double, D*(D+1)> x_i;
+    Eigen::Vector<double, D*(D+1)> xi_i;
+    Eigen::Vector<double, D*(D+1)> gradSimp;
+    Eigen::Vector<double, D> pnt;
+// #endif
+
+// #if NUMTHREADS > 1
+//     #pragma omp parallel for
+// #endif
+    for (int i = 0; i < F->rows(); i++) {
+// #if NUMTHREADS > 1
+//         Eigen::Vector<double, D*(D+1)> x_i;
+//         Eigen::Vector<double, D*(D+1)> xi_i;
+//         Eigen::Vector<double, D*(D+1)> gradSimp;
+//         Eigen::Vector<double, D> pnt;
+// #endif
+        for (int n = 0; n < D+1; n++) {
+            pnt = (*Vc)((*F)(i,n), Eigen::all);
+            
+            for (int l = 0; l < D; l++) {
+                xi_i(n*D+l) = pnt(l);
+            }
+        }
+
+        for (int n = 0; n < D+1; n++) {
+            pnt = (*Vp)((*F)(i,n), Eigen::all);
+
+            for (int l = 0; l < D; l++) {
+                x_i(n*D+l) = pnt(l);
+            }
+        }
+
+        // Compute the local gradient
+        Ih += I_wx->blockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, false, false);
+    }
+
+    return Ih;
+
+}
+
 // TODO: add external forces (would be handled in this object, as the meshing object should control its own props)
 template <int D>
 void Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) {
@@ -290,6 +336,7 @@ void Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Ei
 
         Eigen::VectorXd grad(D*Vp->rows());
         grad.setZero();
+        double Ihorig = 0.0;
 
         for (int i = 0; i < F->rows(); i++) {
             for (int n = 0; n < D+1; n++) {
@@ -309,7 +356,7 @@ void Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Ei
             }
 
             // Compute the local gradient
-            I_wx->blockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, true, false);
+            Ihorig += I_wx->blockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, true, false);
 
             // For place into the respective gradients
             for (int n = 0; n < D+1; n++) {
@@ -449,6 +496,8 @@ inline double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z
     Eigen::Vector<double, D*(D+1)> yk;
     Eigen::Vector<double, D*(D+1)> zTemp;
     double c1, c2;
+
+
 
     int iter;
     for (iter = 0; iter < nIter; iter++) {

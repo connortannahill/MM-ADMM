@@ -81,11 +81,15 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
   double Ihprev = INFINITY;
   int i;
   for (i = 0; i < nSteps; i++) {
-    Ih = solver.step(20, 1e-4);
+    Ih = solver.step(50, 1e-4);
 
-    cout << "Ih = " << Ih << endl;
-    cout << "IhDiff = " << Ih - Ihprev << endl;
-    if (i != 0 && Ih >= Ihprev) {
+    // cout << "Ih = " << Ih << endl;
+    // cout << "IhDiff = " << Ih - Ihprev << endl;
+    double dIdt = (Ih - Ihprev) / dt;
+    cout << "d/dt = " << (Ih - Ihprev) / dt << endl;
+
+    // if (i != 0 && Ih >= Ihprev) {
+    if (i != 0 && (abs(dIdt) < 1e-2 || dIdt > 0)) {
         cout << "converged" << endl;
         break;
     }
