@@ -21,6 +21,7 @@ output_grid_scale_test_2d()
 run_parallel_experiment()
 create_parallel_plot()
 plot_single_thread_increase()
+exit()
 """
 
 FUNS_LIST = FUNS.split()
@@ -86,6 +87,10 @@ def outputPng(outDir):
 
     plt.savefig("{0}/{1}.png".format(outDir, testName))
     plt.clf()
+
+def exit():
+    import sys
+    sys.exit()
 
 def plot_parallel_experiment(testName, pows, times, ax, color, label, singlePlot):
     
@@ -225,16 +230,6 @@ def run_parallel_experiment():
         with open('Experiments/Data/{0}/{1}.json'.format(testName, inputFile), 'w+') as f:
             f.write(json.dumps(times))
         
-        # label = str(num_simplices[i])
-        # plot_parallel_experiment(inputFile, pows, times, ax, color[i], label, True)
-
-    # plt.xlabel('Number of CPU Cores')
-    # plt.ylabel('Average Execution times')
-    # plt.title('{}'.format(testName))
-    # plt.legend()
-
-    # plt.savefig('ParTest{0}.png'.format(testName))
-
 def plot_single_thread_increase():
 
     testName = input('test name (-1 to stop) = ')
@@ -264,14 +259,23 @@ def plot_single_thread_increase():
             
             one_t_time = times['2']
             times_list.append(np.mean(one_t_time))
+        
 
         # Scatter plot of the times
+        mask = np.array(num_list) < 320
+        num_list = np.array(num_list)[mask]
+        times_list = np.array(times_list)[mask]
+        # times_list = np.array(times_list)[num_list<63]
         plt.scatter(num_list, times_list, color=color[j])
 
         # Build regression
-        A = np.vstack([num_list, np.ones(len(num_list))]).T
-        m, b = np.linalg.lstsq(A, times_list, rcond=None)[0]
-        plt.plot(num_list, m*np.array(num_list) + b, color=color[j], label='{0} ($m = {1}$, $b = {2}$)'.format(testName, round(m, 2), round(b, 2)))
+        A = np.vstack([num_list**3, num_list**2, num_list, np.ones(len(num_list))]).T
+        coefs, res, rank, s = np.linalg.lstsq(A, times_list, rcond=None)
+        # a, b, c = coefs
+        a, b, c, d = coefs
+        x = np.linspace(min(num_list), max(num_list), 100)
+        plt.plot(x, a*(x**3) + b*(x**2) + c*x + d, color=color[j], label='{0} ($SSE = {1:.2e}, a = {2:.2e}, b = {3:.2e}$)'.format(testName, float(res), float(a), float(b)))
+        # plt.plot(x, a*(x**2) + b*x + c, color=color[j], label='{0} ($a = {1}$, $b = {2}$, $c = {3}$)'.format(testName, round(a, 2), round(b, 2), round(c, 2)))
 
         plt.legend()
         plt.savefig('./Experiments/Results/{0}SingleThread.png'.format(testName))

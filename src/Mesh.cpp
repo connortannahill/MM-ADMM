@@ -220,7 +220,7 @@ void Mesh<D>::projectOntoBoundary(int nodeId, Eigen::Vector<double, D> &node) {
 }
 
 template <int D>
-Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> &boundaryMask,
+Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
             MonitorFunction<D> *Mon, int numThreads, double rho, double tau) {
 
     this->Vc = &X;
@@ -230,51 +230,51 @@ Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<Mesh<D>::NodeType> 
 
     this->tau = tau;
 
-    this->Ih = new Eigen::VectorXd(F.rows());
+//     this->Ih = new Eigen::VectorXd(F.rows());
 
-    // faceList = new Eigen::MatrixXd();
-    buildFaceList();
+//     // faceList = new Eigen::MatrixXd();
+//     buildFaceList();
 
-#ifdef NUMTHREADS
-    omp_set_num_threads(numThreads);
-#endif
+// #ifdef NUMTHREADS
+//     omp_set_num_threads(numThreads);
+// #endif
 
-    // Create mesh interpolator
-    mapEvaluator = new MeshInterpolator<D>();
-    mapEvaluator->updateMesh((*this->Vc), (*this->F));
-    mapEvaluator->interpolateMonitor(*Mon);
-    this->nPnts = X.rows();
+//     // Create mesh interpolator
+//     mapEvaluator = new MeshInterpolator<D>();
+//     mapEvaluator->updateMesh((*this->Vc), (*this->F));
+//     mapEvaluator->interpolateMonitor(*Mon);
+//     this->nPnts = X.rows();
 
-    this->Mon = Mon;
+//     this->Mon = Mon;
 
-    // Trivial edge matrix
-    int nPnts = Vc->rows();
+//     // Trivial edge matrix
+//     int nPnts = Vc->rows();
 
-    // Build the monitor simplex values
-    monitorEvals = new Eigen::MatrixXd(X.rows(), D*D);
+//     // Build the monitor simplex values
+//     monitorEvals = new Eigen::MatrixXd(X.rows(), D*D);
 
-    // Build the mass matrix
-    Eigen::VectorXd m(Eigen::VectorXd::Constant(nPnts*D, tau));
-    this->m = tau;
-    buildMassMatrix(m);
+//     // Build the mass matrix
+//     Eigen::VectorXd m(Eigen::VectorXd::Constant(nPnts*D, tau));
+//     this->m = tau;
+//     buildMassMatrix(m);
 
-    buildDMatrix();
-    this->w = sqrt(rho);
-    buildWMatrix(this->w);
+//     buildDMatrix();
+//     this->w = sqrt(rho);
+//     buildWMatrix(this->w);
 
-    DXpU = new Eigen::VectorXd((*Dmat)*(m));
+//     DXpU = new Eigen::VectorXd((*Dmat)*(m));
 
-    hessInvs = new vector<Eigen::Matrix<double, D*(D+1), D*(D+1)>>(this->F->rows());
-    gradCurrs = new vector<Eigen::Vector<double, D*(D+1)>>(this->F->rows());
+//     hessInvs = new vector<Eigen::Matrix<double, D*(D+1), D*(D+1)>>(this->F->rows());
+//     gradCurrs = new vector<Eigen::Vector<double, D*(D+1)>>(this->F->rows());
 
-    // Set the Hessians to the identity intiially
-    Eigen::Matrix<double, D*(D+1), D*(D+1)> eye = Eigen::Matrix<double, D*(D+1), D*(D+1)>::Identity(D*(D+1), D*(D+1));
-    for (uint32_t i = 0; i < hessInvs->size(); i++) {
-        hessInvs->at(i) = eye;
-    }
+//     // Set the Hessians to the identity intiially
+//     Eigen::Matrix<double, D*(D+1), D*(D+1)> eye = Eigen::Matrix<double, D*(D+1), D*(D+1)>::Identity(D*(D+1), D*(D+1));
+//     for (uint32_t i = 0; i < hessInvs->size(); i++) {
+//         hessInvs->at(i) = eye;
+//     }
 
-    // Create the functional for each vertex
-    I_wx = new HuangFunctional<D>(*Vc, *Vp, *(this->F), *DXpU, Mon, this->w, 0.0, 0.0);
+//     // Create the functional for each vertex
+//     I_wx = new HuangFunctional<D>(*Vc, *Vp, *(this->F), *DXpU, Mon, this->w, 0.0, 0.0);
 }
 
 template <int D>

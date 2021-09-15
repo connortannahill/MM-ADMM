@@ -74,7 +74,7 @@ namespace utils {
     }
 
     inline void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixXd *Vc,
-      Eigen::MatrixXi *F, vector<Mesh<2>::NodeType> *boundaryMask, Mesh<2>::NodeType bType) {
+      Eigen::MatrixXi *F, vector<NodeType> *boundaryMask, NodeType bType) {
           
         int nx = (int) params["nx"];
         int ny = (int) params["ny"];
@@ -142,7 +142,7 @@ namespace utils {
         }
 
         for (uint64_t i = 0; i < boundaryMask->size(); i++) {
-            boundaryMask->at(i) = Mesh<2>::NodeType::INTERIOR;
+            boundaryMask->at(i) = NodeType::INTERIOR;
         }
 
         for (int i = 0; i < (nx+1)*(ny+1); i++) {
@@ -153,19 +153,19 @@ namespace utils {
             if (boundaryPnt) {
                 boundaryMask->at(i) = bType;
             } else {
-                boundaryMask->at(i) = Mesh<2>::NodeType::INTERIOR;
+                boundaryMask->at(i) = NodeType::INTERIOR;
             }
 
 
             // Fix the corners
             if ((iOff == 0 && jOff == 0) || (iOff == nx && jOff == 0) 
                     || (iOff == 0 && jOff == ny) || (iOff == nx && jOff == ny)) {
-                boundaryMask->at(i)  = Mesh<2>::NodeType::BOUNDARY_FIXED;
+                boundaryMask->at(i)  = NodeType::BOUNDARY_FIXED;
             }
         }
     }
 
-    inline void removeRow(Eigen::MatrixXd& matrix, unsigned int rowToRemove) {
+    inline void removeRow(Eigen::MatrixXi &matrix, unsigned int rowToRemove) {
         unsigned int numRows = matrix.rows()-1;
         unsigned int numCols = matrix.cols();
 
@@ -177,45 +177,54 @@ namespace utils {
 
     inline void interpolateBoundaryLocation(Eigen::Vector<double, 2> &pnt, std::function<double(double, double)> phiFun,
             std::vector<int> &nVals, std::vector<std::tuple<double, double>> &bb) {
+        cout << "In interpolateBoundaryLocation" << endl;
 
         double xa = std::get<0>(bb.at(0));
         double xb = std::get<1>(bb.at(0));
         double ya = std::get<0>(bb.at(1));
         double yb = std::get<1>(bb.at(1));
 
-        double hx = (xb - xa)/nVals[0];
-        double hy = (yb - ya)/nVals[1];
+        // double hx = (xb - xa)/nVals[0]; double hy = (yb - ya)/nVals[1];
+        const double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
 
         // Compute the inward normal vector
         Eigen::Vector<double, 2> phiGrad;
-        phiGrad[0] = (phiFun(pnt[0]+hx, pnt[1]) - phiFun(pnt[0]-hx, pnt[1]))/(2.0*hx);
-        phiGrad[1] = (phiFun(pnt[0], pnt[1]+hy) - phiFun(pnt[0], pnt[1]-hy))/(2.0*hy);
+        phiGrad[0] = (phiFun(pnt[0]+h, pnt[1]) - phiFun(pnt[0]-h, pnt[1]))/(2.0*h);
+        phiGrad[1] = (phiFun(pnt[0], pnt[1]+h) - phiFun(pnt[0], pnt[1]-h))/(2.0*h);
+
+        cout << "||phigrad|| = " << phiGrad.norm() << endl;
         phiGrad.normalize();
-        Eigen::Vector<double, 2> inNorm = - phiGrad;
-        double hMove = sqrt(hx*hx + hy*hy);
 
-        // Take the phi values at these points
-        Eigen::Vector<double, 2> bndPnt = {pnt[0]+hMove*inNorm[0], pnt[1]+hMove*inNorm[1]};
-        double phiOut = phiFun(pnt[0], pnt[1]);
-        double phiIn = phiFun(bndPnt[0], bndPnt[1]);
+        pnt = pnt - phiFun(pnt[0], pnt[1]) * phiGrad;
+        // Eigen::Vector<double, 2> inNorm = - phiGrad;
+        // double hMove = sqrt(hx*hx + hy*hy);
 
-        // Compute the distance to the interface
-        Eigen::Vector<double, 2> distVec = {pnt[0] - bndPnt[0], pnt[1] - bndPnt[1]};
-        double d = abs(phiOut/(phiIn - phiOut))*distVec.norm();
+        // // Take the phi values at these points
+        // Eigen::Vector<double, 2> bndPnt = {pnt[0]+hMove*inNorm[0], pnt[1]+hMove*inNorm[1]};
+        // double phiOut = phiFun(pnt[0], pnt[1]);
+        // double phiIn = phiFun(bndPnt[0], bndPnt[1]);
+
+        // // Compute the distance to the interface
+        // Eigen::Vector<double, 2> distVec = {pnt[0] - bndPnt[0], pnt[1] - bndPnt[1]};
+        // double d = abs(phiOut/(phiIn - phiOut))*distVec.norm();
 
         // Finally, compute the interface point location
-        pnt = bndPnt + d*inNorm;
+        // cout << "d = " << d << endl;
+        // pnt = bndPnt + d*inNorm;
+
+        // cout << "bpntPhi = " << phiFun(bndPnt[0], bndPnt[1]) << endl;
+        // cout << "pntPhi = " << phiFun(pnt[0], pnt[1]) << endl;
+        // cout << "OUT interpolateBoundaryLocation" << endl;
     }
 
     inline void meshFromLevelSetFun(std::function<double(double, double)> phiFun, std::vector<int> &nVals,
         std::vector<std::tuple<double, double>> &bb, Eigen::MatrixXd *Vc, Eigen::MatrixXi *F, 
-        vector<Mesh<2>::NodeType> *boundaryMask, Mesh<2>::NodeType bType) {
+        std::vector<NodeType> *boundaryMask, NodeType bType) {
+        const double EPS = 1e-12;
 
-        // const double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
-        
         // Create the evaluation meshes
-        vector<double> x;
-        vector<double> y;
+        std::vector<double> x;
+        std::vector<double> y;
 
         const int D = 2;
 
@@ -225,13 +234,7 @@ namespace utils {
         linspace(std::get<0>(bb.at(0)), std::get<1>(bb.at(0)), nx, x);
         linspace(std::get<0>(bb.at(1)), std::get<1>(bb.at(1)), ny, y);
 
-        // Compute the level set function
-        // double phi[ny+1][nx+1];
-        // for (uint32_t i = 0; i < x.size(); i++) {
-        //     for (uint32_t j = 0; j < y.size(); j++) {
-        //         phi[j][i] = phiFun(x.at(i), y.at(j));
-        //     }
-        // }
+        cout << "done linspace" << endl;
 
         // Generate the unform rectangular mesh for this domain
         std::unordered_map<std::string,double> params;
@@ -242,19 +245,20 @@ namespace utils {
         params["ya"] = std::get<0>(bb.at(1));
         params["yb"] = std::get<1>(bb.at(1));
 
-        if (Vc != nullptr) {
-            delete Vc;
-        }
-        if (F != nullptr) {
-            delete F;
-        }
+        cout << "setting bb params" << endl;
 
-        Vc = new Eigen::MatrixXd((nx+1)*(ny+1) + nx*ny, D);
-        F = new Eigen::MatrixXi(4*nx*ny, D+1);
+        cout << "making VC and F" << endl;
 
+        Vc->resize((nx+1)*(ny+1) + nx*ny, D);
+        F->resize(4*nx*ny, D+1);
+        boundaryMask->resize(Vc->rows());
+
+        cout << "generating uniform rect mesh" << endl;
         generateUniformRectMesh(params, Vc, F, boundaryMask, bType);
+
+        cout << "generating rect mesh" << endl;
         for (uint32_t i = 0; i < boundaryMask->size(); i++) {
-            boundaryMask->at(i) = Mesh<2>::NodeType::INTERIOR;
+            boundaryMask->at(i) = NodeType::INTERIOR;
         }
 
         // Find the value of phi at each centroid so we know which to remove
@@ -264,81 +268,105 @@ namespace utils {
         Eigen::Vector<double, 2> x1;
         Eigen::Vector<double, 2> x2;
 
-        for (int sId = 0; sId < F->size(); sId++) {
+        cout << "Interpolating the boundary locations" << endl;
+        for (int sId = 0; sId < F->rows(); sId++) {
+            cout << "the xvals" << endl;
+            cout << "F size = " << F->size() << endl;
+            cout << "sId = " << sId << endl;
             x0 = (*Vc)((*F)(sId, 0), Eigen::all);
             x1 = (*Vc)((*F)(sId, 1), Eigen::all);
             x2 = (*Vc)((*F)(sId, 2), Eigen::all);
+            cout << "finsihed the xvals" << endl;
 
             double phiX0 = phiFun(x0[0], x0[1]);
             double phiX1 = phiFun(x1[0], x1[1]);
             double phiX2 = phiFun(x2[0], x2[1]);
 
             // If all of the sides are outside the mesh domain, remove the simplex entirely
-            if (phiX0 < 0.0 && phiX1 < 0.0 && phiX2 < 0.0) {
+            if (phiX0 > -EPS && phiX1 > -EPS && phiX2 > -EPS) {
                 idsToBeRemoved.push_back(sId);
             }
 
-            // If any, but not all, are on interior, project onto boundary
-            if (phiX0 < 0.0 || phiX1 < 0.0 || phiX2 < 0.0) {
-                if (phiX0 < 0) {
-                    interpolateBoundaryLocation(x0, phiFun, nVals, bb);
-                }
-                if (phiX1 < 0) {
-                    interpolateBoundaryLocation(x1, phiFun, nVals, bb);
-                }
-                if (phiX2 < 0) {
-                    interpolateBoundaryLocation(x2, phiFun, nVals, bb);
-                }
+            // // If any, but not all, are on interior, project onto boundary
+            // if (phiX0 < -EPS || phiX1 < -EPS || phiX2 < -EPS) {
+            //     if (phiX0 > -EPS) {
+            //         interpolateBoundaryLocation(x0, phiFun, nVals, bb);
+            //     }
+            //     if (phiX1 > -EPS) {
+            //         interpolateBoundaryLocation(x1, phiFun, nVals, bb);
+            //     }
+            //     if (phiX2 > -EPS) {
+            //         interpolateBoundaryLocation(x2, phiFun, nVals, bb);
+            //     }
+            // }
+        }
+
+
+        // Sort the removed Id's into reverse order for easy removal
+        std::sort(idsToBeRemoved.begin(), idsToBeRemoved.end(), std::greater<int>());
+
+        for (auto id = idsToBeRemoved.begin(); id != idsToBeRemoved.end(); ++id) {
+            removeRow(*F, *id);
+        }
+
+        // Now, find all the used points.
+        std::set<int> usedPnts;
+        for (int i = 0; i < F->rows(); i++) {
+            for (int j = 0; j < F->cols(); j++) {
+                usedPnts.insert((*F)(i, j));
             }
         }
 
-        // Any point epsilon close to the boundary is a boundary point
-        const double eps = 1e-12;
-        for (int i = 0; i < Vc->rows(); i++) {
-            Eigen::Vector<double, D> x((*Vc)(i, Eigen::all));
+        // Interpolate the points onto the boundaries
+        Eigen::Vector<double, D> xPnt;
+        for (auto pnt = usedPnts.begin(); pnt != usedPnts.end(); ++pnt) {
+            xPnt = (*Vc)(*pnt, Eigen::all);
+
+            if (phiFun(xPnt[0], xPnt[1]) > -EPS) {
+                interpolateBoundaryLocation(xPnt, phiFun, nVals, bb);
+            }
+
+            (*Vc)(*pnt, Eigen::all) = xPnt;
+        }
+
+        // Any used point eps close to the boundary is labelled a boundary point
+        for (auto pnt = usedPnts.begin(); pnt != usedPnts.end(); ++pnt) {
+            Eigen::Vector<double, D> x((*Vc)(*pnt, Eigen::all));
 
             double phiVal = phiFun(x[0], x[1]);
-            if (abs(phiVal) < eps) {
-                boundaryMask->at(i) = bType;
+            if (abs(phiVal) < EPS) {
+                boundaryMask->at(*pnt) = bType;
             }
         }
 
-    //     // Sort the removed Id's into reverse order for easy removal
-    //     std::sort(idsToBeRemoved.begin(), idsToBeRemoved.end(), std::greater<int>());
+        // Eigen::MatrixXd *VcTemp = new Eigen::MatrixXd(usedPnts.size(), D);
+        int off = 0;
 
-    //     for (auto id = idsToBeRemoved.begin(); id != idsToBeRemoved.end(); ++id) {
-    //         removeRow(*F, *id);
-    //     }
+        // Build new set of points with offending elements removed.
+        // Additionally, build map assigning new id's to the points in
+        //  the simplex matrix.
+        // std::map<int, int> translator;
+        // for (int i = 0; i < Vc->size(); i++) {
+        //     if (usedPnts.find(i) != usedPnts.end()) {
+        //         (*VcTemp)(off, Eigen::all) = (*Vc)(i, Eigen::all);
+        //         translator[i] = off;
+        //         off++;
+        //     }
+        // }
+        // cout << "OFF = " << off << endl;
+        // // assert(false);
 
-    //     // Now, find all the used points.
-    //     std::set<int> usedPnts{F->data(), F->data() + F->size()};
+        // // Make VC = VCtemp
+        // Vc->resize(VcTemp->rows(), VcTemp->cols());
+        // *Vc = *VcTemp;
+        // delete VcTemp;
 
-    //     Eigen::MatrixXd *VcTemp = new Eigen::MatrixXd(usedPnts.size(), D);
-    //     int off = 0;
-
-    //     // Build new set of points with offending elements removed.
-    //     // Additionally, build map assigning new id's to the points in
-    //     //  the simplex matrix.
-    //     std::map<int, int> translator;
-    //     for (int i = 0; i < Vc->size(); i++) {
-    //         if (usedPnts.find(i) != usedPnts.end()) {
-    //             (*VcTemp)(off, Eigen::all) = (*Vc)(i, Eigen::all);
-    //             translator[i] = off;
-    //             off++;
-    //         }
-    //     }
-
-    //     // Make VC = VCtemp
-    //     delete Vc;
-    //     Vc = VcTemp;
-    //     VcTemp = nullptr;
-
-    //     // Iterate through simplex list, mapping the point ids
-    //     for (int i = 0; i < F->rows(); i++) {
-    //         for (int j = 0; j < D; j++) {
-    //             (*F)(i, j) = translator[(*F)(i, j)];
-    //         }
-    //     }
+        // // Iterate through simplex list, mapping the point ids
+        // for (int i = 0; i < F->rows(); i++) {
+        //     for (int j = 0; j < D; j++) {
+        //         (*F)(i, j) = translator[(*F)(i, j)];
+        //     }
+        // }
     }
 }
 

@@ -4,6 +4,7 @@
 #include "AdaptationFunctional.h"
 #include "MonitorFunction.h"
 #include "MeshInterpolator.h"
+#include "NodeType.h"
 #include <Eigen/Sparse>
 #include <vector>
 #include <set>
@@ -14,11 +15,6 @@ template <int D=-1>
 class Mesh {
 public:
     double m;
-    enum NodeType {
-        BOUNDARY_FIXED,
-        BOUNDARY_FREE,
-        INTERIOR
-    };
     // Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryMask,
     //         MonitorFunction<D> *M, unordered_map<string, double> params);
     Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,

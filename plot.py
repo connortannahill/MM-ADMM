@@ -10,6 +10,17 @@ if mode == 0:
     testName = sys.argv[2]
     outDir = 'Experiments/Results/' + testName
 
+    out = np.genfromtxt('{}/phi.txt'.format(outDir), delimiter=',')
+
+    x = out[:,0]
+    y = out[:,1]
+    phi = out[:,2]
+
+    n = int(np.sqrt(phi.size))
+
+    fig, ax = plt.subplots(1)
+    img = ax.contour(np.reshape(x, (n, n)), np.reshape(y, (n, n)), np.reshape(phi, (n, n)), levels=[0], colors='b')
+
     points = np.genfromtxt('{}/points.txt'.format(outDir), delimiter=',')
     # print(points)
     triangles = np.genfromtxt('{}/triangles.txt'.format(outDir), delimiter=',')
@@ -21,6 +32,8 @@ if mode == 0:
     # plt.scatter(points[:,0], points[:,0])
     # X, Y = np.meshgrid(np.linspace(0, 1, 11), np.linspace(0, 1, 11))
     # plt.quiver(X[:,0], X[:,1], points[:,0], points[:,1])
+
+
 
     # import plotly.express as px
     # fig = px.scatter(x=points[:,0], y=points[:,1])
