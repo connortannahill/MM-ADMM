@@ -17,10 +17,12 @@ TEMPLATES AND MISC
 FUNS = """
 create_input()
 grid_scale_test_2d()
+grid_scale_test_3d()
 output_grid_scale_test_2d()
 run_parallel_experiment()
 create_parallel_plot()
 plot_single_thread_increase()
+plot_energy_decrease()
 exit()
 """
 
@@ -28,6 +30,7 @@ FUNS_LIST = FUNS.split()
 
 def getTemplate2D():
     TEMPLATE_2D = """$testType
+    2
     $monType
     $boundaryType
     $nSteps
@@ -44,6 +47,7 @@ def getTemplate2D():
 
 def getTemplate3D():
     TEMPLATE_3D = """$testType
+    3
     $monType
     $boundaryType
     $nSteps
@@ -130,8 +134,23 @@ def plot_parallel_experiment(testName, pows, times, ax, color, label, singlePlot
 Functions to be called
 """
 
+def plot_energy_decrease():
+    testName = input('test name = ')
+
+    vals = []
+    with open('./Experiments/Results/{0}/Ih.txt'.format(testName)) as f:
+        vals = np.array([float(i) for i in f.read().split()])
+    
+    plt.plot(np.arange(len(vals))+1, vals)
+    plt.xlabel('Number of time steps')
+    plt.ylabel('$I_h$')
+    plt.title('{}'.format(testName))
+    plt.legend()
+    plt.savefig('./Experiments/Results/{0}/IhPlot.png'.format(testName))
+
 def create_parallel_plot():
     testName = input('test name = ')
+    dim = int(input('dimension = '))
 
     plotAll = input('All on one plot? ') == 'True'
     print(plotAll)
@@ -146,7 +165,10 @@ def create_parallel_plot():
     dataFilesJson = list(np.array(dataFilesJson)[sort_list])
 
     color=cm.rainbow(np.linspace(0,1,len(dataFiles)))
-    num_simplices = [4*(i**2) for i in num_list]
+    if (dim == 2):
+        num_simplices = [4*(i**2) for i in num_list]
+    else:
+        num_simplices = [12*(i**3) for i in num_list]
     fig, ax = plt.subplots()
 
     for i, dataFileJson in enumerate(dataFilesJson):
@@ -195,10 +217,10 @@ def create_parallel_plot():
         Path(pName).mkdir(parents=True, exist_ok=True)
         plt.savefig('{0}ParTest{1}.png'.format(pName, testName))
     
-
 def run_parallel_experiment():
 
     testName = input('test name = ')
+    dim = int(input('dimension = '))
 
     # Get all input file names
     inputFiles = [file[file.rfind('/')+1:] for file in glob.glob('./Experiments/InputFiles/{0}*'.format(testName))]
@@ -212,7 +234,11 @@ def run_parallel_experiment():
     subprocess.run('make')
 
     color=cm.rainbow(np.linspace(0,1,len(inputFiles)))
-    num_simplices = [4*((2**i * 10)**2) for i in range(1, HIGHEST_POW+5)]
+    if dim == 2:
+        num_simplices = [4*((2**i * 10)**2) for i in range(1, HIGHEST_POW+5)]
+    else:
+        num_simplices = [12*((2**i * 10)**3) for i in range(1, HIGHEST_POW+5)]
+
     fig, ax = plt.subplots()
     for i, inputFile in enumerate(inputFiles):
         times = {}
@@ -312,7 +338,33 @@ def grid_scale_test_2d():
 
         in_files.append(outFileName + str(n))
     
-    run_experiments(in_files)
+    # run_experiments(in_files)
+
+def grid_scale_test_3d():
+    paramList = [s[1:] for s in getTemplate3D().split() if s[0] == '$']
+    paramList.remove('nx')
+    paramList.remove('ny')
+    paramList.remove('nz')
+
+    in_dict = {s: input('{} = '.format(s)) for s in paramList}
+
+    nVals = [str((2**i)*10) for i in range(6)]
+
+    print(nVals)
+
+    outFileName = input('test name = ')
+
+    in_files = []
+
+    for n in nVals:
+        in_dict['nx'] = n
+        in_dict['ny'] = n
+        in_dict['nz'] = n
+
+        create_input_from_dict(in_dict, getTemplate3D(),
+            OUT_DIR + outFileName + str(n))
+
+        in_files.append(outFileName + str(n))
 
 def create_input():
     in_dict = {}

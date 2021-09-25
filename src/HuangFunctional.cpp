@@ -16,6 +16,18 @@ HuangFunctional<D>::HuangFunctional(Eigen::MatrixXd &Vc,
     this->p = p;
     this->theta = theta;
     this->w = w;
+    this->N = F.rows();
+}
+
+template <int D>
+HuangFunctional<D>::HuangFunctional( Eigen::MatrixXd &Vp, Eigen::MatrixXi &F,
+        Eigen::VectorXd &DXpU, MonitorFunction<D> *m, double w, double theta, double p)
+            : AdaptationFunctional<D>(Vp, F, DXpU, m, w) {
+    
+    this->p = p;
+    this->theta = theta;
+    this->w = w;
+    this->N = F.rows();
 }
 
 template <int D>

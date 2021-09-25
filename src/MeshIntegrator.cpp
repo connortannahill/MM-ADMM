@@ -65,8 +65,8 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     // Setup the assembly for the step
     (this->a)->setUp();
 
-    // Make prediction for next value of x (sorta)
-    (this->a)->predictX(dt, *this->xPrev, *this->x, *this->xBar);
+    // Make prediction for next value of x (sorta) and the next time step
+    dt = (this->a)->predictX(dt, *this->xPrev, *this->x, *this->xBar);
 
     *xPrev = *x;
     *z = (*a->Dmat) * *this->xBar;

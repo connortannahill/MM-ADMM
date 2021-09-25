@@ -49,7 +49,7 @@ int Mesh<D>::getNPnts() {
 template <int D>
 void Mesh<D>::buildFaceList() {
     // Construct face connections vector
-    faceConnects = new vector<set<int>>(Vc->rows());
+    faceConnects = new vector<set<int>>(Vp->rows());
 
     vector<vector<int>> faceTemp;
     // Append vertices of each boundary face to this vector
@@ -209,7 +209,6 @@ void Mesh<D>::projection3D(int nodeId, Eigen::Vector<double, D> &nodeIn) {
     }
 }
 
-
 template <int D>
 void Mesh<D>::projectOntoBoundary(int nodeId, Eigen::Vector<double, D> &node) {
     if (D == 2) {
@@ -220,91 +219,135 @@ void Mesh<D>::projectOntoBoundary(int nodeId, Eigen::Vector<double, D> &node) {
 }
 
 template <int D>
-Mesh<D>::Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
+void Mesh<D>::reOrientElements(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F) {
+    Eigen::Matrix<double,D,D> E;
+
+    // Compute the edge matrix
+    for (int i = 0; i < F.rows(); i++) {
+        for (int j = 0; j < D; j++) {
+            E.col(j)    = Xp(F(i, j+1), Eigen::all)  - Xp(F(i, 0), Eigen::all);
+        }
+
+        if (E.determinant() < 0) {
+            int temp = F(i, 2);
+            F(i, 2) = F(i, 1);
+            F(i, 1) = temp;
+        }
+    }
+
+}
+
+template <int D>
+void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp, 
+            Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
             MonitorFunction<D> *Mon, int numThreads, double rho, double tau) {
 
-    this->Vc = &X;
-    this->Vp = new Eigen::MatrixXd(*this->Vc);
+    if (compMesh) {
+        this->Vc = &Xc;
+    } else {
+        this->Vc = nullptr;
+    }
+
+    this->Vp = &Xp;
+
+    // Should only use positive orientation elements
+    reOrientElements(Xp, F);
+
     this->F = &F;
     this->boundaryMask = &boundaryMask;
 
     this->tau = tau;
 
-//     this->Ih = new Eigen::VectorXd(F.rows());
+    this->Ih = new Eigen::VectorXd(F.rows());
 
-//     // faceList = new Eigen::MatrixXd();
-//     buildFaceList();
+    buildFaceList();
 
-// #ifdef NUMTHREADS
-//     omp_set_num_threads(numThreads);
-// #endif
+#ifdef NUMTHREADS
+    omp_set_num_threads(numThreads);
+#endif
 
-//     // Create mesh interpolator
-//     mapEvaluator = new MeshInterpolator<D>();
-//     mapEvaluator->updateMesh((*this->Vc), (*this->F));
-//     mapEvaluator->interpolateMonitor(*Mon);
-//     this->nPnts = X.rows();
+    // Create mesh interpolator
+    mapEvaluator = new MeshInterpolator<D>();
+    mapEvaluator->updateMesh((*this->Vp), (*this->F));
+    mapEvaluator->interpolateMonitor(*Mon);
+    this->nPnts = Xp.rows();
 
-//     this->Mon = Mon;
+    this->Mon = Mon;
 
-//     // Trivial edge matrix
-//     int nPnts = Vc->rows();
+    // Trivial edge matrix
+    int nPnts = Vp->rows();
 
-//     // Build the monitor simplex values
-//     monitorEvals = new Eigen::MatrixXd(X.rows(), D*D);
+    // Build the monitor simplex values
+    monitorEvals = new Eigen::MatrixXd(Xp.rows(), D*D);
 
-//     // Build the mass matrix
-//     Eigen::VectorXd m(Eigen::VectorXd::Constant(nPnts*D, tau));
-//     this->m = tau;
-//     buildMassMatrix(m);
+    // Build the mass matrix
+    Eigen::VectorXd m(Eigen::VectorXd::Constant(nPnts*D, tau));
+    this->m = tau;
+    buildMassMatrix(m);
 
-//     buildDMatrix();
-//     this->w = sqrt(rho);
-//     buildWMatrix(this->w);
+    buildDMatrix();
+    this->w = sqrt(rho);
+    buildWMatrix(this->w);
 
-//     DXpU = new Eigen::VectorXd((*Dmat)*(m));
+    DXpU = new Eigen::VectorXd((*Dmat)*(m));
 
-//     hessInvs = new vector<Eigen::Matrix<double, D*(D+1), D*(D+1)>>(this->F->rows());
-//     gradCurrs = new vector<Eigen::Vector<double, D*(D+1)>>(this->F->rows());
+    hessInvs = new vector<Eigen::Matrix<double, D*(D+1), D*(D+1)>>(this->F->rows());
+    gradCurrs = new vector<Eigen::Vector<double, D*(D+1)>>(this->F->rows());
 
-//     // Set the Hessians to the identity intiially
-//     Eigen::Matrix<double, D*(D+1), D*(D+1)> eye = Eigen::Matrix<double, D*(D+1), D*(D+1)>::Identity(D*(D+1), D*(D+1));
-//     for (uint32_t i = 0; i < hessInvs->size(); i++) {
-//         hessInvs->at(i) = eye;
-//     }
+    // Set the Hessians to the identity intiially
+    Eigen::Matrix<double, D*(D+1), D*(D+1)> eye = Eigen::Matrix<double, D*(D+1), D*(D+1)>::Identity(D*(D+1), D*(D+1));
+    for (uint32_t i = 0; i < hessInvs->size(); i++) {
+        hessInvs->at(i) = eye;
+    }
 
-//     // Create the functional for each vertex
-//     I_wx = new HuangFunctional<D>(*Vc, *Vp, *(this->F), *DXpU, Mon, this->w, 0.0, 0.0);
+    // Create the functional for each vertex
+    if (compMesh) {
+        I_wx = new HuangFunctional<D>(*Vc, *Vp, *(this->F), *DXpU, Mon, this->w, 0.0, 0.0);
+    } else {
+        I_wx = new HuangFunctional<D>(*Vp, *(this->F), *DXpU, Mon, this->w, 0.0, 0.0);
+    }
+}
+
+template <int D>
+Mesh<D>::Mesh(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
+            MonitorFunction<D> *Mon, int numThreads, double rho, double tau) {
+    
+    this->compMesh = false;
+
+    Eigen::MatrixXd Xc;
+    meshInit(Xc, Xp, F, boundaryMask, Mon, numThreads, rho, tau);
+
+}
+
+template <int D>
+Mesh<D>::Mesh(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
+            MonitorFunction<D> *Mon, int numThreads, double rho, double tau) {
+    
+    compMesh = true;
+
+    meshInit(Xc, Xp, F, boundaryMask, Mon, numThreads, rho, tau);
 }
 
 template <int D>
 double Mesh<D>::computeEnergy(Eigen::VectorXd &x) {
-
-
     double Ih = 0.0;
 
-// #if NUMTHREADS == 1
     Eigen::Vector<double, D*(D+1)> x_i;
     Eigen::Vector<double, D*(D+1)> xi_i;
     Eigen::Vector<double, D*(D+1)> gradSimp;
     Eigen::Vector<double, D> pnt;
-// #endif
 
-// #if NUMTHREADS > 1
-//     #pragma omp parallel for
-// #endif
+#if NUMTHREADS > 1
+    #pragma omp parallel for
+#endif
     for (int i = 0; i < F->rows(); i++) {
-// #if NUMTHREADS > 1
-//         Eigen::Vector<double, D*(D+1)> x_i;
-//         Eigen::Vector<double, D*(D+1)> xi_i;
-//         Eigen::Vector<double, D*(D+1)> gradSimp;
-//         Eigen::Vector<double, D> pnt;
-// #endif
-        for (int n = 0; n < D+1; n++) {
-            pnt = (*Vc)((*F)(i,n), Eigen::all);
-            
-            for (int l = 0; l < D; l++) {
-                xi_i(n*D+l) = pnt(l);
+        if (compMesh) {
+            for (int n = 0; n < D+1; n++) {
+                pnt = (*Vc)((*F)(i,n), Eigen::all);
+                
+                for (int l = 0; l < D; l++) {
+                    xi_i(n*D+l) = pnt(l);
+                }
             }
         }
 
@@ -321,24 +364,20 @@ double Mesh<D>::computeEnergy(Eigen::VectorXd &x) {
     }
 
     return Ih;
-
 }
 
-// TODO: add external forces (would be handled in this object, as the meshing object should control its own props)
 template <int D>
-void Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) {
-    if (!stepTaken) {
-        // If the step is not taken we do Euler's method
-        Eigen::Vector<double, D*(D+1)> x_i;
-        Eigen::Vector<double, D*(D+1)> xi_i;
-        Eigen::Vector<double, D*(D+1)> gradSimp;
-        Eigen::Vector<double, D> pnt;
+double Mesh<D>::eulerStep(Eigen::VectorXd &x, Eigen::VectorXd &grad) {
+    Eigen::Vector<double, D*(D+1)> x_i;
+    Eigen::Vector<double, D*(D+1)> xi_i;
+    Eigen::Vector<double, D*(D+1)> gradSimp;
+    Eigen::Vector<double, D> pnt;
 
-        Eigen::VectorXd grad(D*Vp->rows());
-        grad.setZero();
-        double Ihorig = 0.0;
+    grad.setZero();
+    double Ihorig = 0.0;
 
-        for (int i = 0; i < F->rows(); i++) {
+    for (int i = 0; i < F->rows(); i++) {
+        if (compMesh) {
             for (int n = 0; n < D+1; n++) {
                 pnt = (*Vc)((*F)(i,n), Eigen::all);
                 
@@ -346,33 +385,68 @@ void Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Ei
                     xi_i(n*D+l) = pnt(l);
                 }
             }
+        }
 
-            for (int n = 0; n < D+1; n++) {
-                pnt = (*Vp)((*F)(i,n), Eigen::all);
+        for (int n = 0; n < D+1; n++) {
+            pnt = x.segment(D*(*F)(i,n), D);
 
-                for (int l = 0; l < D; l++) {
-                    x_i(n*D+l) = pnt(l);
-                }
-            }
-
-            // Compute the local gradient
-            Ihorig += I_wx->blockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, true, false);
-
-            // For place into the respective gradients
-            for (int n = 0; n < D+1; n++) {
-                int off = (*F)(i,n);
-                 
-                if (boundaryMask->at((*F)(i,n)) == NodeType::INTERIOR) {
-                    grad.segment(D*off, D) += gradSimp.segment(D*n, D);
-                }
+            for (int l = 0; l < D; l++) {
+                x_i(n*D+l) = pnt(l);
             }
         }
 
+        // Compute the local gradient
+        Ihorig += I_wx->blockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, true, false);
+
+        // For place into the respective gradients
+        for (int n = 0; n < D+1; n++) {
+            int off = (*F)(i,n);
+                
+            if (boundaryMask->at((*F)(i,n)) == NodeType::INTERIOR) {
+                grad.segment(D*off, D) += gradSimp.segment(D*n, D);
+            }
+        }
+    }
+
+    cout << "in Euler Ihorig = " << Ihorig << endl;
+
+    return Ihorig;
+}
+
+// TODO: add external forces (would be handled in this object, as the meshing object should control its own props)
+template <int D>
+double Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) {
+    double dtNew = 0;
+    if (!stepTaken) {
+        // If the step is not taken we do Euler's method
+        Eigen::VectorXd grad(D*Vp->rows());
+
+        // Compute the initial guess
+        double Ihorig = eulerStep(x, grad);
+
+        // assert(false);
         xBar = x - (dt / tau) * grad;
+
+        // Compute energy at the current time level along with the updated gradient
+        double Ih = eulerStep(xBar, grad);
+        double rate = abs((Ih - Ihorig)/Ihorig);
+
+        dtNew = dt;
+        while (rate > 1e-2) {
+            dtNew /= 2.0;
+            xBar = x - (dtNew / tau) * grad;
+            Ih = eulerStep(xBar, grad);
+            rate = abs((Ih - Ihorig)/Ihorig);
+            cout << "rate = " << rate << endl;
+        }
+        cout << "out" << endl;
     } else {
         // Compute the gradient at each point
         xBar = 2.0*x - xPrev;
+        dtNew = dt;
     }
+
+    return dtNew;
 }
 
 template <int D>
@@ -611,11 +685,13 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
         Eigen::Vector<double, D> pnt;
         Eigen::Vector<double, D> zTemp;
 #endif
-        for (int n = 0; n < D+1; n++) {
-            pnt = (*Vc)((*F)(i,n), Eigen::all);
-            
-            for (int l = 0; l < D; l++) {
-                xi_i(n*D+l) = pnt(l);
+        if (compMesh) {
+            for (int n = 0; n < D+1; n++) {
+                pnt = (*Vc)((*F)(i,n), Eigen::all);
+                
+                for (int l = 0; l < D; l++) {
+                    xi_i(n*D+l) = pnt(l);
+                }
             }
         }
 
@@ -671,6 +747,7 @@ void Mesh<D>::updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd
     int cols = Vp->cols();
     for (int i = 0; i < Vp->rows(); i++) {
         for (int j = 0; j < cols; j++) {
+            // (*Vc)(i, j) = xPrev(i*cols+j);
             (*Vp)(i, j) = x(i*cols+j);
         }
     }
@@ -681,12 +758,12 @@ void Mesh<D>::outputBoundaryNodes(const char *fname) {
     std::ofstream outFile;
     outFile.open(fname);
 
-    for (int i = 0; i < Vc->rows(); i++) {
+    for (int i = 0; i < Vp->rows(); i++) {
         if (boundaryMask->at(i) != INTERIOR) {
             for (int j = 0; j < D-1; j++) {
-                outFile << (*Vc)(i, j) << ", ";
+                outFile << (*Vp)(i, j) << ", ";
             }
-            outFile << (*Vc)(i, D-1) << endl;
+            outFile << (*Vp)(i, D-1) << endl;
 
         }
     }

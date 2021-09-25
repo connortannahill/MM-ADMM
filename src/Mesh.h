@@ -17,13 +17,20 @@ public:
     double m;
     // Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::VectorXi &boundaryMask,
     //         MonitorFunction<D> *M, unordered_map<string, double> params);
-    Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
+    Mesh(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
             MonitorFunction<D> *M, int numThreads, double rho, double tau);
+    Mesh(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
+            MonitorFunction<D> *M, int numThreads, double rho, double tau);
+    // Mesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
+    //         MonitorFunction<D> *M, int numThreads, double rho, double tau);
     void evalMonitorAtPoint(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &mVal);
     void outputSimplices(const char *fname);
     void copyX(Eigen::VectorXd &tar);
     void outputPoints(const char *fname);
     void computeNodalGrads(Eigen::VectorXd &grad);
+    void meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp, 
+            Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
+            MonitorFunction<D> *Mon, int numThreads, double rho, double tau);
     void setUp();
     int getNPnts();
     ~Mesh();
@@ -38,6 +45,7 @@ public:
     MonitorFunction<D> *Mon;
     bool stepTaken = false;
     bool hessComputed = false;
+    bool compMesh = true;
     MeshInterpolator<D> *mapEvaluator;
     void outputBoundaryNodes(const char *fname);
 //    Eigen::FullPivLU<Eigen::Matrix<double, D*(D+1), D*(D+1)>> *lu;
@@ -51,8 +59,9 @@ public:
     int a;
     double tau;
     double prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DxpU, Eigen::VectorXd &z);
+    void reOrientElements(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F);
     void updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x);
-    void predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar);
+    double predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar);
     double newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
             Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol);
     double bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
@@ -61,6 +70,7 @@ public:
     double BFGSSimplex(int zId, Eigen::Vector<double,D*(D+1)> &z,
         Eigen::Vector<double,D*(D+1)> &xi, int nIter);
     double approximateGrads();
+    double eulerStep(Eigen::VectorXd &x, Eigen::VectorXd &grad);
 
     Eigen::MatrixXi *faceList;
     vector<set<int>> *faceConnects;

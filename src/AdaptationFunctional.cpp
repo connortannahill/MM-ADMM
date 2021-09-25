@@ -12,6 +12,7 @@ AdaptationFunctional<D>::AdaptationFunctional(const AdaptationFunctional &obj) {
     Vc = obj.Vc;
     Vp = obj.Vp;
     DXpU = obj.DXpU;
+    this->N = obj.N;
 
     this->M = obj.M;
     // this->boundaryNode = obj.boundaryNode;
@@ -45,7 +46,7 @@ void swap(int id, Eigen::Vector<int, D+1> &ids) {
 }
 
 template <int D>
-AdaptationFunctional<D>::AdaptationFunctional( Eigen::MatrixXd &Vc,
+void AdaptationFunctional<D>::init( Eigen::MatrixXd &Vc,
         Eigen::MatrixXd &Vp, Eigen::MatrixXi &F,
         Eigen::VectorXd &DXpU, MonitorFunction<D> *m, double w) {
     
@@ -55,17 +56,43 @@ AdaptationFunctional<D>::AdaptationFunctional( Eigen::MatrixXd &Vc,
     }
     
     this->w = w;
-    // this->boundaryNode = boundaryNode;
 
     this->DXpU = &DXpU;
 
-    this->Vc = &Vc;
+    if (compMesh) {
+        this->Vc = &Vc;
+    } else {
+        this->Vc = nullptr;
+    }
+
     this->Vp = &Vp;
     this->DXpU = &DXpU;
 
-    this->M = m;
+    N = F.rows();
 
-    // this->mPre = new vector<Eigen::Matrix<double, D, D>>(D+1);
+    this->M = m;
+}
+
+template <int D>
+AdaptationFunctional<D>::AdaptationFunctional(Eigen::MatrixXd &Vp, Eigen::MatrixXi &F,
+        Eigen::VectorXd &DXpU, MonitorFunction<D> *m, double w) {
+    
+    this->compMesh = false;
+
+    Eigen::MatrixXd Vc;
+
+    init(Vc, Vp, F, DXpU, m, w);
+}
+
+
+template <int D>
+AdaptationFunctional<D>::AdaptationFunctional(Eigen::MatrixXd &Vc,
+        Eigen::MatrixXd &Vp, Eigen::MatrixXi &F,
+        Eigen::VectorXd &DXpU, MonitorFunction<D> *m, double w) {
+    
+    this->compMesh = true;
+
+    init(Vc, Vp, F, DXpU, m, w);
 }
 
 
@@ -80,7 +107,6 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
     double Ih = 0.0;
     double detFJ;
     Eigen::Vector<double,D> gradSimplex;
-    // Eigen::Vector<double,D*(D+1)> gradLocal;
 
     Eigen::Matrix<double,D,D> E;
     Eigen::Matrix<double,D,D> FJ;
@@ -129,15 +155,42 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
 
     // Compute the edge matrix
     int j = 0;
-    int i = 0;
-    for (int n = (i+1)%(D+1); n != i; n = (n+1)%(D+1)) {
-        E.col(j)    = z.segment(D*n, D)  - z.segment(D*i, D);
-        Ehat.col(j) = xi.segment(D*n, D) - xi.segment(D*i, D);
+    for (int n = 1; n != 0; n = (n+1)%(D+1)) {
+        E.col(j)    = z.segment(D*n, D)  - z.segment(0, D);
+        if (compMesh) {
+            Ehat.col(j) = xi.segment(D*n, D) - xi.segment(0, D);
+        }
         j++;
     }
-
+    
     // The element volume
     double Edet = E.determinant();
+
+    if (!compMesh) {
+        if (D == 2) {
+            Ehat(0, 0) = 1.0;
+            Ehat(1, 0) = 0.0;
+
+            Ehat(0, 1) = 1.0/2.0;
+            Ehat(1, 1) = sqrt(3)/2.0;
+        } else if (D == 3) {
+            Ehat(0, 0) = 0.0;
+            Ehat(1, 0) = -2.0;
+            Ehat(2, 0) = -2.0;
+
+            Ehat(0, 1) = -2.0;
+            Ehat(1, 1) = 0.0;
+            Ehat(2, 1) = -2.0;
+
+            Ehat(0, 2) = -2.0;
+            Ehat(1, 2) = -2.0;
+            Ehat(2, 2) = 0.0;
+        }
+
+        // Normalize Ehat
+        Ehat *= pow((dFact/abs(Ehat.determinant())), 1.0/((double)D));
+        Ehat /= (double)pow(N, 1.0/D);
+    }
 
     Einv = E.inverse();
 
@@ -145,8 +198,8 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
     FJ = Ehat * Einv;
     detFJ = FJ.determinant();
     double d = (double) D;
-    double p = 1.5;
-    double theta = 1.0/3.0;
+    const double p = 1.5;
+    const double theta = 1.0/3.0;
 
     Eigen::Matrix<double, D, D> FJt = FJ.transpose();
     Eigen::Matrix<double, D, D> MinvJt = Minv * FJt;
@@ -156,7 +209,6 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
 
     G = theta * detM * pow(trJMJt, d*p/2.0)
         + (1.0 - 2.0*theta) * pow(d, d*p/2.0) * detM * pow(detFJ/detM, p);
-    // G = this->G(FJ, detFJ, M, xK);
 
     absK = abs(Edet/dFact);
 
@@ -168,11 +220,6 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
         }
     }
 
-    // this->dGdJ(FJ, detFJ, M, xK, dGdJ);
-    // dGddet = this->dGddet(FJ, detFJ, M, xK);
-    // this->dGdM(FJ, detFJ, M, xK, dGdM);
-    // this->dGdX(FJ, detFJ, M, xK, dGdX);
-
     dGdJ = d*p*theta*detM * pow(trJMJt, d*p/2.0 - 1) * MinvJt;
     dGddet = p*(1.0 - 2.0*theta)*pow(d, (d*p)/2.0)*pow(detM, 1.0 - p)*pow(detFJ, p-1);
     dGdM = (-0.5*theta*d*p * detM * pow(trJMJt, d*p/2.0 - 1) * Minv.transpose() * FJt * FJ * Minv)
@@ -182,8 +229,8 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
 
     basisComb.setZero();
     j = 0;
-    for (int n = (i+1)%(D+1); n != i; n = (n+1)%(D+1)) {
-        basisComb += Einv.row(j) * ((dGdM * (mPre.at(n) - mPre.at(i))).trace());
+    for (int n = 1; n != 0; n = (n+1)%(D+1)) {
+        basisComb += Einv.row(j) * ((dGdM * (mPre.at(n) - mPre.at(0))).trace());
         j++;
     }
 
@@ -203,7 +250,7 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
 
     // Compute the gradient
     for (int l = 0; l < D; l++) {
-        grad(D*i + l) = gradSimplex(l);
+        grad(l) = gradSimplex(l);
     }
 
     for (int n = 1; n < D+1; n++) {
@@ -214,17 +261,8 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
 
     grad *= absK;
 
-    // cout << "IN BLOCKGRAD" << endl;
-    // cout << "z_i " << z.transpose() << endl;
-    // cout << "xi_i " << z.transpose() << endl;
-    // cout << "grad norm z " << grad.norm() << endl;
-    // cout << "grad " << grad.transpose() << endl;
-    // cout << "OUT BLOCKGRAD" << endl;
-
     // Update the energy
-    if (i == 0) {
-        Ih = absK * G;
-    }
+    Ih = absK * G;
 
     // Now add the constraint regularization
     if (regularize) {

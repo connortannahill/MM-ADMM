@@ -14,6 +14,8 @@ public:
     HuangFunctional(Eigen::MatrixXd &Vc, Eigen::MatrixXd &Vp,
         Eigen::MatrixXi &F, Eigen::VectorXd &DXpU, MonitorFunction<D> *m, double w, double theta,
         double p);
+    HuangFunctional(Eigen::MatrixXd &Vp, Eigen::MatrixXi &F, Eigen::VectorXd &DXpU,
+        MonitorFunction<D> *m, double w, double theta, double p);
     HuangFunctional(MonitorFunction<D> *m,
                     double w, double theta, double p);
     ~HuangFunctional() {};
