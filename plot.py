@@ -5,10 +5,27 @@ import matplotlib.tri as mtri
 import sys, copy
 mode = int(sys.argv[1])
 
+import plotly.plotly as py
+import plotly.graph_objs as go
+
+import matplotlib.cm as cm
+from scipy.spatial import Delaunay
+
 if mode == 0:
 
     testName = sys.argv[2]
     outDir = 'Experiments/Results/' + testName
+
+    # out = np.genfromtxt('{}/phi.txt'.format(outDir), delimiter=',')
+
+    # x = out[:,0]
+    # y = out[:,1]
+    # phi = out[:,2]
+
+    # n = int(np.sqrt(phi.size))
+
+    # fig, ax = plt.subplots(1)
+    # img = ax.contour(np.reshape(x, (n, n)), np.reshape(y, (n, n)), np.reshape(phi, (n, n)), levels=[0], colors='b')
 
     points = np.genfromtxt('{}/points.txt'.format(outDir), delimiter=',')
     # print(points)
@@ -17,10 +34,17 @@ if mode == 0:
 
     triang = mtri.Triangulation(points[:,0], points[:,1], triangles=triangles)
     # # plt.triplot(triang, color='r', marker='o')
+    pntSet = {pnt for pnt in triangles.flatten()}
+    pnts = np.array(list(pntSet), dtype=int)
+    # print(pntSet)
+
     plt.triplot(triang, color='r', linewidth=0.1)
-    # plt.scatter(points[:,0], points[:,0])
+    usedPnts = points[pnts,:]
+    plt.scatter(usedPnts[:,0], usedPnts[:,1], c='r', s=0.1)
     # X, Y = np.meshgrid(np.linspace(0, 1, 11), np.linspace(0, 1, 11))
     # plt.quiver(X[:,0], X[:,1], points[:,0], points[:,1])
+
+
 
     # import plotly.express as px
     # fig = px.scatter(x=points[:,0], y=points[:,1])
@@ -187,11 +211,49 @@ elif mode == 4:
 
     for filename in set(zFiles_cpy):
         os.remove(filename)
+elif mode == 5:
+    testName = sys.argv[2]
+    outDir = 'Experiments/Results/' + testName
+
+    points = np.genfromtxt('{}/points.txt'.format(outDir), delimiter=',')
+    triangles = np.genfromtxt('{}/triangles.txt'.format(outDir), delimiter=',')
+
+    # x, y, z, i, j, k = [[] for i in range(6)]
+    x = list(points[:, 0])
+    y = list(points[:, 1])
+    z = list(points[:, 2])
+
+    i, j, k = [[] for i in range(3)]
 
 
+    for tri in triangles:
+        id0, id1, id2, id3 = [int(t) for t in tri]
 
+        possibleFaces = [
+            [id0, id1, id2],
+            [id0, id1, id3],
+            [id0, id2, id3],
+            [id1, id2, id3]
+        ]
 
+        # Each of the face options
+        for face in possibleFaces:
+            i.append(face[0])
+            j.append(face[1])
+            k.append(face[2])
 
+    fig = go.Figure(data=[
+        go.Mesh3d(
+            x=x
+            y=x
+            z=x
+            i = i,
+            j = j,
+            k = k,
+        )
+    ])
+
+    fig.show()
 if mode != 4:
     plt.show()
 

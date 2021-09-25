@@ -48,7 +48,7 @@ MeshIntegrator<D>::MeshIntegrator(double dt, Mesh<D> &a) {
     this->cg->compute(*t);
 
     // Compute the sparse Cholseky factorization.
-    cgSol = new Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>>(*t);
+    // cgSol = new Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>>(*t);
 
     DXpU = new Eigen::VectorXd(*z);
     vec = new Eigen::VectorXd(*z);
@@ -65,8 +65,8 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     // Setup the assembly for the step
     (this->a)->setUp();
 
-    // Make prediction for next value of x (sorta)
-    (this->a)->predictX(dt, *this->xPrev, *this->x, *this->xBar);
+    // Make prediction for next value of x (sorta) and the next time step
+    dt = (this->a)->predictX(dt, *this->xPrev, *this->x, *this->xBar);
 
     *xPrev = *x;
     *z = (*a->Dmat) * *this->xBar;
@@ -105,7 +105,7 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     a->updateAfterStep(dt, *xPrev, *x);
 
     stepsTaken++;
-    return IhCur;
+    return a->computeEnergy(*x);
 }
 
 template <int D>
@@ -114,7 +114,7 @@ MeshIntegrator<D>::~MeshIntegrator() {
     delete xBar;
     delete z;
     delete xPrev;
-    delete cgSol;
+    // delete cgSol;
     delete WD_T;
     delete DXpU;
     delete vec;

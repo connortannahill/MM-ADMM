@@ -13,179 +13,178 @@
 // using namespace std;
 // #define D 3
 
-// void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixXd *Vc,
-//       Eigen::MatrixXi *F, vector<Mesh<3>::NodeType> *boundaryMask) {
-//     int nx = (int) params["nx"];
-//     int ny = (int) params["ny"];
-//     int nz = (int) params["nz"];
+void generateUniformRectMesh(unordered_map<string,double> params, Eigen::MatrixXd *Vc,
+      Eigen::MatrixXi *F, vector<Mesh<3>::NodeType> *boundaryMask) {
+    int nx = (int) params["nx"];
+    int ny = (int) params["ny"];
+    int nz = (int) params["nz"];
 
-//     int xa = params["xa"];
-//     int xb = params["xb"];
-//     int ya = params["ya"];
-//     int yb = params["yb"];
-//     int za = params["za"];
-//     int zb = params["zb"];
+    int xa = params["xa"];
+    int xb = params["xb"];
+    int ya = params["ya"];
+    int yb = params["yb"];
+    int za = params["za"];
+    int zb = params["zb"];
 
-//     double hx = (xb - xa)/((double)nx);
-//     double hy = (yb - ya)/((double)ny);
-//     double hz = (zb - za)/((double)nz);
+    double hx = (xb - xa)/((double)nx);
+    double hy = (yb - ya)/((double)ny);
+    double hz = (zb - za)/((double)nz);
 
-//     // Append the cube vertices
-//     int off = 0;
-//     for (int k = 0; k <= nz; k++) {
-//         for (int j = 0; j <= ny; j++) {
-//             for (int i = 0; i <= nx; i++) {
-//                 (*Vc)(off, 0) = hx*i;
-//                 (*Vc)(off, 1) = hy*j;
-//                 (*Vc)(off, 2) = hz*k;
+    // Append the cube vertices
+    int off = 0;
+    for (int k = 0; k <= nz; k++) {
+        for (int j = 0; j <= ny; j++) {
+            for (int i = 0; i <= nx; i++) {
+                (*Vc)(off, 0) = hx*i;
+                (*Vc)(off, 1) = hy*j;
+                (*Vc)(off, 2) = hz*k;
 
-//                 off++;
-//             }
-//         }
-//     }
+                off++;
+            }
+        }
+    }
 
-//     // Append the midpoints
-//     for (int k = 0; k < nz; k++) {
-//         for (int j = 0; j < ny; j++) {
-//             for (int i = 0; i < nx; i++) {
-//                 (*Vc)(off, 0) = hx*i + hx/2.0;
-//                 (*Vc)(off, 1) = hy*j + hy/2.0;
-//                 (*Vc)(off, 2) = hz*k + hz/2.0;
+    // Append the midpoints
+    for (int k = 0; k < nz; k++) {
+        for (int j = 0; j < ny; j++) {
+            for (int i = 0; i < nx; i++) {
+                (*Vc)(off, 0) = hx*i + hx/2.0;
+                (*Vc)(off, 1) = hy*j + hy/2.0;
+                (*Vc)(off, 2) = hz*k + hz/2.0;
 
-//                 off++;
-//             }
-//         }
-//     }
+                off++;
+            }
+        }
+    }
 
-//     int stride = (nx+1) * (ny+1) * (nz+1);
+    int stride = (nx+1) * (ny+1) * (nz+1);
 
-//     off = 0;
-//     for (int k = 0; k < nz; k++) {
-//         for (int j = 0; j < ny; j++) {
-//             for (int i = 0; i < nx; i++) {
-//                 /* Format: xInd + yInd + zInd */
-//                 int mid = stride + i + j*nx + k*(nx*ny); 
+    off = 0;
+    for (int k = 0; k < nz; k++) {
+        for (int j = 0; j < ny; j++) {
+            for (int i = 0; i < nx; i++) {
+                /* Format: xInd + yInd + zInd */
+                int mid = stride + i + j*nx + k*(nx*ny); 
 
 
-//                 // Bot tets
-//                 (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
-//                 (*F)(off, 1) = i+1          + j*(nx+1)     + k*(nx+1)*(ny+1);
-//                 (*F)(off, 2) = i+1          + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
-//                 (*F)(off, 3) = mid;
-//                 off++;
+                // Bot tets
+                (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
+                (*F)(off, 1) = i+1          + j*(nx+1)     + k*(nx+1)*(ny+1);
+                (*F)(off, 2) = i+1          + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
+                (*F)(off, 3) = mid;
+                off++;
 
-//                 (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
-//                 (*F)(off, 1) = i            + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
-//                 (*F)(off, 2) = i+1          + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
-//                 (*F)(off, 3) = mid;
-//                 off++;
+                (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
+                (*F)(off, 1) = i            + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
+                (*F)(off, 2) = i+1          + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
+                (*F)(off, 3) = mid;
+                off++;
 
-//                 // Top tets
-//                 (*F)(off, 0) = i            + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 1) = i+1          + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 2) = i+1          + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 3) = mid;
-//                 off++;
+                // Top tets
+                (*F)(off, 0) = i            + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 1) = i+1          + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 2) = i+1          + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 3) = mid;
+                off++;
 
-//                 (*F)(off, 0) = i            + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 1) = i            + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 2) = i+1          + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 3) = mid;
-//                 off++;
+                (*F)(off, 0) = i            + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 1) = i            + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 2) = i+1          + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 3) = mid;
+                off++;
 
-//                 // Left tets
-//                 (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
-//                 (*F)(off, 1) = i            + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
-//                 (*F)(off, 2) = i            + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 3) = mid;
-//                 off++;
+                // Left tets
+                (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
+                (*F)(off, 1) = i            + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
+                (*F)(off, 2) = i            + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 3) = mid;
+                off++;
 
-//                 (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
-//                 (*F)(off, 1) = i            + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 2) = i            + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 3) = mid;
-//                 off++;
+                (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
+                (*F)(off, 1) = i            + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 2) = i            + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 3) = mid;
+                off++;
 
-//                 // Right tets
-//                 (*F)(off, 0) = i+1          + j*(nx+1)     + k*(nx+1)*(ny+1);
-//                 (*F)(off, 1) = i+1          + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
-//                 (*F)(off, 2) = i+1          + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 3) = mid;
-//                 off++;
+                // Right tets
+                (*F)(off, 0) = i+1          + j*(nx+1)     + k*(nx+1)*(ny+1);
+                (*F)(off, 1) = i+1          + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
+                (*F)(off, 2) = i+1          + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 3) = mid;
+                off++;
 
-//                 (*F)(off, 0) = i+1          + j*(nx+1)     + k*(nx+1)*(ny+1);
-//                 (*F)(off, 1) = i+1          + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 2) = i+1          + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 3) = mid;
-//                 off++;
+                (*F)(off, 0) = i+1          + j*(nx+1)     + k*(nx+1)*(ny+1);
+                (*F)(off, 1) = i+1          + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 2) = i+1          + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 3) = mid;
+                off++;
                 
-//                 // Back tets
-//                 (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
-//                 (*F)(off, 1) = i+1          + (j)*(nx+1)   + k*(nx+1)*(ny+1);
-//                 (*F)(off, 2) = i            + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 3) = mid;
-//                 off++;
+                // Back tets
+                (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
+                (*F)(off, 1) = i+1          + (j)*(nx+1)   + k*(nx+1)*(ny+1);
+                (*F)(off, 2) = i            + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 3) = mid;
+                off++;
 
-//                 (*F)(off, 0) = i+1          + j*(nx+1)     + k*(nx+1)*(ny+1);
-//                 (*F)(off, 1) = i+1          + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 2) = i            + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 3) = mid;
-//                 off++;
+                (*F)(off, 0) = i+1          + j*(nx+1)     + k*(nx+1)*(ny+1);
+                (*F)(off, 1) = i+1          + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 2) = i            + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 3) = mid;
+                off++;
 
-//                 // Front tets
-//                 (*F)(off, 0) = i          + (j+1)*(nx+1)     + k*(nx+1)*(ny+1);
-//                 (*F)(off, 1) = i+1        + (j+1)*(nx+1)     + k*(nx+1)*(ny+1);
-//                 (*F)(off, 2) = i          + (j+1)*(nx+1)     + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 3) = mid;
-//                 off++;
+                // Front tets
+                (*F)(off, 0) = i          + (j+1)*(nx+1)     + k*(nx+1)*(ny+1);
+                (*F)(off, 1) = i+1        + (j+1)*(nx+1)     + k*(nx+1)*(ny+1);
+                (*F)(off, 2) = i          + (j+1)*(nx+1)     + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 3) = mid;
+                off++;
 
-//                 (*F)(off, 0) = i+1        + (j+1)*(nx+1)     + k*(nx+1)*(ny+1);
-//                 (*F)(off, 1) = i+1        + (j+1)*(nx+1)     + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 2) = i          + (j+1)*(nx+1)     + (k+1)*(nx+1)*(ny+1);
-//                 (*F)(off, 3) = mid;
-//                 off++;
-//             }
-//         }
+                (*F)(off, 0) = i+1        + (j+1)*(nx+1)     + k*(nx+1)*(ny+1);
+                (*F)(off, 1) = i+1        + (j+1)*(nx+1)     + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 2) = i          + (j+1)*(nx+1)     + (k+1)*(nx+1)*(ny+1);
+                (*F)(off, 3) = mid;
+                off++;
+            }
+        }
+    }
+    for (int i = 0; i < boundaryMask->size(); i++) {
+        boundaryMask->at(i) = Mesh<3>::NodeType::INTERIOR;
+    }
+    for (int k = 0; k < nz+1; k++) {
+        for (int i = 0; i < (nx+1)*(ny+1); i++) {
+            int iOff = i / (nx+1);
+            int jOff = i % (ny+1);
+            bool boundaryPnt = (iOff == 0) || (iOff == nx)
+                || (jOff == 0) || (jOff == ny) || (k == 0)
+                || (k == nz);
+            int off = k*(nx+1)*(ny+1) + i;
 
-//     }
-//     for (int i = 0; i < boundaryMask->size(); i++) {
-//         boundaryMask->at(i) = Mesh<3>::NodeType::INTERIOR;
-//     }
-//     for (int k = 0; k < nz+1; k++) {
-//         for (int i = 0; i < (nx+1)*(ny+1); i++) {
-//             int iOff = i / (nx+1);
-//             int jOff = i % (ny+1);
-//             bool boundaryPnt = (iOff == 0) || (iOff == nx)
-//                 || (jOff == 0) || (jOff == ny) || (k == 0)
-//                 || (k == nz);
-//             int off = k*(nx+1)*(ny+1) + i;
+            if (boundaryPnt) {
+                boundaryMask->at(off) = Mesh<3>::NodeType::BOUNDARY_FREE;
+            }
 
-//             if (boundaryPnt) {
-//                 boundaryMask->at(off) = Mesh<3>::NodeType::BOUNDARY_FREE;
-//             }
-
-//             // Good code
-//             bool corner = (iOff == 0 && jOff == 0)
-//                         || (iOff == nx && jOff == 0)
-//                         || (iOff == 0 && jOff == ny)
-//                         || (iOff == nx && jOff == ny)  // end up
-//                         || (iOff == 0 && k == 0)
-//                         || (iOff == nx && k == 0)
-//                         || (iOff == 0 && k == nz)
-//                         || (iOff == nx && k == nz)  // end vertical
-//                         || (k == 0 && jOff == 0)
-//                         || (k == nz && jOff == 0)
-//                         || (k == 0 && jOff == ny)
-//                         || (k == nz && jOff == ny); // end horizontal
+            // Good code
+            bool corner = (iOff == 0 && jOff == 0)
+                        || (iOff == nx && jOff == 0)
+                        || (iOff == 0 && jOff == ny)
+                        || (iOff == nx && jOff == ny)  // end up
+                        || (iOff == 0 && k == 0)
+                        || (iOff == nx && k == 0)
+                        || (iOff == 0 && k == nz)
+                        || (iOff == nx && k == nz)  // end vertical
+                        || (k == 0 && jOff == 0)
+                        || (k == nz && jOff == 0)
+                        || (k == 0 && jOff == ny)
+                        || (k == nz && jOff == ny); // end horizontal
 
 
-//             // Fix the corners
-//             if (corner) {
-//                 boundaryMask->at(off) = Mesh<3>::NodeType::BOUNDARY_FIXED;
-//             }
-//         }
-//     }
-// }
+            // Fix the corners
+            if (corner) {
+                boundaryMask->at(off) = Mesh<3>::NodeType::BOUNDARY_FIXED;
+            }
+        }
+    }
+}
 
 // int main()
 // {

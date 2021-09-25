@@ -32,8 +32,14 @@ protected:
                         Eigen::Vector<double,D> &out)=0;
 public:
     bool boundaryNode;
+    int N;
+    bool compMesh;
+    void init(Eigen::MatrixXd &Vc, Eigen::MatrixXd &Vp, Eigen::MatrixXi &F,
+        Eigen::VectorXd &DXpU, MonitorFunction<D> *m, double w);
     AdaptationFunctional(Eigen::MatrixXd &Vc, Eigen::MatrixXd &Vp,
         Eigen::MatrixXi &F, Eigen::VectorXd &DXpU, MonitorFunction<D> *m, double w);
+    AdaptationFunctional(Eigen::MatrixXd &Vp, Eigen::MatrixXi &F,
+        Eigen::VectorXd &DXpU, MonitorFunction<D> *m, double w);
     AdaptationFunctional(const AdaptationFunctional &obj);
     double blockGrad(int zId, Eigen::Vector<double, D*(D+1)> &z,
                 Eigen::Vector<double, D*(D+1)> &xi,
