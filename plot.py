@@ -5,7 +5,8 @@ import matplotlib.tri as mtri
 import sys, copy
 mode = int(sys.argv[1])
 
-import plotly.plotly as py
+# import plotly.plotly as py
+import chart_studio.plotly as py
 import plotly.graph_objs as go
 
 import matplotlib.cm as cm
@@ -244,12 +245,16 @@ elif mode == 5:
 
     fig = go.Figure(data=[
         go.Mesh3d(
-            x=x
-            y=x
-            z=x
+            x=x,
+            y=y,
+            z=z,
             i = i,
             j = j,
             k = k,
+            colorscale=[[0, 'gold'],
+                    [0.5, 'mediumturquoise'],
+                    [1, 'magenta']],
+            intensity=[0, 0.33, 0.66, 1],
         )
     ])
 

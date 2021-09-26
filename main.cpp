@@ -89,6 +89,63 @@ void outputVecToFile(string fileName, vector<T> &outVec) {
 }
 
 template <int D>
+void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double> params, Eigen::MatrixXd *Vc,
+      Eigen::MatrixXd *Vp, Eigen::MatrixXi *F, vector<NodeType> *boundaryMask,
+      NodeType bType, int numThreads, MonitorFunction<D> *mon, double rho, double tau) {
+
+  Mesh<D> adaptiveMesh(*Vc, *Vp, *F, *boundaryMask, mon,
+      numThreads, rho, tau);
+
+  // Create the solver
+  MeshIntegrator<D> solver(dt, adaptiveMesh);
+
+  std::vector<double> Ivals;
+
+  clock_t start = clock();
+  double Ih;
+  double Ihprev = INFINITY;
+  int i;
+  for (i = 0; i < nSteps; i++) {
+    Ih = solver.step(50, 1e-4);
+
+    Ivals.push_back(Ih);
+
+    double dIdt = (Ih - Ihprev) / dt;
+    cout << "d/dt = " << (Ih - Ihprev) / dt << endl;
+    cout << "Ih = " << Ih << endl;
+
+    if (i != 0 && (abs(dIdt) < 1e-4 || dIdt > 0)) {
+        cout << "converged" << endl;
+        break;
+    }
+    Ihprev = Ih;
+  }
+
+  cout << "Took " << ((double)clock() - (double)start)
+        / ((double)CLOCKS_PER_SEC) << " seconds" << endl;
+  cout << "Took " << i << " iters" << endl;
+
+  string outDir = "./Experiments/Results/" + testName;
+  int stat = system(("mkdir -p " + outDir).c_str());
+  if (stat != 0) {
+    cout << "mkdir failed" << endl;
+    assert(false);
+  }
+
+  string pointsOutDir = outDir + "/points.txt";
+  string triangleOutDir = outDir + "/triangles.txt";
+  adaptiveMesh.outputPoints(pointsOutDir.c_str());
+  adaptiveMesh.outputSimplices(triangleOutDir.c_str());
+  string Ihdir = outDir + "/Ih.txt";
+  outputVecToFile(Ihdir, Ivals);
+
+  delete Vc;
+  delete F;
+  delete boundaryMask;
+  delete Vp;
+}
+
+template <int D>
 void setUpLevelSetExperiment(string testName, ifstream &inputFile,
     int numThreads, MonitorFunction<D> *mon) {
   int nx, ny, nz, nSteps;
@@ -210,55 +267,8 @@ void setUpLevelSetExperiment(string testName, ifstream &inputFile,
     outFile.close();
   }
 
-  Mesh<D> adaptiveMesh(*Vp, *F, *boundaryMask, mon,
-      numThreads, rho, tau);
-
-  // Create and run the solver
-  MeshIntegrator<D> solver(dt, adaptiveMesh);
-
-  std::vector<double> Ivals;
-
-  clock_t start = clock();
-  double Ih;
-  double Ihprev = INFINITY;
-  int i;
-  for (i = 0; i < nSteps; i++) {
-    Ih = solver.step(50, 1e-4);
-
-    Ivals.push_back(Ih);
-
-    double dIdt = (Ih - Ihprev) / dt;
-    cout << "d/dt = " << (Ih - Ihprev) / dt << endl;
-    cout << "Ih = " << Ih << endl;
-
-    if (i != 0 && (abs(dIdt) < 1e-4 || dIdt > 0)) {
-        cout << "converged" << endl;
-        break;
-    }
-    Ihprev = Ih;
-  }
-
-  cout << "Took " << ((double)clock() - (double)start)
-        / ((double)CLOCKS_PER_SEC) << " seconds" << endl;
-  cout << "Took " << i << " iters" << endl;
-  
-  /** Output the mesh */
-  int stat = system(("mkdir -p " + outDir).c_str());
-  if (stat != 0) {
-    cout << "mkdir failed" << endl;
-    assert(false);
-  }
-
-  string pointsOutDir = outDir + "/points.txt";
-  string triangleOutDir = outDir + "/triangles.txt";
-  string IhDir = outDir + "Ih.txt";
-  adaptiveMesh.outputPoints(pointsOutDir.c_str());
-  adaptiveMesh.outputSimplices(triangleOutDir.c_str());
-  outputVecToFile(IhDir, Ivals);
-
-  delete Vc;
-  delete F;
-  delete boundaryMask;
+  runAlgo(testName, nSteps, dt, params, Vc, Vp, F, boundaryMask,
+    type, numThreads, mon, rho, tau);
 }
 
 template <int D>
@@ -297,7 +307,6 @@ void setUpShoulderExperiment(string testName, ifstream &inputFile,
     nPnts = (nx+1)*(ny+1)*(nz+1) + nx*ny*nz;
     inputFile >> xa >> xb >> ya >> yb >> za >> zb;
   }
-
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
@@ -450,55 +459,8 @@ void setUpShoulderExperiment(string testName, ifstream &inputFile,
       utils::removeRow(*F, *id);
   }
 
-  Mesh<D> adaptiveMesh(*Vp, *F, *boundaryMask, mon,
-      numThreads, rho, tau);
-
-  // Create the solver
-  MeshIntegrator<D> solver(dt, adaptiveMesh);
-
-  std::vector<double> Ivals;
-
-  clock_t start = clock();
-  double Ih;
-  double Ihprev = INFINITY;
-  int i;
-  for (i = 0; i < nSteps; i++) {
-    Ih = solver.step(50, 1e-4);
-
-    Ivals.push_back(Ih);
-
-    double dIdt = (Ih - Ihprev) / dt;
-    cout << "d/dt = " << (Ih - Ihprev) / dt << endl;
-    cout << "Ih = " << Ih << endl;
-
-    if (i != 0 && (abs(dIdt) < 1e-3 || dIdt > 0)) {
-        cout << "converged" << endl;
-        break;
-    }
-    Ihprev = Ih;
-  }
-
-  cout << "Took " << ((double)clock() - (double)start)
-        / ((double)CLOCKS_PER_SEC) << " seconds" << endl;
-  cout << "Took " << i << " iters" << endl;
-
-  string outDir = "./Experiments/Results/" + testName;
-  int stat = system(("mkdir -p " + outDir).c_str());
-  if (stat != 0) {
-    cout << "mkdir failed" << endl;
-    assert(false);
-  }
-
-  string pointsOutDir = outDir + "/points.txt";
-  string triangleOutDir = outDir + "/triangles.txt";
-  string IhDir = outDir + "/Ih.txt";
-  adaptiveMesh.outputPoints(pointsOutDir.c_str());
-  adaptiveMesh.outputSimplices(triangleOutDir.c_str());
-  outputVecToFile(IhDir, Ivals);
-
-  delete Vc;
-  delete F;
-  delete boundaryMask;
+  runAlgo(testName, nSteps, dt, params, Vc, Vp, F, boundaryMask,
+    type, numThreads, mon, rho, tau);
 }
 
 template <int D>
@@ -538,6 +500,8 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
     inputFile >> xa >> xb >> ya >> yb >> za >> zb;
   }
 
+  cout << "all input collected" << endl;
+
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;
   params["nx"] = nx;
@@ -572,59 +536,13 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
 
   utils::generateUniformRectMesh<D>(params, Vp, F, boundaryMask,
       type);
-
+  
   *Vc = *Vp;
-    
-  Mesh<D> adaptiveMesh(*Vc, *Vp, *F, *boundaryMask, mon,
-      numThreads, rho, tau);
 
-  // Create the solver
-  MeshIntegrator<D> solver(dt, adaptiveMesh);
-
-  std::vector<double> Ivals;
-
-  clock_t start = clock();
-  double Ih;
-  double Ihprev = INFINITY;
-  int i;
-  for (i = 0; i < nSteps; i++) {
-    Ih = solver.step(50, 1e-4);
-
-    Ivals.push_back(Ih);
-
-    double dIdt = (Ih - Ihprev) / dt;
-    cout << "d/dt = " << (Ih - Ihprev) / dt << endl;
-    cout << "Ih = " << Ih << endl;
-
-    if (i != 0 && (abs(dIdt) < 1e-4 || dIdt > 0)) {
-        cout << "converged" << endl;
-        break;
-    }
-    Ihprev = Ih;
-  }
-
-  cout << "Took " << ((double)clock() - (double)start)
-        / ((double)CLOCKS_PER_SEC) << " seconds" << endl;
-  cout << "Took " << i << " iters" << endl;
-
-  string outDir = "./Experiments/Results/" + testName;
-  int stat = system(("mkdir -p " + outDir).c_str());
-  if (stat != 0) {
-    cout << "mkdir failed" << endl;
-    assert(false);
-  }
-
-  string pointsOutDir = outDir + "/points.txt";
-  string triangleOutDir = outDir + "/triangles.txt";
-  adaptiveMesh.outputPoints(pointsOutDir.c_str());
-  adaptiveMesh.outputSimplices(triangleOutDir.c_str());
-  string Ihdir = outDir + "/Ih.txt";
-  outputVecToFile(Ihdir, Ivals);
-
-  delete Vc;
-  delete F;
-  delete boundaryMask;
+  runAlgo(testName, nSteps, dt, params, Vc, Vp, F, boundaryMask,
+    type, numThreads, mon, rho, tau);
 }
+
 
 int main(int argc, char *argv[]) {
   srand(static_cast<unsigned int>(std::time(nullptr)));

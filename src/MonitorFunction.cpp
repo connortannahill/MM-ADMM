@@ -15,7 +15,6 @@ using namespace std;
 template <int D>
 void MonitorFunction<D>::evaluateAtVertices(Eigen::MatrixXd &X, Eigen::MatrixXi &F, Eigen::MatrixXd &M) {
     // Loop through the simplices and evaluate the monitor function at the centroid
-    // Eigen::Vector<double,D> centroid;
     Eigen::Matrix<double,D,D> monTemp;
     Eigen::Vector<double,D> xTemp;
 

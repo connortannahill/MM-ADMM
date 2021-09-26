@@ -178,6 +178,8 @@ namespace utils {
 
             int stride = (nx+1) * (ny+1) * (nz+1);
 
+            off = 0;
+
             for (int k = 0; k < nz; k++) {
                 for (int j = 0; j < ny; j++) {
                     for (int i = 0; i < nx; i++) {
@@ -191,11 +193,13 @@ namespace utils {
                         (*F)(off, 3) = mid;
                         off++;
 
+
                         (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
                         (*F)(off, 1) = i            + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
                         (*F)(off, 2) = i+1          + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
                         (*F)(off, 3) = mid;
                         off++;
+
 
                         // Top tets
                         (*F)(off, 0) = i            + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
@@ -222,6 +226,7 @@ namespace utils {
                         (*F)(off, 2) = i            + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
                         (*F)(off, 3) = mid;
                         off++;
+
 
                         // Right tets
                         (*F)(off, 0) = i+1          + j*(nx+1)     + k*(nx+1)*(ny+1);
@@ -270,6 +275,7 @@ namespace utils {
         for (uint64_t i = 0; i < boundaryMask->size(); i++) {
             boundaryMask->at(i) = NodeType::INTERIOR;
         }
+
 
         if (D == 2) {
             for (int i = 0; i < (nx+1)*(ny+1); i++) {

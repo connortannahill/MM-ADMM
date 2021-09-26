@@ -33,9 +33,7 @@ MeshInterpolator<D>::MeshInterpolator() {
 
 template <int D>
 void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, bool resize)  {
-    // bool sizeChanged = false;
     if (F.rows() != (this->F)->rows()) {
-        // sizeChanged = true;
         if (resize) {
             (this->F)->resize(F.rows(), F.cols());
         } else {
@@ -45,7 +43,6 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
     }
 
     if (X.rows() != (this->X)->rows()) {
-        // sizeChanged=true;
         if (resize) {
             (this->mTemp)->resize(X.rows(), D*D);
             (this->monVals)->resize(X.rows(), D*D);
@@ -54,18 +51,6 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
             assert(X.size() != (this->X)->size());
         }
     }
-
-    // If the size changed, update the connectivity
-    // if (sizeChanged) {
-    //     connectivity->clear();
-
-    //     for (int i = 0; i < X.rows(); i++) {
-    //         vector<int> neighs;
-    //         findNeighbourPoints(i, neighs);
-
-    //         connectivity->push_back(neighs);
-    //     }
-    // }
 }
 
 /** 
@@ -75,7 +60,6 @@ void MeshInterpolator<D>::checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, b
 */
 template <int D>
 void MeshInterpolator<D>::updateMesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F) {
-    // cout << "In updateMesh" << endl;
     // Resize the storage if necissary
     checkStorage(X, F, true);
 
@@ -85,14 +69,13 @@ void MeshInterpolator<D>::updateMesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F) {
 
     // It is not uneccisary and expensive to call updateMesh unless
     // the boundary of the domain has changed
-    // cout << "Setting up the grid" << endl;
-    nx = 2*((int)sqrt(this->X->size()));
-    ny = 2*((int)sqrt(this->X->size()));
+    nx = 2*((int)pow(this->X->size(), 1.0/3.0));
+    ny = 2*((int)pow(this->X->size(), 1.0/3.0));
 
     if (D == 2) {
         nz = 1;
     } else if (D == 3) {
-        nz = 2*((int)sqrt(this->X->size()));
+        nz = 2*((int)pow(this->X->size(), 1.0/3.0));
     }
 
     monGridVals->resize((nx+1)*(ny+1)*(nz+1), D*D);
@@ -106,7 +89,7 @@ void MeshInterpolator<D>::updateMesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F) {
 
     if (D == 3) {
         z->clear();
-        z->resize(nz);
+        z->resize(nz+1);
     }
 
     double xMin = INFINITY;
@@ -135,13 +118,6 @@ void MeshInterpolator<D>::updateMesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F) {
     utils::linspace(yMin, yMax, ny, *y);
     if (D == 3)
         utils::linspace(zMin, zMax, nz, *z);
-    
-    // cout << "x = " << endl;
-    // for (int i = 0; i < nx+1; i++)  {
-    //     cout << x->at(i) << ", ";
-    // }
-    // cout << endl;
-    // assert(false);
 
     // Build the kdtree search index on the physical mesh and map into the grid
     vertexSearchTree->buildIndex();
@@ -182,7 +158,6 @@ void MeshInterpolator<D>::computeBarycentricCoordinates(int simplexId, Eigen::Ve
 
 template <int D>
 void MeshInterpolator<D>::nearestNeighGridMap() {
-    // cout << "in nearestNeighGridMap" << endl;
     std::vector<size_t> ret_index(NUM_RESULTS);
     std::vector<double> out_dist_sqr(NUM_RESULTS);
     double query_pt[D];
@@ -202,7 +177,6 @@ void MeshInterpolator<D>::nearestNeighGridMap() {
             }
         }
     } else {
-        // int numFound = 0;
         for (int k = 0; k < nz+1; k++) {
             for (int i = 0; i < nx+1; i++) {
                 for (int j = 0; j < ny+1; j++) {
@@ -210,33 +184,25 @@ void MeshInterpolator<D>::nearestNeighGridMap() {
                     query_pt[1] = y->at(j);
                     query_pt[2] = z->at(k);
 
-                    vertexSearchTree->knnSearch(&query_pt[0],
-                        NUM_RESULTS, &ret_index[0], &out_dist_sqr[0]);
-                    
+                    int numFound = vertexSearchTree->knnSearch(&query_pt[0],
+                        1, &ret_index[0], &out_dist_sqr[0]);
+                    assert(numFound >= 1);
+
                     (*monGridVals)((nx+1)*(ny+1)*k+i*(nx+1)+j, Eigen::all) = (*monVals)(ret_index.at(0), Eigen::all);
-                    
-                    ret_index.clear();
-                    out_dist_sqr.clear();
                 }
             }
         }
     }
-    // cout << "FINISHED in nearestNeighGridMap" << endl;
 }
 
 template <int D>
 void MeshInterpolator<D>::interpolateMonitor(MonitorFunction<D> &Mon) {
     // Set up relevant information
-    // cout << "Inteprolating monitor funtion" << endl;
     const int NUM_SMOOTH = 3; // TODO: allow this to be set as a input param
     Mon.evaluateAtVertices(*X, *F, *monVals);;
     nearestNeighGridMap();
     smoothMonitorGrid(NUM_SMOOTH);
-    // outputGridMesh();
-    // cout << "FINISHED Inteprolating monitor funtion" << endl;
 }
-
-// const double CHECK_EPS = 1e-10;
 
 template <int D>
 void MeshInterpolator<D>::biLinearInterpolation(double x, double y, double xMesh[2],
@@ -275,18 +241,20 @@ inline void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &pnt
                                 + coefs[3]*(*monGridVals)((yInd+1)*(nx+1)+xInd+1, n);
         }
     } else {
-        // int zInd = utils::findLimInfMeshPoint(x(2), *this->z);
-        // double coefs[8] = {0.0};
-        // utils::triLinearInterpolation(x(0), x(1), x(2), *this->x, *this->y, *this->z, coefs);
+        int zInd = utils::findLimInfMeshPoint(x->at(2), *this->z);
+        double coefs[8] = {0.0};
+        utils::triLinearInterpolation(x->at(0), x->at(1), x->at(2), *this->x, *this->y, *this->z, coefs);
 
-        // mFlat += coefs[0]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
-        // mFlat += coefs[1]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
-        // mFlat += coefs[2]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
-        // mFlat += coefs[3]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
-        // mFlat += coefs[4]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
-        // mFlat += coefs[5]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
-        // mFlat += coefs[6]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
-        // mFlat += coefs[7]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
+        Eigen::Vector<double, D*D> mFlat(Eigen::Vector<double, D*D>::Zero());
+
+        mFlat += coefs[0]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
+        mFlat += coefs[1]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
+        mFlat += coefs[2]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
+        mFlat += coefs[3]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
+        mFlat += coefs[4]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
+        mFlat += coefs[5]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
+        mFlat += coefs[6]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
+        mFlat += coefs[7]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
     }
 }
 
@@ -300,20 +268,14 @@ void MeshInterpolator<D>::outputGridMesh() {
     outFile.open("gridMesh.txt");
     for (int i = 0; i < nx+1; i ++) {
         for (int j = 0; j < ny+1; j++) {
-            // mFlat = (*monGridVals)((nx+1)*j+i, Eigen::all);
             pnt(0) = x->at(i);
             pnt(1) = y->at(j);
             evalMonitorOnGrid(pnt, mVal);
-            // for (int n = 0; n < D*D; n++) {
-            //     mVal(n/D, n%D) = mFlat(n);
-            // }
             outFile << x->at(i) << ", " << y->at(j) << ", " << mVal.determinant() << endl;
             
         }
     }
     outFile.close();
-    // cout << "finsihed outputting mesh" << endl;
-    // assert(false);
 }
 
 template <int D>

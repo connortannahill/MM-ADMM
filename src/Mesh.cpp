@@ -13,12 +13,8 @@
 #include <algorithm>
 #include <Eigen/LU>
 
-#ifdef NUM_THREADS
+#ifdef THREADS
 #include <omp.h>
-#endif
-
-#ifndef NUM_THREADS
-#define NUM_THREADS 1
 #endif
 
 using namespace std;
@@ -262,7 +258,7 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
 
     buildFaceList();
 
-#ifdef NUMTHREADS
+#ifdef THREADS
     omp_set_num_threads(numThreads);
 #endif
 
@@ -337,7 +333,7 @@ double Mesh<D>::computeEnergy(Eigen::VectorXd &x) {
     Eigen::Vector<double, D*(D+1)> gradSimp;
     Eigen::Vector<double, D> pnt;
 
-#if NUMTHREADS > 1
+#ifdef THREADS
     #pragma omp parallel for
 #endif
     for (int i = 0; i < F->rows(); i++) {
@@ -437,9 +433,7 @@ double Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, 
             xBar = x - (dtNew / tau) * grad;
             Ih = eulerStep(xBar, grad);
             rate = abs((Ih - Ihorig)/Ihorig);
-            cout << "rate = " << rate << endl;
         }
-        cout << "out" << endl;
     } else {
         // Compute the gradient at each point
         xBar = 2.0*x - xPrev;
@@ -667,19 +661,19 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
     // Run Newton's method on each simplex
     Ih->setZero();
 
-#if NUMTHREADS == 1
+#ifndef THREADS
     Eigen::Vector<double, D*(D+1)> z_i;
     Eigen::Vector<double, D*(D+1)> xi_i;
     Eigen::Vector<double, D> pnt;
     Eigen::Vector<double, D> zTemp;
 #endif
 
-#if NUMTHREADS > 1
+#ifdef THREADS
     #pragma omp parallel for
 #endif
     for (int i = 0; i < F->rows(); i++) {
 
-#if NUMTHREADS > 1
+#ifdef THREADS
         Eigen::Vector<double, D*(D+1)> z_i;
         Eigen::Vector<double, D*(D+1)> xi_i;
         Eigen::Vector<double, D> pnt;
