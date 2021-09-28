@@ -34,6 +34,7 @@ private:
     Eigen::VectorXd *DXpU;
     // bool matrixFactored;
     double dt;
+    double dtPrev;
     int stepsTaken;
 
 };

@@ -224,49 +224,68 @@ elif mode == 5:
     y = points[:, 1]
     z = points[:, 2]
 
-    lenVec = np.sqrt(x**2 + y**2 + z**2)
+    nx = 11
+    ny = 11
+    nz = 11
 
-    x /= lenVec
-    y /= lenVec
-    z /= lenVec
+    off = 5
+    x = x[off*nx*ny:(off+1)*nx*ny]
+    y = y[off*nx*ny:(off+1)*nx*ny]
+    z = z[off*nx*ny:(off+1)*nx*ny]
 
-    i, j, k = [[] for i in range(3)]
+    plt.scatter(x, y)
+    plt.show()
+
+    # lenVec = np.sqrt(x**2 + y**2 + z**2)
+
+    # x /= lenVec
+    # y /= lenVec
+    # z /= lenVec
+
+    # i, j, k = [[] for i in range(3)]
 
 
-    for tri in triangles:
-        id0, id1, id2, id3 = [int(t) for t in tri]
+    # for tri in triangles:
+    #     id0, id1, id2, id3 = [int(t) for t in tri]
 
-        possibleFaces = [
-            [id0, id1, id2],
-            [id0, id1, id3],
-            [id0, id2, id3],
-            [id1, id2, id3]
-        ]
+    #     possibleFaces = [
+    #         [id0, id1, id2],
+    #         [id0, id1, id3],
+    #         [id0, id2, id3],
+    #         [id1, id2, id3]
+    #     ]
 
 
-        # Each of the face options
-        for face in possibleFaces:
-            i.append(face[0])
-            j.append(face[1])
-            k.append(face[2])
+    #     # Each of the face options
+    #     for face in possibleFaces:
+    #         i.append(face[0])
+    #         j.append(face[1])
+    #         k.append(face[2])
         
 
-    fig = go.Figure(data=[
-        go.Mesh3d(
-            x=x,
-            y=y,
-            z=z,
-            i = i,
-            j = j,
-            k = k,
-            colorscale=[[0, 'gold'],
-                    [0.5, 'mediumturquoise'],
-                    [1, 'magenta']],
-            intensity=[0, 0.33, 0.66, 1],
-        )
-    ])
+    # fig = go.Figure(data=[
+    #     go.Mesh3d(
+    #         x=x,
+    #         y=y,
+    #         z=z,
+    #         i = i,
+    #         j = j,
+    #         k = k,
+    #         colorscale=[[0, 'gold'],
+    #                 [0.5, 'mediumturquoise'],
+    #                 [1, 'magenta']],
+    #         intensity=[0, 0.33, 0.66, 1],
+    #     )
+    # ])
+    # fig = go.Figure(data=[
+    #     go.Scatter3d(
+    #         x=x,
+    #         y=y,
+    #         z=z,
+    #     )
+    # ])
 
-    fig.show()
+    # fig.show()
 if mode != 4:
     plt.show()
 

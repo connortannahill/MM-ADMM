@@ -44,11 +44,11 @@ MeshIntegrator<D>::MeshIntegrator(double dt, Mesh<D> &a) {
     this->t = new Eigen::SparseMatrix<double>(*M + dtsq*(*WD_TWD));
 
     // Congugate gradient compute matrix
-    // this->cg = new Eigen::ConjugateGradient<Eigen::SparseMatrix<double>, Eigen::Lower|Eigen::Upper>();
-    // this->cg->compute(*t);
+    this->cg = new Eigen::ConjugateGradient<Eigen::SparseMatrix<double>, Eigen::Lower|Eigen::Upper>();
+    this->cg->compute(*t);
 
     // Compute the sparse Cholseky factorization.
-    cgSol = new Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>>(*t);
+    // cgSol = new Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>>(*t);
 
     DXpU = new Eigen::VectorXd(*z);
     vec = new Eigen::VectorXd(*z);
@@ -66,6 +66,7 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     (this->a)->setUp();
 
     // Make prediction for next value of x (sorta) and the next time step
+    this->dtPrev = dt;
     dt = (this->a)->predictX(dt, *this->xPrev, *this->x, *this->xBar);
 
     *xPrev = *x;
@@ -73,8 +74,10 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
 
     *x = *xBar;
 
-    // *t = *M + dtsq*(*WD_TWD);
-    // this->cg->compute(*t);
+    if (dt != dtPrev) {
+        *t = *M + dtsq*(*WD_TWD);
+        this->cg->compute(*t);
+    }
 
     int i;
     double IhCur = 0;
@@ -90,8 +93,8 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
 
         // Update the solution x^{n+1}
         *vec =  ((a->m) * (*xBar)) + dtsq*(( *WD_T * ((a->w) * (*z - *uBar))));
-        // *x = this->cg->solveWithGuess(*vec, *xBar);
-        *x = this->cgSol->solve(*vec);
+        *x = this->cg->solveWithGuess(*vec, *xBar);
+        // *x = this->cgSol->solve(*vec);
 
         if (i >= 1 && abs((IhPrev - IhCur)/(IhPrev)) < tol) {
             break;
@@ -121,7 +124,7 @@ MeshIntegrator<D>::~MeshIntegrator() {
 
     delete M;
     delete WD_TWD;
-    // delete cg;
+    delete cg;
 
     delete t;
 }

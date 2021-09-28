@@ -26,8 +26,52 @@ double circlePhi(double x, double y) {
   double cy = 0.5;
   double xval = (x - cx);
   double yval = (y - cy);
-  // return sqrt(xval*xval + yval*yval) - r;
   return xval*xval + yval*yval - r*r;
+}
+
+double bloodCellShapeFun(double x, double y) {
+    double cx = 0.6;
+    double cy = 0.6;
+    double a = 0.3;
+    double c = 0.105;
+    double r = 0.5;
+    double deg = 47;
+
+    double b = 2.25 * r;
+    double rad = deg * M_PI / 180;
+    double rotcx = (x-cx) / (b) * cos(rad) - (y-cy) / (b) * sin(rad);
+    double rotcy = (x-cx) / (b) * sin(rad) + (y-cy) / (b) * cos(rad);
+
+    double x_sqr = pow(rotcx, 2.0);
+    double y_sqr = pow(rotcy, 2.0);
+    double a_sqr = pow(a, 2.0);
+    double c_sqr = pow(c, 2.0);
+
+    return pow(x_sqr + y_sqr + a_sqr, 2.0) - 4*a_sqr*x_sqr - c_sqr;
+}
+
+// based on Cassini oval
+double bloodCellShapeFun(double x, double y, double z) {
+    double cx = 2.5;
+    double cy = 4.0;
+    double cz = 2.5;
+    double a = 0.3;
+    double c = 0.105;
+    double r = 0.5;
+    double deg = 0;
+
+    double b = 1.75 * r;
+    double rad = deg * M_PI / 180;
+    double rotcy = (y-cy) / (b) * cos(rad) - (z-cz) / (b) * sin(rad);
+    double rotcz = (y-cy) / (b) * sin(rad) + (z-cz) / (b) * cos(rad);
+
+    double x_sqr = pow(((x-cx)/b), 2);
+    double y_sqr = pow((rotcy), 2);
+    double z_sqr = pow((rotcz), 2);
+    double a_sqr = pow((a), 2);
+    double c_sqr = pow((c), 2);
+
+    return pow(x_sqr + y_sqr + z_sqr + a_sqr, 2) - 4*a_sqr*(x_sqr + y_sqr) - c_sqr;
 }
 
 double spherePhi(double x, double y, double z) {
@@ -43,8 +87,6 @@ double spherePhi(double x, double y, double z) {
 }
 
 double heartPhi(double x, double y) {
-  // double cx = 0.5;
-  // double cy = 0.4;
   double cx = 0.5;
   double cy = 2.4;
   double xval = (x - cx);
@@ -74,7 +116,6 @@ double shoulderPhi(double x, double y) {
   double phi2 = pow(xval2, n) + pow(yval2, n) - pow(r2, n);
 
   return max(phi1, phi2);
-  // return phi2;
 }
 
 template <typename T>
@@ -95,6 +136,8 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
 
   Mesh<D> adaptiveMesh(*Vc, *Vp, *F, *boundaryMask, mon,
       numThreads, rho, tau);
+  // Mesh<D> adaptiveMesh(*Vp, *F, *boundaryMask, mon,
+  //     numThreads, rho, tau);
 
   // Create the solver
   MeshIntegrator<D> solver(dt, adaptiveMesh);
@@ -499,8 +542,6 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
     nPnts = (nx+1)*(ny+1)*(nz+1) + nx*ny*nz;
     inputFile >> xa >> xb >> ya >> yb >> za >> zb;
   }
-
-  cout << "all input collected" << endl;
 
   // Parameters for the mesh
   std::unordered_map<std::string, double> params;

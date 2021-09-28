@@ -12,15 +12,15 @@ public:
         double lam2 = 1.0/lam1;
 
         Eigen::Vector<double,D> v;
-        v << (1.0/sqrt(2.0))*1.0 , (1.0/sqrt(2.0))*1.0 , (1.0/sqrt(2.0))*1.0; 
+        v << (1.0/sqrt(2.0))*1.0 , (1.0/sqrt(2.0))*1.0 , (1.0/sqrt(2.0))*1.0;
         Eigen::Vector<double,D> vOrth;
-        Eigen::Vector<double,D> e3;
-        e3 << 0.0 , 0.0, 1.0;
-        vOrth = v.cross(e3);
+        vOrth << (1.0/sqrt(2.0))*1.0 , -(1.0/sqrt(2.0))*1.0 , -(1.0/sqrt(2.0))*1.0;
 
         Eigen::Matrix<double,D,D> m1(lam1*v*v.transpose());
         Eigen::Matrix<double,D,D> m2(lam2*vOrth*vOrth.transpose());
         M = m1 + m2;
+
+        cout << M.determinant() << endl;
     }
 };
 
