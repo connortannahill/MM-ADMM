@@ -56,12 +56,12 @@ namespace utils {
         coefs[3] = norm * (x - xMesh[0])*(y - yMesh[0]);
     }
 
-    inline void triLinearInterpolation(double x, double y, double z, vector<double> &xMesh,
-                                        vector<double> &yMesh, vector<double> &zMesh, 
+    inline void triLinearInterpolation(double x, double y, double z, double xMesh[2],
+                                        double yMesh[2], double zMesh[2], 
                                         double coefs[8]) {
-        double xd = (x - xMesh.at(0))/(xMesh.at(1) - xMesh.at(0));
-        double yd = (y - yMesh.at(0))/(yMesh.at(1) - yMesh.at(0));
-        double zd = (z - zMesh.at(0))/(zMesh.at(1) - zMesh.at(0));
+        double xd = (x - xMesh[0])/(xMesh[1] - xMesh[0]);
+        double yd = (y - yMesh[0])/(yMesh[1] - yMesh[0]);
+        double zd = (z - zMesh[0])/(zMesh[1] - zMesh[0]);
 
         coefs[0] = (1 - xd)*(1 - yd)*(1 - zd);
         coefs[1] = xd*(1 - yd)*(1 - zd);
@@ -149,8 +149,6 @@ namespace utils {
             }
 
         } else if (D == 3) {
-            int off = 0;
-
             for (int k = 0; k <= nz; k++) {
                 for (int j = 0; j <= ny; j++) {
                     for (int i = 0; i <= nx; i++) {
@@ -179,7 +177,6 @@ namespace utils {
             int stride = (nx+1) * (ny+1) * (nz+1);
 
             off = 0;
-
             for (int k = 0; k < nz; k++) {
                 for (int j = 0; j < ny; j++) {
                     for (int i = 0; i < nx; i++) {
@@ -191,15 +188,14 @@ namespace utils {
                         (*F)(off, 1) = i+1          + j*(nx+1)     + k*(nx+1)*(ny+1);
                         (*F)(off, 2) = i+1          + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
                         (*F)(off, 3) = mid;
-                        off++;
 
+                        off++;
 
                         (*F)(off, 0) = i            + j*(nx+1)     + k*(nx+1)*(ny+1);
                         (*F)(off, 1) = i            + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
                         (*F)(off, 2) = i+1          + (j+1)*(nx+1) + k*(nx+1)*(ny+1);
                         (*F)(off, 3) = mid;
                         off++;
-
 
                         // Top tets
                         (*F)(off, 0) = i            + j*(nx+1)     + (k+1)*(nx+1)*(ny+1);
@@ -226,7 +222,6 @@ namespace utils {
                         (*F)(off, 2) = i            + (j+1)*(nx+1) + (k+1)*(nx+1)*(ny+1);
                         (*F)(off, 3) = mid;
                         off++;
-
 
                         // Right tets
                         (*F)(off, 0) = i+1          + j*(nx+1)     + k*(nx+1)*(ny+1);
@@ -269,34 +264,9 @@ namespace utils {
                     }
                 }
             }
-
-        }
-
-        for (uint64_t i = 0; i < boundaryMask->size(); i++) {
-            boundaryMask->at(i) = NodeType::INTERIOR;
-        }
-
-
-        if (D == 2) {
-            for (int i = 0; i < (nx+1)*(ny+1); i++) {
-                int iOff = i % (nx+1);
-                int jOff = i / (ny+1);
-                bool boundaryPnt = (iOff == 0) || (iOff == nx) || (jOff == 0) || (jOff == ny);
-
-                if (boundaryPnt) {
-                    boundaryMask->at(i) = bType;
-                } else {
-                    boundaryMask->at(i) = NodeType::INTERIOR;
-                }
-
-
-                // Fix the corners
-                if ((iOff == 0 && jOff == 0) || (iOff == nx && jOff == 0) 
-                        || (iOff == 0 && jOff == ny) || (iOff == nx && jOff == ny)) {
-                    boundaryMask->at(i)  = NodeType::BOUNDARY_FIXED;
-                }
+            for (int i = 0; i < boundaryMask->size(); i++) {
+                boundaryMask->at(i) = NodeType::INTERIOR;
             }
-        } else {
             for (int k = 0; k < nz+1; k++) {
                 for (int i = 0; i < (nx+1)*(ny+1); i++) {
                     int iOff = i / (nx+1);
@@ -307,7 +277,7 @@ namespace utils {
                     int off = k*(nx+1)*(ny+1) + i;
 
                     if (boundaryPnt) {
-                        boundaryMask->at(off) = NodeType::BOUNDARY_FREE;
+                        boundaryMask->at(off) = bType;
                     }
 
                     // Good code

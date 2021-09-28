@@ -220,9 +220,15 @@ elif mode == 5:
     triangles = np.genfromtxt('{}/triangles.txt'.format(outDir), delimiter=',')
 
     # x, y, z, i, j, k = [[] for i in range(6)]
-    x = list(points[:, 0])
-    y = list(points[:, 1])
-    z = list(points[:, 2])
+    x = points[:, 0]
+    y = points[:, 1]
+    z = points[:, 2]
+
+    lenVec = np.sqrt(x**2 + y**2 + z**2)
+
+    x /= lenVec
+    y /= lenVec
+    z /= lenVec
 
     i, j, k = [[] for i in range(3)]
 
@@ -237,11 +243,13 @@ elif mode == 5:
             [id1, id2, id3]
         ]
 
+
         # Each of the face options
         for face in possibleFaces:
             i.append(face[0])
             j.append(face[1])
             k.append(face[2])
+        
 
     fig = go.Figure(data=[
         go.Mesh3d(

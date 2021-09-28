@@ -165,7 +165,7 @@ def create_parallel_plot():
     dataFilesJson = list(np.array(dataFilesJson)[sort_list])
 
     color=cm.rainbow(np.linspace(0,1,len(dataFiles)))
-    if (dim == 2):
+    if dim == 2:
         num_simplices = [4*(i**2) for i in num_list]
     else:
         num_simplices = [12*(i**3) for i in num_list]

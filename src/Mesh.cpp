@@ -291,7 +291,8 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
     gradCurrs = new vector<Eigen::Vector<double, D*(D+1)>>(this->F->rows());
 
     // Set the Hessians to the identity intiially
-    Eigen::Matrix<double, D*(D+1), D*(D+1)> eye = Eigen::Matrix<double, D*(D+1), D*(D+1)>::Identity(D*(D+1), D*(D+1));
+    Eigen::Matrix<double, D*(D+1), D*(D+1)> eye
+        = Eigen::Matrix<double, D*(D+1), D*(D+1)>::Identity(D*(D+1), D*(D+1));
     for (uint32_t i = 0; i < hessInvs->size(); i++) {
         hessInvs->at(i) = eye;
     }
@@ -391,8 +392,14 @@ double Mesh<D>::eulerStep(Eigen::VectorXd &x, Eigen::VectorXd &grad) {
             }
         }
 
+        // cout << xi_i << endl;
+        // cout << x_i << endl;
+
         // Compute the local gradient
         Ihorig += I_wx->blockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, true, false);
+
+        // cout << "Ihorig " << Ihorig << endl;
+        // assert(false);
 
         // For place into the respective gradients
         for (int n = 0; n < D+1; n++) {
@@ -425,6 +432,7 @@ double Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, 
 
         // Compute energy at the current time level along with the updated gradient
         double Ih = eulerStep(xBar, grad);
+        // assert(false);
         double rate = abs((Ih - Ihorig)/Ihorig);
 
         dtNew = dt;

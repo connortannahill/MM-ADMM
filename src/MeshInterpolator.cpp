@@ -28,7 +28,7 @@ MeshInterpolator<D>::MeshInterpolator() {
     vertexSearchTree
         = new KDTreeSingleIndexAdaptor<L2_Simple_Adaptor<double, MeshInterpolator<D>>,
                 MeshInterpolator<D>, D>
-                (2 /*dim*/, *this, KDTreeSingleIndexAdaptorParams(5 /* max leaf */) );
+                (D /*dim*/, *this, KDTreeSingleIndexAdaptorParams(5 /* max leaf */) );
 }
 
 template <int D>
@@ -241,9 +241,18 @@ inline void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &pnt
                                 + coefs[3]*(*monGridVals)((yInd+1)*(nx+1)+xInd+1, n);
         }
     } else {
-        int zInd = utils::findLimInfMeshPoint(x->at(2), *this->z);
+        int zInd = utils::findLimInfMeshPoint(pnt(2), *this->z);
         double coefs[8] = {0.0};
-        utils::triLinearInterpolation(x->at(0), x->at(1), x->at(2), *this->x, *this->y, *this->z, coefs);
+        double xMesh[2] = {x->at(xInd), x->at(xInd+1)};
+        double yMesh[2] = {y->at(yInd), y->at(yInd+1)};
+        double zMesh[2] = {z->at(zInd), z->at(zInd+1)};
+        utils::triLinearInterpolation(pnt(0), pnt(1), pnt(2), xMesh, yMesh, zMesh, coefs);
+
+        // cout << "Printing coefs" << endl;
+        // for (int i = 0; i < 8; i++) {
+        //     cout << coefs[i] << ", ";
+        // }
+        // cout << endl;
 
         Eigen::Vector<double, D*D> mFlat(Eigen::Vector<double, D*D>::Zero());
 
@@ -255,6 +264,10 @@ inline void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &pnt
         mFlat += coefs[5]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
         mFlat += coefs[6]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
         mFlat += coefs[7]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
+
+        for (int n = 0; n < D*D; n++) {
+            mVal(n / D, n % D) = mFlat(n);
+        }
     }
 }
 
