@@ -124,7 +124,7 @@ MeshIntegrator<D>::~MeshIntegrator() {
 
     delete M;
     delete WD_TWD;
-    delete cg;
+    // delete cg;
 
     delete t;
 }
