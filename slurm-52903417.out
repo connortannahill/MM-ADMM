@@ -1,0 +1,2222 @@
+====================================
+Functions available:
+
+create_input()
+grid_scale_test_2d()
+grid_scale_test_3d()
+output_grid_scale_test_2d()
+run_parallel_experiment()
+create_parallel_plot()
+plot_single_thread_increase()
+plot_energy_decrease()
+exit()
+
+====================================
+call function() = test name = dimension = g++ -Wall -std=c++11 -I../src -I./lib/libigl/include/ -I./lib/eigen/ -I./lib/nanoflann/include/  -O3 -msse2 -fopenmp -D THREADS  main.cpp src/Mesh.cpp src/MonitorFunction.cpp src/MeshIntegrator.cpp src/Params.cpp src/AdaptationFunctional.cpp src/HuangFunctional.cpp src/MeshInterpolator.cpp -o mesh.exe
+In file included from main.cpp:19:
+./src/MeshUtils.h: In instantiation of ‘void utils::generateUniformRectMesh(std::unordered_map<std::__cxx11::basic_string<char>, double>, Eigen::MatrixXd*, Eigen::MatrixXi*, std::vector<NodeType>*, NodeType) [with int D = 3; Eigen::MatrixXd = Eigen::Matrix<double, -1, -1>; Eigen::MatrixXi = Eigen::Matrix<int, -1, -1>]’:
+./src/MeshUtils.h:492:70:   required from here
+./src/MeshUtils.h:267:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<NodeType>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  267 |             for (int i = 0; i < boundaryMask->size(); i++) {
+      |                             ~~^~~~~~~~~~~~~~~~~~~~~~
+src/Mesh.cpp: In member function ‘double Mesh<D>::bfgsOptSimplex(int, Eigen::Vector<double, (D * (D + 1))>&, Eigen::Vector<double, (D * (D + 1))>&, int, double, bool)’:
+src/Mesh.cpp:593:9: error: ‘VectorXcd’ was not declared in this scope; did you mean ‘Eigen::VectorXcd’?
+  593 |         VectorXcd eivals = hessInvs->at(zId).eigenvalues();
+      |         ^~~~~~~~~
+      |         Eigen::VectorXcd
+In file included from ./lib/eigen/Eigen/Core:297,
+                 from ./lib/eigen/Eigen/Dense:1,
+                 from src/AdaptationFunctional.h:4,
+                 from src/Mesh.h:4,
+                 from src/Mesh.cpp:1:
+./lib/eigen/Eigen/src/Core/Matrix.h:479:34: note: ‘Eigen::VectorXcd’ declared here
+  479 | typedef Matrix<Type, Size, 1>    Vector##SizeSuffix##TypeSuffix;  \
+      |                                  ^~~~~~
+./lib/eigen/Eigen/src/Core/Matrix.h:493:1: note: in expansion of macro ‘EIGEN_MAKE_TYPEDEFS’
+  493 | EIGEN_MAKE_TYPEDEFS(Type, TypeSuffix, Dynamic, X) \
+      | ^~~~~~~~~~~~~~~~~~~
+./lib/eigen/Eigen/src/Core/Matrix.h:502:1: note: in expansion of macro ‘EIGEN_MAKE_TYPEDEFS_ALL_SIZES’
+  502 | EIGEN_MAKE_TYPEDEFS_ALL_SIZES(std::complex<double>, cd)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from src/MeshInterpolator.cpp:8:
+src/MeshUtils.h: In instantiation of ‘void utils::generateUniformRectMesh(std::unordered_map<std::__cxx11::basic_string<char>, double>, Eigen::MatrixXd*, Eigen::MatrixXi*, std::vector<NodeType>*, NodeType) [with int D = 3; Eigen::MatrixXd = Eigen::Matrix<double, -1, -1>; Eigen::MatrixXi = Eigen::Matrix<int, -1, -1>]’:
+src/MeshUtils.h:492:70:   required from here
+src/MeshUtils.h:267:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<NodeType>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
+  267 |             for (int i = 0; i < boundaryMask->size(); i++) {
+      |                             ~~^~~~~~~~~~~~~~~~~~~~~~
+make: *** [Makefile:12: mesh.exe] Error 1
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.016324 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.016734 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.015151 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.017396 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.015403 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.02168 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.022027 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.017996 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.019027 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.019663 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.023316 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.022995 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.0226 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.023725 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.022761 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.0288 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.02871 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.02749 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.028507 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.027318 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.040183 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.039427 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.035603 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.038577 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.036413 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.1171 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.228517 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.06415 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.078258 seconds
+Took 1 iters
+Monitor310
+in Euler Ihorig = 6.91453
+in Euler Ihorig = 6.91453
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.91453
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.91453
+converged
+Took 0.55637 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.044291 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.057834 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.057518 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.053882 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.050942 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.058897 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.074269 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.062933 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.06427 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.064951 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.086455 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.080942 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.084263 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.084142 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.083644 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.094646 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.100322 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.100583 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.09635 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.09875 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.124627 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.12661 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.129764 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.125304 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.124921 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.231987 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.510212 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.6185 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.267325 seconds
+Took 1 iters
+Monitor320
+in Euler Ihorig = 7.00805
+in Euler Ihorig = 7.00805
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.00805
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.00805
+converged
+Took 0.23503 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.174549 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.17886 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.17857 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.178024 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.175871 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.213828 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.212214 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.21422 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.215114 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.213312 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.263259 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.263265 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.263447 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.26259 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.264243 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.320708 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.321581 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.318112 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.321157 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.322732 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.41003 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.414391 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.412397 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.411751 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.412763 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.97282 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.919872 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.66302 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.753336 seconds
+Took 1 iters
+Monitor340
+in Euler Ihorig = 6.99199
+in Euler Ihorig = 6.99199
+ADMM in 1 iters
+d/dt = -inf
+Ih = 6.99199
+ADMM in 1 iters
+d/dt = 0
+Ih = 6.99199
+converged
+Took 0.668777 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.678288 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.644466 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.634062 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.552676 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.546661 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.718296 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.718625 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.717058 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.724794 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.72178 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.853165 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.788175 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.79037 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.794963 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.788088 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.920326 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.926341 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.928758 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.920286 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 0.926691 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 1.14884 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 1.18596 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 1.14537 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 1.15422 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 1.14488 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 1.56608 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 1.84474 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 1.70776 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 1.62985 seconds
+Took 1 iters
+Monitor380
+in Euler Ihorig = 7.01267
+in Euler Ihorig = 7.01267
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01267
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01267
+converged
+Took 1.48433 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.31066 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.27503 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.26641 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.26911 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.23448 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.60685 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.54113 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.54738 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.60272 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.56008 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.8953 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.95661 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.94881 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.93103 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 2.93872 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 3.25917 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 3.28203 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 3.261 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 3.27205 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 3.18602 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 3.75194 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 3.83501 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 3.68656 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 3.68069 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 3.76781 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 4.76456 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 4.62666 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 4.58853 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 4.77125 seconds
+Took 1 iters
+Monitor3160
+in Euler Ihorig = 7.01892
+in Euler Ihorig = 7.01892
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.01892
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.01892
+converged
+Took 4.83958 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 9.09611 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 8.79545 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 9.08307 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 8.8818 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 8.88882 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 9.23304 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 9.68521 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 9.6936 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 9.74031 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 9.48823 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 10.48 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 10.4263 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 10.203 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 11.1976 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 10.5061 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 11.1901 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 11.4267 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 11.3613 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 11.6585 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 11.3301 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 12.2593 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 12.2848 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 12.1563 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 11.937 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 12.3869 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 13.3897 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 13.7592 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 14.4294 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 14.8939 seconds
+Took 1 iters
+Monitor3320
+in Euler Ihorig = 7.0226
+in Euler Ihorig = 7.0226
+ADMM in 1 iters
+d/dt = -inf
+Ih = 7.0226
+ADMM in 1 iters
+d/dt = 0
+Ih = 7.0226
+converged
+Took 13.5849 seconds
+Took 1 iters
+====================================
+Functions available:
+
+create_input()
+grid_scale_test_2d()
+grid_scale_test_3d()
+output_grid_scale_test_2d()
+run_parallel_experiment()
+create_parallel_plot()
+plot_single_thread_increase()
+plot_energy_decrease()
+exit()
+
+====================================
+call function() = 

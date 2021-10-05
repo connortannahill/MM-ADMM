@@ -31,6 +31,7 @@ public:
     void meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp, 
             Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
             MonitorFunction<D> *Mon, int numThreads, double rho, double tau);
+    double compTerm(int i, bool compMesh);
     void setUp();
     int getNPnts();
     ~Mesh();

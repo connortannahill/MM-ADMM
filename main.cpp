@@ -397,12 +397,12 @@ void setUpShoulderExperiment(string testName, ifstream &inputFile,
   // Any simplex with centroid in the shoulder region are removed
   const double EPS = 1e-16;
   for (int i = 0; i < F->rows(); i++) {
-    Eigen::Vector<double, D> x0((*Vc)((*F)(i, 0), Eigen::all));
-    Eigen::Vector<double, D> x1((*Vc)((*F)(i, 1), Eigen::all));
-    Eigen::Vector<double, D> x2((*Vc)((*F)(i, 2), Eigen::all));
+    Eigen::Vector<double, D> x0((*Vc)((*F)(i, 0), Eigen::placeholders::all));
+    Eigen::Vector<double, D> x1((*Vc)((*F)(i, 1), Eigen::placeholders::all));
+    Eigen::Vector<double, D> x2((*Vc)((*F)(i, 2), Eigen::placeholders::all));
     Eigen::Vector<double, D> x3;
     if (D == 3) {
-      x3 = (*Vc)((*F)(i, 3), Eigen::all);
+      x3 = (*Vc)((*F)(i, 3), Eigen::placeholders::all);
     }
     
     Eigen::Vector<double, D> c;

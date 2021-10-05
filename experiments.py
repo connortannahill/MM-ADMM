@@ -242,7 +242,7 @@ def run_parallel_experiment():
     fig, ax = plt.subplots()
     for i, inputFile in enumerate(inputFiles):
         times = {}
-        num_runs = 10
+        num_runs = 5
         for pow in pows:
             times[pow] = []
             for run in range(num_runs):

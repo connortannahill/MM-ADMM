@@ -6,8 +6,8 @@ import sys, copy
 mode = int(sys.argv[1])
 
 # import plotly.plotly as py
-import chart_studio.plotly as py
-import plotly.graph_objs as go
+# import chart_studio.plotly as py
+# import plotly.graph_objs as go
 
 import matplotlib.cm as cm
 from scipy.spatial import Delaunay
