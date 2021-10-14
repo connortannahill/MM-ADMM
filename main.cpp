@@ -26,7 +26,7 @@ double circlePhi(double x, double y) {
   double cy = 0.5;
   double xval = (x - cx);
   double yval = (y - cy);
-  return xval*xval + yval*yval - r*r;
+  return sqrt(xval*xval + yval*yval) - r;
 }
 
 double bloodCellShapeFun(double x, double y) {
@@ -131,16 +131,20 @@ void outputVecToFile(string fileName, vector<T> &outVec) {
 
 template <int D>
 void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double> params, Eigen::MatrixXd *Vc,
-      Eigen::MatrixXd *Vp, Eigen::MatrixXi *F, vector<NodeType> *boundaryMask,
+      Eigen::MatrixXd *Vp, bool compMesh, Eigen::MatrixXi *F, vector<NodeType> *boundaryMask,
       NodeType bType, int numThreads, MonitorFunction<D> *mon, double rho, double tau) {
 
-  Mesh<D> adaptiveMesh(*Vc, *Vp, *F, *boundaryMask, mon,
-      numThreads, rho, tau);
-  // Mesh<D> adaptiveMesh(*Vp, *F, *boundaryMask, mon,
-  //     numThreads, rho, tau);
+  Mesh<D> *adaptiveMesh;
+  if (!compMesh) {
+    adaptiveMesh = new Mesh<D>(*Vp, *F, *boundaryMask, mon,
+        numThreads, rho, tau);
+  } else {
+    adaptiveMesh = new Mesh<D>(*Vc, *Vp, *F, *boundaryMask, mon,
+        numThreads, rho, tau);
+  }
 
   // Create the solver
-  MeshIntegrator<D> solver(dt, adaptiveMesh);
+  MeshIntegrator<D> solver(dt, *adaptiveMesh);
 
   std::vector<double> Ivals;
 
@@ -177,8 +181,8 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
 
   string pointsOutDir = outDir + "/points.txt";
   string triangleOutDir = outDir + "/triangles.txt";
-  adaptiveMesh.outputPoints(pointsOutDir.c_str());
-  adaptiveMesh.outputSimplices(triangleOutDir.c_str());
+  adaptiveMesh->outputPoints(pointsOutDir.c_str());
+  adaptiveMesh->outputSimplices(triangleOutDir.c_str());
   string Ihdir = outDir + "/Ih.txt";
   outputVecToFile(Ihdir, Ivals);
 
@@ -186,6 +190,8 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
   delete F;
   delete boundaryMask;
   delete Vp;
+
+  delete adaptiveMesh;
 }
 
 template <int D>
@@ -204,6 +210,9 @@ void setUpLevelSetExperiment(string testName, ifstream &inputFile,
   } else {
     type = NodeType::BOUNDARY_FIXED;
   }
+
+  bool compMesh;
+  inputFile >> compMesh;
 
   inputFile >> nSteps;
   inputFile >> dt;
@@ -310,7 +319,7 @@ void setUpLevelSetExperiment(string testName, ifstream &inputFile,
     outFile.close();
   }
 
-  runAlgo(testName, nSteps, dt, params, Vc, Vp, F, boundaryMask,
+  runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
     type, numThreads, mon, rho, tau);
 }
 
@@ -330,6 +339,9 @@ void setUpShoulderExperiment(string testName, ifstream &inputFile,
   } else {
     type = NodeType::BOUNDARY_FIXED;
   }
+
+  bool compMesh;
+  inputFile >> compMesh;
 
   inputFile >> nSteps;
   inputFile >> dt;
@@ -495,6 +507,7 @@ void setUpShoulderExperiment(string testName, ifstream &inputFile,
     }
   }
 
+
   // Sort the removed Id's into reverse order for easy removal
   std::sort(idsToBeRemoved.begin(), idsToBeRemoved.end(), std::greater<int>());
 
@@ -502,7 +515,25 @@ void setUpShoulderExperiment(string testName, ifstream &inputFile,
       utils::removeRow(*F, *id);
   }
 
-  runAlgo(testName, nSteps, dt, params, Vc, Vp, F, boundaryMask,
+  double hx = (xb - xa)/((double)nx);
+  double hy = (yb - ya)/((double)ny);
+  double hz = (D == 3) ? (zb - za)/((double)nz) : 0;
+  double h = sqrt(hx*hx + hy*hy + hz*hz);
+  for (int i = 0; i < Vc->rows(); i++) {
+      if (boundaryMask->at(i) == NodeType::INTERIOR) {
+        // Generate random unit vector for direction
+        Eigen::Vector<double, D> dir(Eigen::Vector<double, D>::Random(D));
+        dir /= dir.norm();
+
+        // Now generate random length between [0, hx/5]
+        double r = (h/5.0)*static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+
+        // (*Vc)(i, Eigen::all) += r*dir;
+        (*Vp)(i, Eigen::all) += r*dir;
+      }
+  }
+
+  runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
     type, numThreads, mon, rho, tau);
 }
 
@@ -513,6 +544,8 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
   double dt, tau, rho;
   double xa, xb, ya, yb, za, zb;
 
+  cout << "Dim = " << D << endl;
+
   int boundaryType;
   inputFile >> boundaryType;
 
@@ -522,6 +555,9 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
   } else {
     type = NodeType::BOUNDARY_FIXED;
   }
+
+  bool compMesh;
+  inputFile >> compMesh;
 
   inputFile >> nSteps;
   inputFile >> dt;
@@ -580,13 +616,14 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
   
   *Vc = *Vp;
 
-  runAlgo(testName, nSteps, dt, params, Vc, Vp, F, boundaryMask,
+  runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
     type, numThreads, mon, rho, tau);
 }
 
 
 int main(int argc, char *argv[]) {
-  srand(static_cast<unsigned int>(std::time(nullptr)));
+  srand (69);
+  // srand(static_cast<unsigned int>(std::time(nullptr)));
 
   // Read in the input file
   assert(argc <= 3);

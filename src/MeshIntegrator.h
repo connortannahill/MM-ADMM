@@ -18,6 +18,7 @@ public:
     void outputX(const char *fname);
     void outputZ(const char *fname);
 private:
+
     Mesh<D> *a;
     Eigen::SparseMatrix<double> *t;
     Eigen::ConjugateGradient<Eigen::SparseMatrix<double>, Eigen::Lower|Eigen::Upper> *cg;

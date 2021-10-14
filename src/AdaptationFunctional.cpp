@@ -143,7 +143,6 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
     interp.evalMonitorOnGrid(xK, M);
 
     // cout << "Interped monitor " << M << endl;
-    // cout << "xK = " << xK << endl;
     Eigen::Matrix<double, D, D> Minv(M.inverse());
     vector<Eigen::Matrix<double, D, D>> mPre(D+1);
 
@@ -152,10 +151,7 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
         xTemp = z.segment(i*D, D);
         interp.evalMonitorOnGrid(xTemp, mTemp);
         mPre.at(i) = mTemp;
-
-        // cout << "M_" << i << " " << mTemp << endl;
     }
-    // assert(false);
 
     double G, dGddet;
 
@@ -198,15 +194,17 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
         Ehat /= (double)pow(N, 1.0/D);
     }
 
-    Einv = E.inverse();
+    // cout << "det E " << E.determinant()/dFact << endl; 
+    // cout << "det Einv " << Ehat.determinant()/dFact  << endl;
 
-    // cout << "Ehat " << endl;
-    // cout << Ehat << endl;
+    Einv = E.inverse();
 
     // Approximate Jacobian
     FJ = Ehat * Einv;
     detFJ = FJ.determinant();
-    // cout << "detFJ = " << detFJ << endl;
+    // cout << "det FJ = " << FJ.determinant()/dFact << endl;
+    // cout << "N = " << N << endl;
+
     double d = (double) D;
     const double p = 1.5;
     const double theta = 1.0/3.0;
@@ -221,7 +219,6 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
         + (1.0 - 2.0*theta) * pow(d, d*p/2.0) * detM * pow(detFJ/detM, p);
 
     absK = abs(Edet/dFact);
-
 
     if (!computeGrad) {
         if (regularize) {

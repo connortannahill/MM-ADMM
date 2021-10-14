@@ -392,14 +392,8 @@ double Mesh<D>::eulerStep(Eigen::VectorXd &x, Eigen::VectorXd &grad) {
             }
         }
 
-        // cout << xi_i << endl;
-        // cout << x_i << endl;
-
         // Compute the local gradient
         Ihorig += I_wx->blockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, true, false);
-
-        // cout << "Ihorig " << Ihorig << endl;
-        // assert(false);
 
         // For place into the respective gradients
         for (int n = 0; n < D+1; n++) {
@@ -412,6 +406,7 @@ double Mesh<D>::eulerStep(Eigen::VectorXd &x, Eigen::VectorXd &grad) {
     }
 
     cout << "in Euler Ihorig = " << Ihorig << endl;
+    // assert(false);
 
     return Ihorig;
 }
@@ -428,19 +423,23 @@ double Mesh<D>::predictX(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, 
         double Ihorig = eulerStep(x, grad);
 
         // assert(false);
+        // cout << "dt = " << dt << endl;
+        // cout << "tau = " << tau << endl;
+        // cout << "grad = " << grad.transpose() << endl;
+        // assert(false);
         xBar = x - (dt / tau) * grad;
 
         // Compute energy at the current time level along with the updated gradient
         double Ih = eulerStep(xBar, grad);
         // assert(false);
-        double rate = abs((Ih - Ihorig)/Ihorig);
+        double rate = (Ih - Ihorig)/Ihorig;
 
         dtNew = dt;
-        while (rate > 1e-2) {
+        while (abs(rate) > 1e-2 && rate > 0) {
             dtNew /= 2.0;
             xBar = x - (dtNew / tau) * grad;
             Ih = eulerStep(xBar, grad);
-            rate = abs((Ih - Ihorig)/Ihorig);
+            rate = (Ih - Ihorig)/Ihorig;
         }
     } else {
         // Compute the gradient at each point
@@ -572,8 +571,6 @@ inline double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z
     Eigen::Vector<double, D*(D+1)> yk;
     Eigen::Vector<double, D*(D+1)> zTemp;
     double c1, c2;
-
-
 
     int iter;
     for (iter = 0; iter < nIter; iter++) {

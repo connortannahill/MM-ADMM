@@ -148,6 +148,28 @@ namespace utils {
                 }
             }
 
+            for (uint64_t i = 0; i < boundaryMask->size(); i++) {
+                boundaryMask->at(i) = NodeType::INTERIOR;
+            }
+
+            for (int i = 0; i < (nx+1)*(ny+1); i++) {
+                int iOff = i % (nx+1);
+                int jOff = i / (ny+1);
+                bool boundaryPnt = (iOff == 0) || (iOff == nx) || (jOff == 0) || (jOff == ny);
+
+                if (boundaryPnt) {
+                    boundaryMask->at(i) = bType;
+                } else {
+                    boundaryMask->at(i) = NodeType::INTERIOR;
+                }
+
+
+                // Fix the corners
+                if ((iOff == 0 && jOff == 0) || (iOff == nx && jOff == 0) 
+                        || (iOff == 0 && jOff == ny) || (iOff == nx && jOff == ny)) {
+                    boundaryMask->at(i)  = NodeType::BOUNDARY_FIXED;
+                }
+            }
         } else if (D == 3) {
             for (int k = 0; k <= nz; k++) {
                 for (int j = 0; j <= ny; j++) {
@@ -264,9 +286,11 @@ namespace utils {
                     }
                 }
             }
+
             for (int i = 0; i < boundaryMask->size(); i++) {
                 boundaryMask->at(i) = NodeType::INTERIOR;
             }
+
             for (int k = 0; k < nz+1; k++) {
                 for (int i = 0; i < (nx+1)*(ny+1); i++) {
                     int iOff = i / (nx+1);
@@ -452,6 +476,8 @@ namespace utils {
 
             (*Vp)(*pnt, Eigen::all) = xPnt;
         }
+
+        *Vc = *Vp;
     }
 
     inline void meshFromLevelSetFun(std::function<double(double, double, double)> phiFun, std::vector<int> &nVals,

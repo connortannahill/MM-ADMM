@@ -117,14 +117,14 @@ MeshIntegrator<D>::~MeshIntegrator() {
     delete xBar;
     delete z;
     delete xPrev;
-    delete cgSol;
+    // delete cgSol;
     delete WD_T;
     delete DXpU;
     delete vec;
 
     delete M;
     delete WD_TWD;
-    // delete cg;
+    delete cg;
 
     delete t;
 }

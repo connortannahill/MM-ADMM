@@ -1,7 +1,8 @@
-SquareGrid
+LevelSet
 2
-    2
+    3
     0
+    1
     1000
     0.005
     1e-1
