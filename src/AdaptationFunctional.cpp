@@ -142,7 +142,6 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
     // Interpolate the monitor function
     interp.evalMonitorOnGrid(xK, M);
 
-    // cout << "Interped monitor " << M << endl;
     Eigen::Matrix<double, D, D> Minv(M.inverse());
     vector<Eigen::Matrix<double, D, D>> mPre(D+1);
 
@@ -194,16 +193,11 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
         Ehat /= (double)pow(N, 1.0/D);
     }
 
-    // cout << "det E " << E.determinant()/dFact << endl; 
-    // cout << "det Einv " << Ehat.determinant()/dFact  << endl;
-
     Einv = E.inverse();
 
     // Approximate Jacobian
     FJ = Ehat * Einv;
     detFJ = FJ.determinant();
-    // cout << "det FJ = " << FJ.determinant()/dFact << endl;
-    // cout << "N = " << N << endl;
 
     double d = (double) D;
     const double p = 1.5;
@@ -214,6 +208,7 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
     Eigen::Matrix<double, D, D> JMJt = FJ * MinvJt;
     double trJMJt = JMJt.trace();
     double detM = sqrt(1.0 / Minv.determinant());
+    // cout << "line 221" << endl;
 
     G = theta * detM * pow(trJMJt, d*p/2.0)
         + (1.0 - 2.0*theta) * pow(d, d*p/2.0) * detM * pow(detFJ/detM, p);
@@ -272,12 +267,14 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
     // Update the energy
     Ih = absK * G;
 
+    // cout << "line 282" << endl;
     // Now add the constraint regularization
     if (regularize) {
         Ih += 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
         grad += w*w*(-(*DXpU).segment(D*(D+1)*zId, D*(D+1)) + z);
     }
 
+    // cout << "done in adapt" << endl;
     return Ih;
 }
 

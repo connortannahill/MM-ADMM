@@ -48,7 +48,7 @@ MeshIntegrator<D>::MeshIntegrator(double dt, Mesh<D> &a) {
     this->cg->compute(*t);
 
     // Compute the sparse Cholseky factorization.
-    // cgSol = new Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>>(*t);
+    cgSol = new Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>>(*t);
 
     DXpU = new Eigen::VectorXd(*z);
     vec = new Eigen::VectorXd(*z);
@@ -58,16 +58,48 @@ MeshIntegrator<D>::MeshIntegrator(double dt, Mesh<D> &a) {
  * Assumes a constant mass matrix for now
 */
 template <int D>
+double MeshIntegrator<D>::backwardsEulerStep(double dt, double tol) {
+    // cout << "IN BACKWARDS EULER STEP ENERGY INIT = " << a->computeEnergy(*x) << endl;
+    Eigen::VectorXd grad(x->size());
+    grad.setZero();
+    double Ih = a->backwardsEulerStep(dt, *x, grad);
+
+    // cout << "IN BACKWARDS EULER STEP ENERGY FIN = " << a->computeEnergy(*x) << endl;
+    return Ih;
+}
+
+/**
+ * Assumes a constant mass matrix for now
+*/
+template <int D>
+double MeshIntegrator<D>::eulerStep(double tol) {
+    Eigen::VectorXd grad(x->size());
+    double Ih = a->eulerStep(*x, grad);
+    *x -= (dt / a->tau) * grad;
+
+    // return a->computeEnergy(*x);
+    return Ih;
+}
+
+
+/**
+ * Assumes a constant mass matrix for now
+*/
+template <int D>
 double MeshIntegrator<D>::step(int nIters, double tol) {
-    // Get xBar, the predicted (explicit) location of the nodes independent of constraints
-    double dtsq = dt*dt;
 
     // Setup the assembly for the step
     (this->a)->setUp();
 
     // Make prediction for next value of x (sorta) and the next time step
     this->dtPrev = dt;
-    dt = (this->a)->predictX(dt, *this->xPrev, *this->x, *this->xBar);
+    double Ih;
+    // dt = (this->a)->predictX(dt, energyCur, *this->xPrev, *this->x, *this->xBar);
+    cout << "predicting X" << endl;
+    Ih = (this->a)->predictX(dt, energyCur, *this->xPrev, *this->x, *this->xBar);
+    // Get xBar, the predicted (explicit) location of the nodes independent of constraints
+    double dtsq = dt*dt;
+    cout << "finsihed predicting X" << endl;
 
     *xPrev = *x;
     *z = (*a->Dmat) * *this->xBar;
@@ -78,6 +110,10 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         *t = *M + dtsq*(*WD_TWD);
         this->cg->compute(*t);
     }
+
+    // if (stepsTaken % 10 == 0) {
+    //     a->hessComputed = false;
+    // }
 
     int i;
     double IhCur = 0;
@@ -96,19 +132,31 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         *x = this->cg->solveWithGuess(*vec, *xBar);
         // *x = this->cgSol->solve(*vec);
 
-        if (i >= 1 && abs((IhPrev - IhCur)/(IhPrev)) < tol) {
+        if (((*a->Dmat) * *this->x - *z).norm() < tol) {
             break;
         }
+
+        // if (i >= 1 && abs((IhPrev - IhCur)/(IhPrev)) < tol) {
+        //     break;
+        // }
         IhPrev = IhCur;
 
     }
     cout << "ADMM in " << i << " iters" << endl;
+    cout << "primal res = " << ((*a->Dmat) * *this->x - *z).norm() << endl;
 
     // Update the assembly using the new locations
     a->updateAfterStep(dt, *xPrev, *x);
 
     stepsTaken++;
-    return a->computeEnergy(*x);
+    this->energyCur = a->computeEnergy(*x);
+    return energyCur;
+    return Ih;
+}
+
+template <int D>
+void MeshIntegrator<D>::done() {
+    a->updateAfterStep(dt, *xPrev, *x);
 }
 
 template <int D>

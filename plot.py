@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 import sys, copy
+from scipy.spatial import Delaunay
 mode = int(sys.argv[1])
 
 # import plotly.plotly as py
@@ -10,7 +11,6 @@ import chart_studio.plotly as py
 import plotly.graph_objs as go
 
 import matplotlib.cm as cm
-from scipy.spatial import Delaunay
 
 if mode == 0:
 
@@ -32,6 +32,16 @@ if mode == 0:
     # print(points)
     triangles = np.genfromtxt('{}/triangles.txt'.format(outDir), delimiter=',')
     # X = np.genfromtxt('pointsPerfect.txt', delimiter=',')
+
+    # from scipy.spatial import Delaunay
+    # tri = Delaunay(points)
+
+    # import matplotlib.pyplot as plt
+
+    # plt.triplot(points[:,0], points[:,1], tri.simplices, lw=0.5)
+    # plt.plot(points[:,0], points[:,1], 'o', ms=0.5)
+    # plt.show()
+    # assert(False)
 
     triang = mtri.Triangulation(points[:,0], points[:,1], triangles=triangles)
     # # plt.triplot(triang, color='r', marker='o')
@@ -63,6 +73,9 @@ elif mode == 1:
     n = int(np.sqrt(x.size))
 
     M = np.reshape(M, (n, n))
+    # fig = plt.figure()
+    # ax = fig.add_subplot(projection='3d')
+    # ax.scatter(x, y, M)
 
     plt.imshow(M)
 elif mode == 2:

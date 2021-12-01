@@ -1,6 +1,6 @@
 CC=g++
 SRC=main.cpp $(wildcard ./src/*.cpp)
-IDIRS=-I../src -I./lib/libigl/include/ -I./lib/eigen/ -I./lib/nanoflann/include/ #-I./lib/LBFGSpp/include/
+IDIRS=-I../src -I./lib/libigl/include/ -I./lib/eigen/ -I./lib/nanoflann/include/ -I./lib/fsolve.hpp #-I./lib/LBFGSpp/include/
 CFLAGS=-Wall -std=c++17 $(IDIRS) -O3 -msse2
 # CFLAGS=-Wall -std=c++11 $(IDIRS) -O3 -msse2 -fopenmp
 # DEFS = -D THREADS

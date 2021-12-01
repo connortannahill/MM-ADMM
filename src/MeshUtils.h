@@ -98,8 +98,8 @@ namespace utils {
         if (D == 2) {
             for (int j = 0; j <= ny; j++) {
                 for (int i = 0; i <= nx; i++) {
-                    (*Vc)(off, 0) = hx*i;
-                    (*Vc)(off, 1) = hy*j;
+                    (*Vc)(off, 0) = xa + hx*i;
+                    (*Vc)(off, 1) = ya + hy*j;
                     off++;
                 }
             }
@@ -107,8 +107,8 @@ namespace utils {
             // Append the midoints
             for (int j = 0; j < ny; j++) {
                 for (int i = 0; i < nx; i++) {
-                    (*Vc)(off, 0) = hx*i + hx/2.0;
-                    (*Vc)(off, 1) = hy*j + hy/2.0;
+                    (*Vc)(off, 0) = xa + hx*i + hx/2.0;
+                    (*Vc)(off, 1) = ya + hy*j + hy/2.0;
 
                     off++;
                 }
@@ -174,9 +174,9 @@ namespace utils {
             for (int k = 0; k <= nz; k++) {
                 for (int j = 0; j <= ny; j++) {
                     for (int i = 0; i <= nx; i++) {
-                        (*Vc)(off, 0) = hx*i;
-                        (*Vc)(off, 1) = hy*j;
-                        (*Vc)(off, 2) = hz*k;
+                        (*Vc)(off, 0) = xa + hx*i;
+                        (*Vc)(off, 1) = ya + hy*j;
+                        (*Vc)(off, 2) = za + hz*k;
 
                         off++;
                     }
@@ -187,9 +187,9 @@ namespace utils {
             for (int k = 0; k < nz; k++) {
                 for (int j = 0; j < ny; j++) {
                     for (int i = 0; i < nx; i++) {
-                        (*Vc)(off, 0) = hx*i + hx/2.0;
-                        (*Vc)(off, 1) = hy*j + hy/2.0;
-                        (*Vc)(off, 2) = hz*k + hz/2.0;
+                        (*Vc)(off, 0) = xa + hx*i + hx/2.0;
+                        (*Vc)(off, 1) = ya + hy*j + hy/2.0;
+                        (*Vc)(off, 2) = za + hz*k + hz/2.0;
 
                         off++;
                     }
@@ -477,7 +477,41 @@ namespace utils {
             (*Vp)(*pnt, Eigen::all) = xPnt;
         }
 
-        *Vc = *Vp;
+        Eigen::MatrixXd *Vpnew = new Eigen::MatrixXd(usedPnts.size(), D);
+        Eigen::MatrixXd *Vcnew = new Eigen::MatrixXd(usedPnts.size(), D);
+
+        std::vector<int> pntsSorted(usedPnts.begin(), usedPnts.end());
+        std::sort(pntsSorted.begin(), pntsSorted.end());
+
+        // Build point map
+        map<int, int> pntMap;
+
+        for (int i = 0; i < pntsSorted.size(); i++) {
+            int off = pntsSorted.at(i);
+            pntMap[off] = i;
+
+            (*Vpnew)(i, Eigen::all) = (*Vp)(off, Eigen::all);
+            (*Vcnew)(i, Eigen::all) = (*Vc)(off, Eigen::all);
+        }
+
+        for (auto pnt = pntsSorted.begin(); pnt != pntsSorted.end(); ++pnt) {
+            for (int r = 0; r < F->rows(); r++) {
+                for (int c = 0; c < F->cols(); c++) {
+                    if ((*F)(r, c) == *pnt) {
+                        (*F)(r, c) = pntMap[*pnt];
+                    }
+                }
+            }
+        }
+
+        Vc->resize(Vcnew->rows(), Vcnew->cols());
+        Vp->resize(Vpnew->rows(), Vpnew->cols());
+
+        *Vc = *Vcnew;
+        *Vp = *Vpnew;
+
+        delete Vcnew;
+        delete Vpnew;
     }
 
     inline void meshFromLevelSetFun(std::function<double(double, double, double)> phiFun, std::vector<int> &nVals,
@@ -493,6 +527,8 @@ namespace utils {
         int nx = nVals.at(0);
         int ny = nVals.at(1);
         int nz = nVals.at(2);
+
+        const int D = 3;
 
         linspace(std::get<0>(bb.at(0)), std::get<1>(bb.at(0)), nx, x);
         linspace(std::get<0>(bb.at(1)), std::get<1>(bb.at(1)), ny, y);
@@ -573,6 +609,38 @@ namespace utils {
 
             (*Vp)(*pnt, Eigen::all) = xPnt;
         }
+
+        Eigen::MatrixXd *Vpnew = new Eigen::MatrixXd(usedPnts.size(), D);
+        Eigen::MatrixXd *Vcnew = new Eigen::MatrixXd(usedPnts.size(), D);
+
+        std::vector<int> pntsSorted(usedPnts.begin(), usedPnts.end());
+        std::sort(pntsSorted.begin(), pntsSorted.end());
+
+        // Build point map
+        map<int, int> pntMap;
+
+        for (int i = 0; i < pntsSorted.size(); i++) {
+            int off = pntsSorted.at(pntsSorted.size()-i-1);
+            pntMap[off] = i;
+
+            (*Vpnew)(i, Eigen::all) = (*Vp)(off, Eigen::all);
+            (*Vcnew)(i, Eigen::all) = (*Vc)(off, Eigen::all);
+        }
+
+        for (auto pnt = pntsSorted.begin(); pnt != pntsSorted.end(); ++pnt) {
+            for (int r = 0; r < F->rows(); r++) {
+                for (int c = 0; c < F->cols(); c++) {
+                    if ((*F)(r, c) == *pnt) {
+                        (*F)(r, c) = pntMap[*pnt];
+                    }
+                }
+            }
+        }
+
+        delete Vc;
+        Vc = Vcnew;
+        delete Vp;
+        Vp = Vpnew;
     }
 }
 

@@ -15,8 +15,11 @@ public:
     MeshIntegrator(double dt, Mesh<D> &a);
     ~MeshIntegrator();
     double step(int nIters, double tol);
+    double eulerStep(double tol);
+    double backwardsEulerStep(double dt, double tol);
     void outputX(const char *fname);
     void outputZ(const char *fname);
+    void done();
 private:
 
     Mesh<D> *a;
@@ -36,6 +39,7 @@ private:
     // bool matrixFactored;
     double dt;
     double dtPrev;
+    double energyCur = INFINITY;
     int stepsTaken;
 
 };
