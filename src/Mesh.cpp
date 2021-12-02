@@ -44,7 +44,6 @@ int Mesh<D>::getNPnts() {
 
 template <int D>
 void Mesh<D>::buildSimplexMap() {
-    cout << "Building simplex map" << endl;
     // Construct face connections vector
     simplexConnects = new vector<set<int>>(Vp->rows());
     for (int i = 0; i < F->rows(); i++) {
@@ -53,12 +52,10 @@ void Mesh<D>::buildSimplexMap() {
             simplexConnects->at((*F)(i, j)).insert(i);
         }
     }
-    cout << "FINSIHED building simplex map" << endl;
 }
 
 template <int D>
 void Mesh<D>::buildFaceList() {
-    cout << "start" << endl;
     // Construct face connections vector
     faceConnects = new vector<set<int>>(Vp->rows());
     pntNeighbours = new vector<int>(Vp->rows());
@@ -67,7 +64,6 @@ void Mesh<D>::buildFaceList() {
     }
 
     vector<vector<int>> faceTemp;
-    cout << "building faceTemp" << endl;
 
     // Append vertices of each boundary face to this vector
     for (int i = 0; i < F->rows(); i++) {
@@ -96,7 +92,6 @@ void Mesh<D>::buildFaceList() {
     }
 
     // Convert this into an Eigen matrix for consistency.
-    cout << "doing facelist" << endl;
     faceList = new Eigen::MatrixXi(faceTemp.size(), D);
     for (uint32_t i = 0; i < faceTemp.size(); i++) {
         for (int j = 0; j < D; j++) {
@@ -105,13 +100,11 @@ void Mesh<D>::buildFaceList() {
     }
 
     // Build the maps for each point to keep track of boundary face membership
-    cout << "doing faceconnects" << endl;
     for (int i = 0; i < faceList->rows(); i++) {
         for (int j = 0; j < D; j++) {
             faceConnects->at((*faceList)(i, j)).insert(i);
         }
     }
-    cout << "end" << endl;
 }
 
 static int sgn(double val) {
@@ -267,12 +260,7 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
             Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
             MonitorFunction<D> *Mon, int numThreads, double rho, double tau) {
     
-    cout << "In meshinit" << endl;
-    cout << "Xpsize = " << Xp.size() << endl;
-    
     grad = new Eigen::VectorXd(Xp.size());
-    // xGlob = new Eigen::VectorXd(Xp.size());
-    cout << "done grad" << endl;
     Ihcur = -INFINITY;
 
     if (compMesh) {
@@ -288,10 +276,7 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
 
     this->F = &F;
 
-    cout << "building simplex map" << endl;
     buildSimplexMap();
-    cout << "building jac" << endl;
-    cout << "done building jac" << endl;
 
     this->boundaryMask = &boundaryMask;
 
@@ -299,14 +284,9 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
 
     this->Ih = new Eigen::VectorXd(F.rows());
 
-    // jacCoefs = new vector<vector<double*>*>(Xp.size());
-    // jacCoefs->reserve(Xp.size());
-
-    cout << "buillding facelist" << endl;
     buildFaceList();
 
     jac = new Eigen::SparseMatrix<double, Eigen::RowMajor>(Xp.size(), Xp.size());
-    // jac = new Eigen::MatrixXd(Xp.size(), Xp.size());
     sparseId = new Eigen::SparseMatrix<double, Eigen::RowMajor>(Xp.size(), Xp.size());
     sparseId->reserve(Eigen::VectorXd::Constant(jac->rows(), 1));
 
@@ -314,42 +294,38 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
         sparseId->insert(i, i) = 1;
     }
 
-    // vector<Eigen::Triplet<double>> tripletList;
-    // for (int i = 0; i < F.rows(); i++) {
-    //     vector<int> pntList;
+    vector<Eigen::Triplet<double>> tripletList;
+    for (int i = 0; i < F.rows(); i++) {
+        vector<int> pntList;
 
-    //     cout << "the point list? " << endl;
-    //     for (int j = 0; j < D+1; j++) {
-    //         pntList.push_back(F(i, j));
-    //     }
-    //     cout << "Finished point list" << endl;
+        for (int j = 0; j < D+1; j++) {
+            pntList.push_back(F(i, j));
+        }
 
-    //     int iter = 0;
-    //     cout << "into the while" << endl;
-    //     while (iter < D+1) {
-    //         int rowStart = pntList.at(0)*D;
-    //         int rowEnd = rowStart+(D-1);
+        int iter = 0;
+        while (iter < D+1) {
+            int rowStart = pntList.at(0)*D;
+            int rowEnd = rowStart+(D-1);
 
-    //         for (int n = 0; n < D+1; n++) {
-    //             int colStart = pntList.at(n)*D;
-    //             int colEnd = colStart+(D-1);
+            for (int n = 0; n < D+1; n++) {
+                int colStart = pntList.at(n)*D;
+                int colEnd = colStart+(D-1);
 
-    //             for (int r = rowStart; r <= rowEnd; r++) {
-    //                 for (int c= colStart; c <= colEnd; c++) {
-    //                     tripletList.push_back(Eigen::Triplet<double>(r, c, 1));
-    //                 }
-    //             }
-    //         }
+                for (int r = rowStart; r <= rowEnd; r++) {
+                    for (int c= colStart; c <= colEnd; c++) {
+                        tripletList.push_back(Eigen::Triplet<double>(r, c, 1));
+                    }
+                }
+            }
 
-    //         // Rotate the vector
-    //         iter++;
-    //         rotate(pntList.begin(), pntList.begin()+1, pntList.end());
-    //     }
-    //     cout << "out of the while" << endl;
-    // }
-    // // cout << "Setting triplets size = " << tripletList.size() << endl;
-    // jac->setFromTriplets(tripletList.begin(), tripletList.end());
-    // jac->makeCompressed();
+            // Rotate the vector
+            iter++;
+            rotate(pntList.begin(), pntList.begin()+1, pntList.end());
+        }
+    }
+    // cout << "Setting triplets size = " << tripletList.size() << endl;
+    jac->setFromTriplets(tripletList.begin(), tripletList.end());
+    jac->makeCompressed();
 
     // Lazy creation of the coefficient vector
     // Eigen::MatrixXd jacDense(*jac);
@@ -1133,7 +1109,7 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
     Eigen::Vector<double, D> pnt;
 
     const int * ROWPTR = jac->outerIndexPtr();
-    // const int * COLUMN = jac->innerIndexPtr();
+    const int * COLUMN = jac->innerIndexPtr();
     double * VALUE = jac->valuePtr();
 
     for (auto sId = simplexIds.begin(); sId != simplexIds.end(); ++sId) {
@@ -1182,19 +1158,37 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
             xPurt(D*off+i) = xLoc(D*off+i);
         }
 
+        vector<int> sortedPntIds(D+1);
+        // cout << "D = " << D << endl;
+        // cout << "on creation size = " << sortedPntIds.size() << endl;
+        vector<int> relativePntIds(D+1);
+
+        for (int r = 0; r < D+1; r++) {
+            sortedPntIds.at(r) = ((*F)(*sId,r));
+            relativePntIds.at(r) = r;
+        }
+        // cout << "after fill size" << sortedPntIds.size() << endl;
+        // cout << "pre sorted pnts" << endl;
+        // for (int m = 0; m < sortedPntIds.size(); m++) {
+        //     cout << sortedPntIds.at(m) << " "; 
+        // }
+        // cout << endl;
+
+        pairsort(sortedPntIds, relativePntIds, D+1);
+
         // cout << "IN loop" << endl;
         for (int i = 0; i < D; i++) {
-            vector<int> sortedPntIds(D+1);
-            vector<int> relativePntIds(D+1);
+            // vector<int> sortedPntIds(D+1);
+            // vector<int> relativePntIds(D+1);
 
-            for (int r = 0; r < D+1; r++) {
-                sortedPntIds.push_back((*F)(*sId,r));
-                relativePntIds.push_back(r);
-            }
+            // for (int r = 0; r < D+1; r++) {
+            //     sortedPntIds.push_back((*F)(*sId,r));
+            //     relativePntIds.push_back(r);
+            // }
 
-            pairsort(sortedPntIds, relativePntIds, D+1);
+            // pairsort(sortedPntIds, relativePntIds, D+1);
 
-            for (int r = 0; r < D+1; r++) {
+            // for (int r = 0; r < D+1; r++) {
                 // NOTE: this may be wrong
                 // for (int c = 0; c < D; c++) {
                 //     // assert((*F)(*sId,off)*D+i < jac->rows());
@@ -1203,17 +1197,46 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
 
                 //     // (*jac)((*F)(*sId,off)*D+i, (*F)(*sId,r)*D+c) += derivs(i, r*D+c);
 
-                //     // jac->coeffRef((*F)(*sId,off)*D+i, (*F)(*sId,r)*D+c) += derivs(i, r*D+c);
-                //     jac->coeffRef((*F)(*sId,off)*D+i, (*F)(*sId,relativePntIds.at(r))*D+c) += derivs(i, relativePntIds.at(r)*D+c);
+                //     jac->coeffRef((*F)(*sId,off)*D+i, (*F)(*sId,r)*D+c) += derivs(i, r*D+c);
+                //     // jac->coeffRef((*F)(*sId,off)*D+i, (*F)(*sId,relativePntIds.at(r))*D+c) += derivs(i, relativePntIds.at(r)*D+c);
                 // }
                 // cout << "Need opt here" << endl;
                 // assert(false);
-                int colo = 0;
-                for (int o = ROWPTR[(*F)(*sId,off)*D+i]; o < ROWPTR[(*F)(*sId,off)*D+i+1]; o++) {
-                    VALUE[o] += derivs(i, relativePntIds.at(r)*D+colo);
-                    colo++;
+                // int colo = 0;
+                // for (int o = ROWPTR[(*F)(*sId,off)*D+i]; o < ROWPTR[(*F)(*sId,off)*D+i+1]; o++) {
+                //     cout << "accessing derivRow = " << relativePntIds.at(r)*D+colo << endl;
+                //     cout << "colo = " << colo << endl;;
+                //     VALUE[o] += derivs(i, relativePntIds.at(r)*D+colo);
+                //     colo = (colo + 1) %;
+                // }
+            // }
+            int colo = 0;
+            int r = 0;
+            // cout << "starting deriv " << endl;
+            // cout << "sortedPntIds = " << endl;
+            // for (int m = 0; m < sortedPntIds.size(); m++) {
+            //     cout << sortedPntIds.at(m) << " "; 
+            // }
+            // cout << endl;
+            for (int o = ROWPTR[(*F)(*sId,off)*D+i]; o < ROWPTR[(*F)(*sId,off)*D+i+1]; o++) {
+                // cout << "COLUMN[o] / D = " << int(COLUMN[o] / D) + 1 << endl;
+                if (int(COLUMN[o] / D) != sortedPntIds.at(r)) {
+                    continue;
+                }
+                // cout << "accessing derivRow = " << relativePntIds.at(r)*D+colo << endl;
+                // cout << "colo = " << colo << endl;;
+                // cout << "pnt whose column we are accessing = " << COLUMN[o] << endl;
+                // cout << "r = " << r << endl;
+                VALUE[o] += derivs(i, relativePntIds.at(r)*D+colo);
+                colo = (colo + 1) % (D);
+                if (colo == 0)
+                    r++;
+
+                if (r > D) {
+                    break;
                 }
             }
+            // assert(false);
         }
         // cout << "FIN IN loop" << endl;
     }
@@ -1243,9 +1266,9 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
     // cout << "building euler jac" << endl;
     if (!stepTaken) {
         buildEulerJac(dt, xn, grad);
-        stepTaken = true;
+        // stepTaken = true;
     }
-    cg.compute(*jac);
+    // cg.compute(*jac);
     // cout << "grad norm input = " << grad.norm() << endl;
 
     // cout << "jac norm " << jac->norm() << endl;
@@ -1262,7 +1285,7 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
     // Update the grad with the current val
     Ih = eulerStep(xn, grad);
     
-    Eigen::VectorXd guess(grad);
+    Eigen::VectorXd guess(-(dt/tau)*grad);
 
     grad *= (dt / tau);
     grad += (xnp1 - xn);
@@ -1286,12 +1309,12 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
         // cout << "Norm dx = " << dx.norm() << endl;
 
         // cout << "computing" << endl;
-        // cg.compute(*jac);
+        cg.compute(*jac);
         // cg.compute(jac->sparseView());
         // cout << "finsihed computing" << endl;
         // cout << "solvewguess" << endl;
-        dx = cg.solve(-grad);
-        // dx = cg.solveWithGuess(-grad, -(dt/tau)*grad);
+        // dx = cg.solve(-grad);
+        dx = cg.solveWithGuess(-grad, guess);
         // cout << "finished solvewguess" << endl;
         // cout << "size of dx " << dx.norm() << endl;
         xnp1 += dx;

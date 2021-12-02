@@ -11,6 +11,25 @@ import chart_studio.plotly as py
 import plotly.graph_objs as go
 
 import matplotlib.cm as cm
+import glob
+
+if mode == -1:
+    files = glob.glob('./Experiments/InputFiles/*')
+
+    for file in files:
+        with open(file, 'r+') as f:
+            lines = [st.strip() for st in f.readlines()]
+
+            if lines[-1] == '':
+                lines.pop(-1)
+            
+            lines.insert(3, '1000')
+
+            f.truncate(0)
+
+            for line in lines:
+                f.write('{0}\n'.format(line))
+            
 
 if mode == 0:
 
