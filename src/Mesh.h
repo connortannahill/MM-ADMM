@@ -35,10 +35,13 @@ public:
     void FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd &grad);
 //     void FSub(double dt, int sId, Eigen::VectorXd &xk, Eigen::VectorXd &xkp1, Eigen::VectorXd &grad, Eigen::Vector<double, D*(D+1)> &F);
     void buildEulerJac(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad);
-    double backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad);
+    double backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad, double tol);
     Eigen::SparseMatrix<double, Eigen::RowMajor> *jac;
     // Eigen::MatrixXd *jac;
     Eigen::SparseMatrix<double, Eigen::RowMajor> *sparseId;
+    Eigen::VectorXd *dx;
+    Eigen::VectorXd *xn;
+    Eigen::BiCGSTAB<Eigen::SparseMatrix<double> > *cg;
     // vector<vector<double*>*> *jacCoefs;
     // Eigen::MatrixXd *jacPrev;
     void setUp();

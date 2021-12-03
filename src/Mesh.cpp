@@ -261,6 +261,10 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
             MonitorFunction<D> *Mon, int numThreads, double rho, double tau) {
     
     grad = new Eigen::VectorXd(Xp.size());
+    dx = new Eigen::VectorXd(Xp.size());
+    xn = new Eigen::VectorXd(Xp.size());
+    dx->setZero();
+    cg = new Eigen::BiCGSTAB<Eigen::SparseMatrix<double>>();
     Ihcur = -INFINITY;
 
     if (compMesh) {
@@ -1093,11 +1097,6 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
         simplexIds.insert(*sId);
     }
 
-    // assert(simplexIds.size() > 0);
-
-    // vector<int> sSorted(simplexIds.begin(), simplexIds.end());
-    // sort(sSorted.begin(), sSorted.end());
-
     // Evaluate FSub and place result into matrix for this point
     Eigen::Vector<double, D*(D+1)> xiLoc;
     Eigen::Vector<double, D*(D+1)> xLoc;
@@ -1117,18 +1116,15 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
         int off;
         if (compMesh) {
             for (int n = 0; n < D+1; n++) {
-                // assert((*F)(*sId, n) < Vc->rows());
                 pnt = (*Vc)((*F)(*sId, n), Eigen::all);
                 
                 for (int l = 0; l < D; l++) {
-                    // assert(n*D+l < D*(D+1));
                     xiLoc(n*D+l) = pnt(l);
                 }
             }
         }
 
         for (int n = 0; n < D+1; n++) {
-            assert((*F)(*sId, n) < Vp->rows());
             pnt = (*Vp)((*F)(*sId, n), Eigen::all);
 
             if ((*F)(*sId,n) == pntId) {
@@ -1159,82 +1155,29 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
         }
 
         vector<int> sortedPntIds(D+1);
-        // cout << "D = " << D << endl;
-        // cout << "on creation size = " << sortedPntIds.size() << endl;
         vector<int> relativePntIds(D+1);
 
         for (int r = 0; r < D+1; r++) {
             sortedPntIds.at(r) = ((*F)(*sId,r));
             relativePntIds.at(r) = r;
         }
-        // cout << "after fill size" << sortedPntIds.size() << endl;
-        // cout << "pre sorted pnts" << endl;
-        // for (int m = 0; m < sortedPntIds.size(); m++) {
-        //     cout << sortedPntIds.at(m) << " "; 
-        // }
-        // cout << endl;
 
         pairsort(sortedPntIds, relativePntIds, D+1);
 
-        // cout << "IN loop" << endl;
         for (int i = 0; i < D; i++) {
-            // vector<int> sortedPntIds(D+1);
-            // vector<int> relativePntIds(D+1);
-
-            // for (int r = 0; r < D+1; r++) {
-            //     sortedPntIds.push_back((*F)(*sId,r));
-            //     relativePntIds.push_back(r);
-            // }
-
-            // pairsort(sortedPntIds, relativePntIds, D+1);
-
-            // for (int r = 0; r < D+1; r++) {
-                // NOTE: this may be wrong
-                // for (int c = 0; c < D; c++) {
-                //     // assert((*F)(*sId,off)*D+i < jac->rows());
-                //     // assert((*F)(*sId,r)*D+c < jac->cols());
-                //     // assert(r*D+c < D*(D+1));
-
-                //     // (*jac)((*F)(*sId,off)*D+i, (*F)(*sId,r)*D+c) += derivs(i, r*D+c);
-
-                //     jac->coeffRef((*F)(*sId,off)*D+i, (*F)(*sId,r)*D+c) += derivs(i, r*D+c);
-                //     // jac->coeffRef((*F)(*sId,off)*D+i, (*F)(*sId,relativePntIds.at(r))*D+c) += derivs(i, relativePntIds.at(r)*D+c);
-                // }
-                // cout << "Need opt here" << endl;
-                // assert(false);
-                // int colo = 0;
-                // for (int o = ROWPTR[(*F)(*sId,off)*D+i]; o < ROWPTR[(*F)(*sId,off)*D+i+1]; o++) {
-                //     cout << "accessing derivRow = " << relativePntIds.at(r)*D+colo << endl;
-                //     cout << "colo = " << colo << endl;;
-                //     VALUE[o] += derivs(i, relativePntIds.at(r)*D+colo);
-                //     colo = (colo + 1) %;
-                // }
-            // }
             int colo = 0;
             int r = 0;
-            // cout << "starting deriv " << endl;
-            // cout << "sortedPntIds = " << endl;
-            // for (int m = 0; m < sortedPntIds.size(); m++) {
-            //     cout << sortedPntIds.at(m) << " "; 
-            // }
-            // cout << endl;
             for (int o = ROWPTR[(*F)(*sId,off)*D+i]; o < ROWPTR[(*F)(*sId,off)*D+i+1]; o++) {
-                // cout << "COLUMN[o] / D = " << int(COLUMN[o] / D) + 1 << endl;
-                if (int(COLUMN[o] / D) != sortedPntIds.at(r)) {
+                if (int(COLUMN[o] / D) != sortedPntIds.at(r))
                     continue;
-                }
-                // cout << "accessing derivRow = " << relativePntIds.at(r)*D+colo << endl;
-                // cout << "colo = " << colo << endl;;
-                // cout << "pnt whose column we are accessing = " << COLUMN[o] << endl;
-                // cout << "r = " << r << endl;
+
                 VALUE[o] += derivs(i, relativePntIds.at(r)*D+colo);
                 colo = (colo + 1) % (D);
                 if (colo == 0)
                     r++;
 
-                if (r > D) {
+                if (r > D)
                     break;
-                }
             }
             // assert(false);
         }
@@ -1249,98 +1192,57 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
 }
 
 template <int D>
-double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad) {
-    // cout << "In backwards Euler" << endl;
+double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad, double tol) {
 
-    // *xGlob = x;
-    
-    // cout << "x norm = " << x.norm() << endl;
-    // cout << "grad norm input = " << grad.norm() << endl;
-
-    Eigen::VectorXd xn(x);
-
-    // Eigen::ConjugateGradient<Eigen::SparseMatrix<double>, Eigen::Lower|Eigen::Upper> cg;
-    Eigen::BiCGSTAB<Eigen::SparseMatrix<double> > cg;
+    *xn = x;
 
     // Build the Jacobian for this step
-    // cout << "building euler jac" << endl;
     if (!stepTaken) {
-        buildEulerJac(dt, xn, grad);
-        // stepTaken = true;
+        buildEulerJac(dt, *xn, grad);
+        cg->compute(*jac);
+        stepTaken = true;
     }
-    // cg.compute(*jac);
-    // cout << "grad norm input = " << grad.norm() << endl;
 
-    // cout << "jac norm " << jac->norm() << endl;
-
-    // assert(false);
-    // cout << "FINISHED building euler jac" << endl;
-
-    Eigen::VectorXd xnp1(x);
-
+    // Eigen::VectorXd xnp1(x);
 
     // Compute the gradient
     double Ih;
 
     // Update the grad with the current val
-    Ih = eulerStep(xn, grad);
+    Ih = eulerStep(*xn, grad);
     
-    Eigen::VectorXd guess(-(dt/tau)*grad);
-
     grad *= (dt / tau);
-    grad += (xnp1 - xn);
+    grad += (x - *xn);
     
-
     // Now use Newton's method for the step
-    Eigen::VectorXd dx(xn);
+    // *dx = xn;
 
     const int MAX_ITERS = 1000;
-    const double tol = 1e-10;
     int nIter = 0;
 
     while (nIter < MAX_ITERS) {
-        cout << "||grad|| = " << grad.lpNorm<1>() << endl;
+        // cout << "||grad|| = " << grad.lpNorm<1>() << endl;
         if (nIter > 0 && grad.lpNorm<1>() < tol)
             break;
-        
-        // cout << "Norm grad = " << grad.norm() << endl;
-        
-        // dx = (jac->partialPivLu()).solve(-grad);
-        // cout << "Norm dx = " << dx.norm() << endl;
 
-        // cout << "computing" << endl;
-        cg.compute(*jac);
-        // cg.compute(jac->sparseView());
-        // cout << "finsihed computing" << endl;
-        // cout << "solvewguess" << endl;
-        // dx = cg.solve(-grad);
-        dx = cg.solveWithGuess(-grad, guess);
-        // cout << "finished solvewguess" << endl;
-        // cout << "size of dx " << dx.norm() << endl;
-        xnp1 += dx;
+        *dx = cg->solveWithGuess(-grad, *dx);
+
+        x += *dx;
 
         // Update for next step
-        // cout << "building euler" << endl;
         // buildEulerJac(dt, xnp1, grad);
-        // cout << "finished building euler" << endl;
-        // cout << "jac diff = " << (*jac - *jacPrev).norm() << endl;
+        // cg.compute(*jac);
 
-        Ih = eulerStep(xnp1, grad);
-        // cout << "ih in iter = " << Ih << endl;
+        Ih = eulerStep(x, grad);
         grad *= (dt / tau);
-        grad += (xnp1 - xn);
+        grad += (x - *xn);
 
         nIter++;
-        // assert(false);
     }
-    cout << "Solved BE in " << nIter << " iters" << endl;
-    // cout << "pntDiff = " << (xnp1 - xn).norm() << endl;
+    // cout << "Solved BE in " << nIter << " iters" << endl;
 
-    x = xnp1;
-    // grad.setZero();
+    // x = xnp1;
 
-    // cout << "FINISHED In backwards Euler" << endl;
-    // cout << "took " << nIter << " iterations " << endl;
     return Ih;
 }
 
@@ -1367,12 +1269,15 @@ Mesh<D>::~Mesh() {
     delete hessInvs;
     delete gradCurrs;
     delete grad;
+    delete dx;
 
     delete pntNeighbours;
 
     delete simplexConnects;
 
     delete sparseId;
+    delete cg;
+    delete xn;
 }
 
 // explicit instantiation for each dimension of interest

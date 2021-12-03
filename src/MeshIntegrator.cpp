@@ -62,7 +62,7 @@ double MeshIntegrator<D>::backwardsEulerStep(double dt, double tol) {
     // cout << "IN BACKWARDS EULER STEP ENERGY INIT = " << a->computeEnergy(*x) << endl;
     Eigen::VectorXd grad(x->size());
     grad.setZero();
-    double Ih = a->backwardsEulerStep(dt, *x, grad);
+    double Ih = a->backwardsEulerStep(dt, *x, grad, tol);
 
     // cout << "IN BACKWARDS EULER STEP ENERGY FIN = " << a->computeEnergy(*x) << endl;
     return Ih;
