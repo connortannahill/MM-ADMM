@@ -954,7 +954,7 @@ void Mesh<D>::setConstant(Eigen::SparseMatrix<double, Eigen::RowMajor> *jac, dou
     // const int * ROWPTR = jac->outerIndexPtr();
     // const int * COLUMN = jac->innerIndexPtr();
     double * VALUE = jac->valuePtr();
-    for (int i = 0; i < jac->nonZeros(); i++) {
+    for (int i = 0; i < jac->outerSize(); i++) {
         VALUE[i] = a;
     }
 
@@ -962,13 +962,6 @@ void Mesh<D>::setConstant(Eigen::SparseMatrix<double, Eigen::RowMajor> *jac, dou
 
 template <int D>
 void Mesh<D>::buildEulerJac(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad) {
-    // const double h = 10.0*sqrt(std::numeric_limits<double>::epsilon());
-    // jac->setZero();
-    // for (int i = 0; i < jac->rows(); i++) {
-    //     for (int j = 0; j < jac->cols(); j++) {
-    //         (*jac)(i, j) = 0.0;
-    //     }
-    // }
     this->setConstant(jac, 0.0);
 
     for (int i = 0; i < x.size()/D; i++) {
@@ -976,61 +969,8 @@ void Mesh<D>::buildEulerJac(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad
     }
 
     (*jac) *= (dt / tau);
-    // cout << "jackCoefs size = " << jacCoefs->size() << endl;
-
-    // Eigen::SparseMatrix<double>::InnerIterator it(*jac, 0)
-
-    // Eigen::MatrixXd j1(*jac);
-    // cout << j1 << endl;
-    // cout << "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP" << endl;
 
     *jac += *sparseId;
-
-    // assert(jac->rows() == jac->cols());
-
-    // for (int i = 0; i < jac->rows(); i++) {
-    //     // jac->coeffRef(i, i) += 1;
-    //     (*jac)(i, i) += 1;
-    // }
-    
-
-    // const int * ROWPTR = jac->outerIndexPtr();
-    // const int * COLUMN = jac->innerIndexPtr();
-    // double * VALUE = jac->valuePtr();
-
-    // cout << "printing rowprt" << endl;
-    // for (int i = 0; i < jac->innerSize(); i++) {
-    //     cout << VALUE[i] << ", ";
-    // }
-    // cout << endl;
-    // for (int i = 0; i < jac->outerSize(); i++) {
-    //     cout << COLUMN[i] << ", ";
-    // }
-    // cout << endl;
-    // for (int i = 0; i < jac->outerSize(); i++) {
-    //     cout << ROWPTR[i] << ", ";
-    // }
-    // cout << endl;
-
-    // // cout << (*jac) << endl;
-
-    // // cout << "inc" << endl;
-    // // for (int i = 0; i < jac->outerSize()-1; i++) {
-    // //     int diagIdx = ROWPTR[i] + max(i - COLUMN[ROWPTR[i]], 0);
-    // //     cout << "Modifying val at " << diagIdx << " currently at " << VALUE[diagIdx] << endl;
-    // //     VALUE[diagIdx] += 1;
-
-    // //     // assert(i == COLUMN[ROWPTR[i]]);
-    // // }
-    // // cout << "end inc" << endl;
-
-    // cout << "building j2" << endl;
-    // Eigen::MatrixXd j2(*jac);
-    // cout << j2 << endl;
-    // cout << "END building j2" << endl;
-    // assert(false);
-
-    // cout << *jac << endl;
 }
 
 // template <int D>
@@ -1132,7 +1072,6 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
             }
             
             for (int l = 0; l < D; l++) {
-                // assert(n*D+l < D*(D+1));
                 xLoc(n*D+l) = pnt(l);
             }
         }
@@ -1143,7 +1082,6 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
         // Compute purturbation
         xPurt = xLoc;
         for (int i = 0; i < D; i++) {
-            // assert(D*off+i < D*(D+1));
             xPurt(D*off+i) += h;
 
             // Compute gradient at purturbed point
@@ -1172,6 +1110,7 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
                     continue;
 
                 VALUE[o] += derivs(i, relativePntIds.at(r)*D+colo);
+
                 colo = (colo + 1) % (D);
                 if (colo == 0)
                     r++;
@@ -1179,16 +1118,8 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
                 if (r > D)
                     break;
             }
-            // assert(false);
         }
-        // cout << "FIN IN loop" << endl;
     }
-
-    // for (int i = 0; i < D; i++) {
-    //     (*jac)(D*pntId+i, Eigen::all) *= (dt / tau);
-    //     (*jac)(D*pntId+i, D*pntId+i) += 1.0;
-    //     cout << (*jac)(D*pntId+i, Eigen::all) << endl;
-    // }
 }
 
 template <int D>
@@ -1196,23 +1127,27 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
 
     *xn = x;
 
+    // Compute initial guess
+    double Ih;
+    Ih = eulerStep(x, grad);
+    x -= (dt/tau)*grad;
+
+
     // Build the Jacobian for this step
-    if (!stepTaken) {
-        buildEulerJac(dt, *xn, grad);
-        cg->compute(*jac);
-        stepTaken = true;
-    }
+    // cout << "||jac|| b4 = " << jac->norm() << endl;
+    // buildEulerJac(dt, x, grad);
+    // cout << "||jac|| af = " << jac->norm() << endl;
+    // cg->compute(*jac);
 
     // Eigen::VectorXd xnp1(x);
 
     // Compute the gradient
-    double Ih;
 
     // Update the grad with the current val
-    Ih = eulerStep(*xn, grad);
+    // Ih = eulerStep(x, grad);
     
-    grad *= (dt / tau);
-    grad += (x - *xn);
+    // grad *= (dt / tau);
+    // grad += (x - *xn);
     
     // Now use Newton's method for the step
     // *dx = xn;
@@ -1220,28 +1155,58 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
     const int MAX_ITERS = 1000;
     int nIter = 0;
 
-    while (nIter < MAX_ITERS) {
-        // cout << "||grad|| = " << grad.lpNorm<1>() << endl;
-        if (nIter > 0 && grad.lpNorm<1>() < tol)
-            break;
+    // double gradOneN = grad.lpNorm<1>();
+    double gradOneN = 0;
 
-        *dx = cg->solveWithGuess(-grad, *dx);
+    do {
 
-        x += *dx;
-
-        // Update for next step
-        // buildEulerJac(dt, xnp1, grad);
-        // cg.compute(*jac);
-
+        // Form F (= 0 the function to minimize)
         Ih = eulerStep(x, grad);
+
         grad *= (dt / tau);
         grad += (x - *xn);
 
-        nIter++;
-    }
-    // cout << "Solved BE in " << nIter << " iters" << endl;
+        gradOneN = grad.lpNorm<1>();
 
-    // x = xnp1;
+        cout << "||grad|| = " << gradOneN << endl;
+
+        if (gradOneN < tol) {
+            break;
+        }
+
+        // Perform Newton step solving J(f)dx = -F
+        buildEulerJac(dt, x, grad);
+        cg->compute(*jac);
+        *dx = cg->solve(-grad);//WithGuess(-grad, *xn - (dt/tau)*grad);
+
+        x += *dx;
+
+        nIter++;
+    } while (nIter < MAX_ITERS);
+
+    // while (nIter < MAX_ITERS) {
+    //     cout << "||grad|| = " << grad.lpNorm<1>() << endl;
+    //     if (nIter > 0 && grad.lpNorm<1>() < tol)
+    //         break;
+
+    //     *dx = cg->solveWithGuess(-grad, *dx);
+    //     cout << "||dx|| = " << dx->lpNorm<1>() << endl;
+
+    //     x += *dx;
+
+    //     // Update for next step
+    //     // buildEulerJac(dt, x, grad);
+    //     // cg->compute(*jac);
+
+    //     Ih = eulerStep(x, grad);
+    //     grad *= (dt / tau);
+    //     grad += (x - *xn);
+
+    //     nIter++;
+    //     gradOneN = grad.lpNorm<1>();
+    // }
+
+    cout << "Newton in " << nIter << " iters" << endl;
 
     return Ih;
 }
