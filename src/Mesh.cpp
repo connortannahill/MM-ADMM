@@ -1,12 +1,14 @@
 #include "Mesh.h"
 #include <Eigen/Dense>
 #include <unordered_map>
+#include "../lib/json/single_include/nlohmann/json.hpp"
 #include "MonitorFunction.h"
 #include "HuangFunctional.h"
 #include <stdlib.h>
 #include <string>
 #include <map>
 #include <iostream>
+// #include "../lib/LASolver/SparseItObj.h"
 // #include <LBFGS.h>
 #include <fstream>
 #include <unistd.h>
@@ -18,6 +20,7 @@
 #endif
 
 using namespace std;
+using namespace nlohmann;
 
 void segmentDS(Eigen::VectorXd &x, int xOff, Eigen::Vector2d &z, int num) {
     for (int i = 0; i < num; i++) {
@@ -47,7 +50,6 @@ void Mesh<D>::buildSimplexMap() {
     // Construct face connections vector
     simplexConnects = new vector<set<int>>(Vp->rows());
     for (int i = 0; i < F->rows(); i++) {
-        // vector<int> pnts;
         for (int j = 0; j < D+1; j++) {
             simplexConnects->at((*F)(i, j)).insert(i);
         }
@@ -258,7 +260,8 @@ void Mesh<D>::reOrientElements(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F) {
 template <int D>
 void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp, 
             Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
-            MonitorFunction<D> *Mon, int numThreads, double rho, double tau) {
+            MonitorFunction<D> *Mon, int numThreads, double rho,
+            double w, double tau) {
     
     grad = new Eigen::VectorXd(Xp.size());
     dx = new Eigen::VectorXd(Xp.size());
@@ -331,49 +334,9 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
     jac->setFromTriplets(tripletList.begin(), tripletList.end());
     jac->makeCompressed();
 
-    // Lazy creation of the coefficient vector
-    // Eigen::MatrixXd jacDense(*jac);
-
-    // for (int r = 0; r < jacDense.rows(); r++) {
-    //     vector<double*> *rowHold = new vector<double*>();
-    //     for (int c = 0; c < jacDense.cols(); c++) {
-    //         if (jacDense(r, c) != 0) {
-    //             rowHold->push_back(&jac->coeffRef(r, c));
-    //         }
-    //     }
-    //     // cout << "r = " << r << endl;
-    //     assert(rowHold->size() != 0);
-
-    //     // cout << "r = " << r << endl;
-    //     // cout << "rows = " << jacDense.rows() << endl;
-    //     // cout << "size = " << jacCoefs->size() << endl;
-    //     // for (int i = 0; i < rowHold->size(); i++)
-    //         // cout << *rowHold->at(i) << ", " << endl;
-    //     // cout << endl;
-    //     jacCoefs->at(r) = rowHold;
-    // }
-
-    // *(jacCoefs->at(0))->at(0) += 1000;
-
-    // cout << jacDense << endl;
-    // assert(false);
-    // cout << "FINISHED Setting triplets" << endl;
-    // jac->resize(Xp.size(), Xp.size());
-
-    // // Compute the number of non-zero entries
-    // int nnz = 0;
-    // for (int i = 0; i < pntList->size(); i++) {
-    //     nnz += pntNeighbours->at(i);
-    // }
-
-    // jac->reserve(nnz);
-
-    cout << "FINISHED buillding facelist" << endl;
-
 #ifdef THREADS
     omp_set_num_threads(numThreads);
 #endif
-    cout << "line 291" << endl;
 
     // Create mesh interpolator
     mapEvaluator = new MeshInterpolator<D>();
@@ -389,16 +352,14 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
     // Build the monitor simplex values
     monitorEvals = new Eigen::MatrixXd(Xp.rows(), D*D);
 
-    cout << "line 307" << endl;
     // Build the mass matrix
     Eigen::VectorXd m(Eigen::VectorXd::Constant(nPnts*D, tau));
     this->m = tau;
     buildMassMatrix(m);
 
     buildDMatrix();
-    this->w = sqrt(rho);
+    this->w = 0.5*sqrt(rho);
     buildWMatrix(this->w);
-    cout << "line 316" << endl;
 
     DXpU = new Eigen::VectorXd((*Dmat)*(m));
 
@@ -418,27 +379,26 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
     } else {
         I_wx = new HuangFunctional<D>(*Vp, *(this->F), *DXpU, Mon, this->w, 0.0, 0.0);
     }
-    cout << "FINISHED In meshinit" << endl;
 }
 
 template <int D>
 Mesh<D>::Mesh(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
-            MonitorFunction<D> *Mon, int numThreads, double rho, double tau, int integrationMode) {
+            MonitorFunction<D> *Mon, int numThreads, double rho, double w, double tau, int integrationMode) {
     
     this->compMesh = false;
 
     Eigen::MatrixXd Xc;
-    meshInit(Xc, Xp, F, boundaryMask, Mon, numThreads, rho, tau);
+    meshInit(Xc, Xp, F, boundaryMask, Mon, numThreads, rho, w, tau);
 
 }
 
 template <int D>
 Mesh<D>::Mesh(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
-            MonitorFunction<D> *Mon, int numThreads, double rho, double tau, int integrationMode) {
+            MonitorFunction<D> *Mon, int numThreads, double rho, double w, double tau, int integrationMode) {
     
     compMesh = true;
 
-    meshInit(Xc, Xp, F, boundaryMask, Mon, numThreads, rho, tau);
+    meshInit(Xc, Xp, F, boundaryMask, Mon, numThreads, rho, w, tau);
 }
 
 template <int D>
@@ -532,56 +492,13 @@ double Mesh<D>::eulerStep(Eigen::VectorXd &x, Eigen::VectorXd &grad) {
 template <int D>
 double Mesh<D>::predictX(double dt, double I, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) {
     double dtNew = 0;
-    // if (!stepTaken) {
-    // If the step is not taken we do Euler's method
-    // Eigen::VectorXd grad(D*Vp->rows());
-
-    // Compute the initial guess
-    // cout << "taking euler step" << endl;
     double Ihorig = eulerStep(x, *grad);
-    // cout << "finished taking euler step" << endl;
 
     xBar = x - (dt / tau) * (*grad);
 
-    // Compute energy at the current time level along with the updated gradient
-    // double Ih = eulerStep(xBar, (*grad));
-    // double rate = (Ih - Ihorig)/Ihorig;
-
-    // if (Ih < Ihorig && abs(Ih - Ihorig) < 1e-2) {
-    //     cout << "CHANGING DT" << endl;
-    //     dtNew *= 2;
-    //     return dtNew;
-    // }
-
     dtNew = dt;
-    // while (rate > 0) {
-    //     dtNew /= 2.0;
-    //     cout << "UPDATING DT = " << dtNew << endl;
-    //     xBar = x - (dtNew / tau) * (*grad);
-    //     Ih = eulerStep(xBar, *grad);
-    //     cout << "ih = " << Ih << endl;
-    //     rate = (Ih - Ihorig)/Ihorig;
-    // }
-    // } else {
-    //     // Extrapolated solution, shrink time step if it is too small
-    //     xBar = 2.0*x - xPrev;
-    //     dtNew = dt;
-
-    //     // double minStep = 1e-10;
-
-    //     // cout << "I = " << I << endl;
-    //     // cout << "predicted energy = " << computeEnergy(xBar) << endl;
-    //     // cout << "diff x and xPrev = " << (x - xPrev).norm() << endl;
-
-    //     // while (computeEnergy(xBar) > I && dtNew > minStep) {
-    //     //     cout << "hi" << endl;
-    //     //     dtNew /= 2.0;
-    //     //     xBar = x + dtNew*(x - xPrev)/dt;
-    //     // }
-    // }
 
     return Ihorig;
-    // return dtNew;
 }
 
 template <int D>
@@ -667,7 +584,7 @@ void Mesh<D>::buildDMatrix() {
  * BFGS quasi-Newton's method over a single simplex
 */
 template <int D>
-inline double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
+double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol, bool firstStep) {
     double h = 2.0*sqrt(std::numeric_limits<double>::epsilon());
 
@@ -793,7 +710,7 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
 }
 
 template <int D>
-double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen::VectorXd &z) {
+double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen::VectorXd &z, double tol) {
     // Copy DXpU address to local pointer
     *this->DXpU = DXpU;
 
@@ -830,7 +747,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
 
-        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 100, 1e-6, hessComputed);
+        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 100, tol/10.0, hessComputed);
 
         for (int l = 0; l < D*(D+1); l++) {
             z(D*(D+1)*i+l) = z_i(l);
@@ -1132,34 +1049,13 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
     Ih = eulerStep(x, grad);
     x -= (dt/tau)*grad;
 
-
-    // Build the Jacobian for this step
-    // cout << "||jac|| b4 = " << jac->norm() << endl;
-    // buildEulerJac(dt, x, grad);
-    // cout << "||jac|| af = " << jac->norm() << endl;
-    // cg->compute(*jac);
-
-    // Eigen::VectorXd xnp1(x);
-
-    // Compute the gradient
-
-    // Update the grad with the current val
-    // Ih = eulerStep(x, grad);
-    
-    // grad *= (dt / tau);
-    // grad += (x - *xn);
-    
-    // Now use Newton's method for the step
-    // *dx = xn;
-
     const int MAX_ITERS = 1000;
     int nIter = 0;
 
-    // double gradOneN = grad.lpNorm<1>();
     double gradOneN = 0;
+    double gradOneNPrev = INFINITY;
 
     do {
-
         // Form F (= 0 the function to minimize)
         Ih = eulerStep(x, grad);
 
@@ -1175,36 +1071,18 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
         }
 
         // Perform Newton step solving J(f)dx = -F
-        buildEulerJac(dt, x, grad);
-        cg->compute(*jac);
-        *dx = cg->solve(-grad);//WithGuess(-grad, *xn - (dt/tau)*grad);
+        if (nIter == 0 || abs(gradOneN - gradOneNPrev)/(gradOneN) < 0.1) {
+            buildEulerJac(dt, x, grad);
+            cg->compute(*jac);
+        }
 
+        *dx = cg->solve(-grad);
         x += *dx;
 
         nIter++;
+
+        gradOneNPrev = gradOneN;
     } while (nIter < MAX_ITERS);
-
-    // while (nIter < MAX_ITERS) {
-    //     cout << "||grad|| = " << grad.lpNorm<1>() << endl;
-    //     if (nIter > 0 && grad.lpNorm<1>() < tol)
-    //         break;
-
-    //     *dx = cg->solveWithGuess(-grad, *dx);
-    //     cout << "||dx|| = " << dx->lpNorm<1>() << endl;
-
-    //     x += *dx;
-
-    //     // Update for next step
-    //     // buildEulerJac(dt, x, grad);
-    //     // cg->compute(*jac);
-
-    //     Ih = eulerStep(x, grad);
-    //     grad *= (dt / tau);
-    //     grad += (x - *xn);
-
-    //     nIter++;
-    //     gradOneN = grad.lpNorm<1>();
-    // }
 
     cout << "Newton in " << nIter << " iters" << endl;
 

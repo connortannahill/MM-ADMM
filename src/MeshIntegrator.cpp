@@ -68,6 +68,11 @@ double MeshIntegrator<D>::backwardsEulerStep(double dt, double tol) {
     return Ih;
 }
 
+template <int D>
+double MeshIntegrator<D>::getEnergy() {
+    return a->computeEnergy(*x);
+}
+
 /**
  * Assumes a constant mass matrix for now
 */
@@ -94,9 +99,9 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     // Make prediction for next value of x (sorta) and the next time step
     this->dtPrev = dt;
     double Ih;
-    // dt = (this->a)->predictX(dt, energyCur, *this->xPrev, *this->x, *this->xBar);
     cout << "predicting X" << endl;
     Ih = (this->a)->predictX(dt, energyCur, *this->xPrev, *this->x, *this->xBar);
+
     // Get xBar, the predicted (explicit) location of the nodes independent of constraints
     double dtsq = dt*dt;
     cout << "finsihed predicting X" << endl;
@@ -111,17 +116,13 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         this->cg->compute(*t);
     }
 
-    // if (stepsTaken % 10 == 0) {
-    //     a->hessComputed = false;
-    // }
-
     int i;
     double IhCur = 0;
     double IhPrev = 0;
     for (i = 0; i < nIters; i++) {
         // Update z_{n+1} using the assembly prox algorithm
         *DXpU = (*(a->Dmat))*(*x) + (*uBar);
-        IhCur = a->prox(dt, *x, *DXpU, *z);
+        IhCur = a->prox(dt, *x, *DXpU, *z, tol);
         a->stepTaken = true;
 
         // Update the Lagrange multiplier uBar^{n+1}
@@ -130,17 +131,12 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         // Update the solution x^{n+1}
         *vec =  ((a->m) * (*xBar)) + dtsq*(( *WD_T * ((a->w) * (*z - *uBar))));
         *x = this->cg->solveWithGuess(*vec, *xBar);
-        // *x = this->cgSol->solve(*vec);
 
         if (((*a->Dmat) * *this->x - *z).norm() < tol) {
             break;
         }
 
-        // if (i >= 1 && abs((IhPrev - IhCur)/(IhPrev)) < tol) {
-        //     break;
-        // }
         IhPrev = IhCur;
-
     }
     cout << "ADMM in " << i << " iters" << endl;
     cout << "primal res = " << ((*a->Dmat) * *this->x - *z).norm() << endl;

@@ -156,7 +156,7 @@ elif mode == 4:
 
         triang = mtri.Triangulation(x[:,0], x[:,1], triangles=triangles)
 
-        plt.triplot(triang, color='r', linewidth=0.5)
+        plt.triplot(triang, color='r', linewidth=5)
 
         nums = [int(i) for i in re.findall(r'\d+', xName)]
         i = nums[0]

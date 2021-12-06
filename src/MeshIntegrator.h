@@ -17,6 +17,7 @@ public:
     double step(int nIters, double tol);
     double eulerStep(double tol);
     double backwardsEulerStep(double dt, double tol);
+    double getEnergy();
     void outputX(const char *fname);
     void outputZ(const char *fname);
     void done();
