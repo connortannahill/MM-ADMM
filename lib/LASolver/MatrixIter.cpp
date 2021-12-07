@@ -4,7 +4,6 @@
 #include "ILU_class.h"
 #include "accel_class.h"
 #include "MatrixIter.h"
-#include "../Utils/SimUtilities.h"
 
 using namespace SparseItObj;
 using namespace std;
@@ -255,31 +254,6 @@ void MatrixStruc::pack(void)
   delete [] count;
 
   stage_flag = PACKED;
-}
-
-void MatrixIter::printRHS(int n) {
-  for (int i = 0; i < n; i++) {
-    std::cout << b[i] << std::endl;
-  }
-}
-
-void MatrixIter::printMat(int n) {
-    int row, i, col;
-
-    double **dummy_mat = simutils::new_constant(n, n, 0.0);
-
-    for (row = 0; row < n; row++) {
-        for (i = ia[row]; i < ia[row+1]; i++) {
-            col = ja[i];
-
-            dummy_mat[row][col] = a[i];
-        }
-
-    }
-
-    simutils::printMat(n, n, dummy_mat);
-
-    simutils::free_double(n, n, dummy_mat);
 }
 
 double& MatrixIter::aValue(const int row, // global row number of entry
