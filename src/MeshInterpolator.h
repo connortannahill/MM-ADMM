@@ -31,6 +31,7 @@ public:
     vector<double> *z;
     Eigen::MatrixXd *monGridVals;
     Eigen::MatrixXd *monGridTemp;
+    MonitorFunction<D> *Mon;
     int nx, ny, nz;
     void outputGridMesh();
 

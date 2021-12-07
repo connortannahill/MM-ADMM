@@ -69,13 +69,13 @@ void MeshInterpolator<D>::updateMesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F) {
 
     // It is not uneccisary and expensive to call updateMesh unless
     // the boundary of the domain has changed
-    nx = 2*((int)pow(this->X->size(), 1.0/3.0));
-    ny = 2*((int)pow(this->X->size(), 1.0/3.0));
+    nx = 2*((int)pow(this->X->size(), 1.0/2.0));
+    ny = 2*((int)pow(this->X->size(), 1.0/2.0));
 
     if (D == 2) {
         nz = 1;
     } else if (D == 3) {
-        nz = 2*((int)pow(this->X->size(), 1.0/3.0));
+        nz = 2*((int)pow(this->X->size(), 1.0/2.0));
     }
 
     monGridVals->resize((nx+1)*(ny+1)*(nz+1), D*D);
@@ -197,8 +197,9 @@ void MeshInterpolator<D>::nearestNeighGridMap() {
 
 template <int D>
 void MeshInterpolator<D>::interpolateMonitor(MonitorFunction<D> &Mon) {
+    this->Mon = &Mon;
     // Set up relevant information
-    const int NUM_SMOOTH = 3; // TODO: allow this to be set as a input param
+    const int NUM_SMOOTH = 10; // TODO: allow this to be set as a input param
     Mon.evaluateAtVertices(*X, *F, *monVals);;
     nearestNeighGridMap();
     smoothMonitorGrid(NUM_SMOOTH);
@@ -284,6 +285,7 @@ void MeshInterpolator<D>::outputGridMesh() {
             pnt(0) = x->at(i);
             pnt(1) = y->at(j);
             evalMonitorOnGrid(pnt, mVal);
+            // (*Mon)(pnt, mVal);
             outFile << x->at(i) << ", " << y->at(j) << ", " << mVal.determinant() << endl;
             
         }
@@ -304,6 +306,15 @@ void MeshInterpolator<D>::smoothMonitorGrid(int nIters) {
                     (*monGridVals)(j*(nx+1)+i, Eigen::placeholders::all) += 0.1*(*monGridTemp)(j*(nx+1) + i-1, Eigen::placeholders::all);
                     (*monGridVals)(j*(nx+1)+i, Eigen::placeholders::all) += 0.1*(*monGridTemp)((j+1)*(nx+1) + i, Eigen::placeholders::all);
                     (*monGridVals)(j*(nx+1)+i, Eigen::placeholders::all) += 0.1*(*monGridTemp)((j-1)*(nx+1) + i, Eigen::placeholders::all);;
+
+                    // Eigen::Matrix<double, D, D> a;
+                    // for (int n = 0; n < D; n++) {
+                    //     for (int m = 0; m < D; m++) {
+                    //         a(n, m) = (*monGridVals)(j*(nx+1)+i, n*D + m);
+                    //     }
+                    // }
+
+                    // cout << a.determinant() << endl;
                 }
             }
         } else {
@@ -320,6 +331,7 @@ void MeshInterpolator<D>::smoothMonitorGrid(int nIters) {
             }
         }
     }
+    // assert(false);
 }
 
 template <int D>

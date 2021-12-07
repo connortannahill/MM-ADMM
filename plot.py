@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 import sys, copy
+from scipy.spatial import Delaunay
 mode = int(sys.argv[1])
 
 # import plotly.plotly as py
@@ -10,7 +11,25 @@ mode = int(sys.argv[1])
 # import plotly.graph_objs as go
 
 import matplotlib.cm as cm
-from scipy.spatial import Delaunay
+import glob
+
+if mode == -1:
+    files = glob.glob('./Experiments/InputFiles/*')
+
+    for file in files:
+        with open(file, 'r+') as f:
+            lines = [st.strip() for st in f.readlines()]
+
+            if lines[-1] == '':
+                lines.pop(-1)
+            
+            lines.insert(3, '1000')
+
+            f.truncate(0)
+
+            for line in lines:
+                f.write('{0}\n'.format(line))
+            
 
 if mode == 0:
 
@@ -33,6 +52,16 @@ if mode == 0:
     triangles = np.genfromtxt('{}/triangles.txt'.format(outDir), delimiter=',')
     # X = np.genfromtxt('pointsPerfect.txt', delimiter=',')
 
+    # from scipy.spatial import Delaunay
+    # tri = Delaunay(points)
+
+    # import matplotlib.pyplot as plt
+
+    # plt.triplot(points[:,0], points[:,1], tri.simplices, lw=0.5)
+    # plt.plot(points[:,0], points[:,1], 'o', ms=0.5)
+    # plt.show()
+    # assert(False)
+
     triang = mtri.Triangulation(points[:,0], points[:,1], triangles=triangles)
     # # plt.triplot(triang, color='r', marker='o')
     pntSet = {pnt for pnt in triangles.flatten()}
@@ -42,6 +71,8 @@ if mode == 0:
     plt.triplot(triang, color='r', linewidth=0.1)
     usedPnts = points[pnts,:]
     plt.scatter(usedPnts[:,0], usedPnts[:,1], c='r', s=0.1)
+    plt.xlabel('$x$')
+    plt.ylabel('$y$')
     # X, Y = np.meshgrid(np.linspace(0, 1, 11), np.linspace(0, 1, 11))
     # plt.quiver(X[:,0], X[:,1], points[:,0], points[:,1])
 
@@ -61,6 +92,9 @@ elif mode == 1:
     n = int(np.sqrt(x.size))
 
     M = np.reshape(M, (n, n))
+    # fig = plt.figure()
+    # ax = fig.add_subplot(projection='3d')
+    # ax.scatter(x, y, M)
 
     plt.imshow(M)
 elif mode == 2:
@@ -122,7 +156,7 @@ elif mode == 4:
 
         triang = mtri.Triangulation(x[:,0], x[:,1], triangles=triangles)
 
-        plt.triplot(triang, color='r', linewidth=0.5)
+        plt.triplot(triang, color='r', linewidth=5)
 
         nums = [int(i) for i in re.findall(r'\d+', xName)]
         i = nums[0]

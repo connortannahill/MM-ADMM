@@ -1,4 +1,5 @@
 #include <iostream>
+#include "./lib/json/single_include/nlohmann/json.hpp"
 #include "./src/MeshIntegrator.h"
 #include "./src/Mesh.h"
 #include <unordered_map>
@@ -6,6 +7,8 @@
 #include "Experiments/TestMonitors/MEx1.h"
 #include "Experiments/TestMonitors/MEx2.h"
 #include "Experiments/TestMonitors/MEx3.h"
+#include "Experiments/TestMonitors/MEx4.h"
+#include "Experiments/TestMonitors/MEx5.h"
 #include "Experiments/TestMonitors/MEx13D.h"
 #include "Experiments/TestMonitors/MEx23D.h"
 #include "Experiments/TestMonitors/MEx33D.h"
@@ -19,6 +22,7 @@
 #include "./src/MeshUtils.h"
 
 using namespace std;
+using namespace nlohmann;
 
 double circlePhi(double x, double y) {
   double r = 0.4;
@@ -26,7 +30,7 @@ double circlePhi(double x, double y) {
   double cy = 0.5;
   double xval = (x - cx);
   double yval = (y - cy);
-  return xval*xval + yval*yval - r*r;
+  return sqrt(xval*xval + yval*yval) - r;
 }
 
 double bloodCellShapeFun(double x, double y) {
@@ -119,54 +123,82 @@ double shoulderPhi(double x, double y) {
 }
 
 template <typename T>
-void outputVecToFile(string fileName, vector<T> &outVec) {
+void outputVecToFile(string fileName, vector<T> &tVals, vector<T> &outVec) {
   std::ofstream outFile;
   outFile.open(fileName);
 
-  for (auto val = outVec.begin(); val != outVec.end(); ++val) {
-    outFile << *val << endl;
+  for (int i = 0; i < tVals.size(); i++) {
+    outFile << tVals.at(i) << ", " << outVec.at(i) << endl;
   }
   outFile.close();
 }
 
 template <int D>
 void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double> params, Eigen::MatrixXd *Vc,
-      Eigen::MatrixXd *Vp, Eigen::MatrixXi *F, vector<NodeType> *boundaryMask,
-      NodeType bType, int numThreads, MonitorFunction<D> *mon, double rho, double tau) {
+      Eigen::MatrixXd *Vp, bool compMesh, Eigen::MatrixXi *F, vector<NodeType> *boundaryMask,
+      NodeType bType, int numThreads, MonitorFunction<D> *mon, double rho, double w, double tau, int methodType) {
 
-  Mesh<D> adaptiveMesh(*Vc, *Vp, *F, *boundaryMask, mon,
-      numThreads, rho, tau);
-  // Mesh<D> adaptiveMesh(*Vp, *F, *boundaryMask, mon,
-  //     numThreads, rho, tau);
+  cout << "nsteps = " << nSteps << endl;
+  Mesh<D> *adaptiveMesh;
+  if (!compMesh) {
+    adaptiveMesh = new Mesh<D>(*Vp, *F, *boundaryMask, mon,
+        numThreads, rho, w, tau, 0);
+  } else {
+    cout << "creating the adaptive mesh" << endl;
+    adaptiveMesh = new Mesh<D>(*Vc, *Vp, *F, *boundaryMask, mon,
+        numThreads, rho, w, tau, 0);
+    cout << "finsihed creating the adaptive mesh" << endl;
+  }
 
   // Create the solver
-  MeshIntegrator<D> solver(dt, adaptiveMesh);
+  cout << "creating the solver" << endl;
+  MeshIntegrator<D> solver(dt, *adaptiveMesh);
+  cout << "finihsed creating the solver" << endl;
 
   std::vector<double> Ivals;
+  std::vector<double> tVals;
+
+  Ivals.push_back(solver.getEnergy());
+  tVals.push_back(0);
 
   clock_t start = clock();
   double Ih;
   double Ihprev = INFINITY;
   int i;
   for (i = 0; i < nSteps; i++) {
-    Ih = solver.step(50, 1e-4);
+
+    switch (methodType) {
+      case 0:
+        Ih = solver.step(100, 1e-4);
+        break;
+      case 1:
+        Ih = solver.eulerStep(1e-4);
+        break;
+      default:
+        Ih = solver.backwardsEulerStep(dt, 1e-4);
+    }
 
     Ivals.push_back(Ih);
+    tVals.push_back(((double)clock() - (double)start)
+        / ((double)CLOCKS_PER_SEC) );
 
     double dIdt = (Ih - Ihprev) / dt;
     cout << "d/dt = " << (Ih - Ihprev) / dt << endl;
     cout << "Ih = " << Ih << endl;
 
-    if (i != 0 && (abs(dIdt) < 1e-4 || dIdt > 0)) {
+    if (i != 0 && (abs(dIdt) < 1e-3 || dIdt > 0)) {
         cout << "converged" << endl;
         break;
     }
+
     Ihprev = Ih;
   }
 
   cout << "Took " << ((double)clock() - (double)start)
         / ((double)CLOCKS_PER_SEC) << " seconds" << endl;
   cout << "Took " << i << " iters" << endl;
+
+  solver.done();
 
   string outDir = "./Experiments/Results/" + testName;
   int stat = system(("mkdir -p " + outDir).c_str());
@@ -177,26 +209,32 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
 
   string pointsOutDir = outDir + "/points.txt";
   string triangleOutDir = outDir + "/triangles.txt";
-  adaptiveMesh.outputPoints(pointsOutDir.c_str());
-  adaptiveMesh.outputSimplices(triangleOutDir.c_str());
-  string Ihdir = outDir + "/Ih.txt";
-  outputVecToFile(Ihdir, Ivals);
+  adaptiveMesh->outputPoints(pointsOutDir.c_str());
+  adaptiveMesh->outputSimplices(triangleOutDir.c_str());
+  // adaptiveMesh->outputMonitor();
+  string Ihdir = outDir + "/Ih";
+  Ihdir = Ihdir + to_string(methodType);
+  Ihdir = Ihdir + ".txt";
+  // string Ihdir = outDir + "/Ih.txt";
+  outputVecToFile(Ihdir, tVals, Ivals);
 
   delete Vc;
   delete F;
   delete boundaryMask;
   delete Vp;
+
+  delete adaptiveMesh;
 }
 
 template <int D>
-void setUpLevelSetExperiment(string testName, ifstream &inputFile,
-    int numThreads, MonitorFunction<D> *mon) {
+void setUpLevelSetExperiment(string testName,
+    int numThreads, MonitorFunction<D> *mon, json &experimentSpecs) {
+  int methodType = experimentSpecs["Method"];
   int nx, ny, nz, nSteps;
-  double dt, tau, rho;
+  double dt, tau, rho, w;
   double xa, xb, ya, yb, za, zb;
 
-  int boundaryType;
-  inputFile >> boundaryType;
+  int boundaryType = experimentSpecs["BoundaryType"];
 
   NodeType type;
   if (boundaryType == 0) {
@@ -205,20 +243,37 @@ void setUpLevelSetExperiment(string testName, ifstream &inputFile,
     type = NodeType::BOUNDARY_FIXED;
   }
 
-  inputFile >> nSteps;
-  inputFile >> dt;
-  inputFile >> tau;
-  inputFile >> rho;
+  bool compMesh = experimentSpecs["CompMesh"];
+
+  nSteps = experimentSpecs["nSteps"];
+  dt = experimentSpecs["dt"];
+  tau = experimentSpecs["tau"];
+  rho = experimentSpecs["rho"];
+  w = experimentSpecs["w"];
 
   if (D == 2) {
-    inputFile >> nx >> ny;
-    inputFile >> xa >> xb >> ya >> yb;
+    nx = experimentSpecs["nx"];
+    ny = experimentSpecs["ny"];
+
+    xa = experimentSpecs["xa"];
+    xb = experimentSpecs["xb"];
+    ya = experimentSpecs["ya"];
+    yb = experimentSpecs["yb"];
+
     nz = 0;
     za = 0;
     zb = 0;
   } else {
-    inputFile >> nx >> ny >> nz;
-    inputFile >> xa >> xb >> ya >> yb >> za >> zb;
+    nx = experimentSpecs["nx"];
+    ny = experimentSpecs["ny"];
+    nz = experimentSpecs["nz"];
+
+    xa = experimentSpecs["xa"];
+    xb = experimentSpecs["xb"];
+    ya = experimentSpecs["ya"];
+    yb = experimentSpecs["yb"];
+    za = experimentSpecs["za"];
+    zb = experimentSpecs["zb"];
   }
 
   // Parameters for the mesh
@@ -310,19 +365,19 @@ void setUpLevelSetExperiment(string testName, ifstream &inputFile,
     outFile.close();
   }
 
-  runAlgo(testName, nSteps, dt, params, Vc, Vp, F, boundaryMask,
-    type, numThreads, mon, rho, tau);
+  runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
+    type, numThreads, mon, rho, w, tau, methodType);
 }
 
 template <int D>
-void setUpShoulderExperiment(string testName, ifstream &inputFile,
-    int numThreads, MonitorFunction<D> *mon) {
+void setUpShoulderExperiment(string testName,
+    int numThreads, MonitorFunction<D> *mon, json &experimentSpecs) {
+  int methodType = experimentSpecs["Method"];
   int nx, ny, nz, nSteps;
-  double dt, tau, rho;
+  double dt, tau, rho, w;
   double xa, xb, ya, yb, za, zb;
 
-  int boundaryType;
-  inputFile >> boundaryType;
+  int boundaryType = experimentSpecs["BoundaryType"];
 
   NodeType type;
   if (boundaryType == 0) {
@@ -331,24 +386,39 @@ void setUpShoulderExperiment(string testName, ifstream &inputFile,
     type = NodeType::BOUNDARY_FIXED;
   }
 
-  inputFile >> nSteps;
-  inputFile >> dt;
-  inputFile >> tau;
-  inputFile >> rho;
+  bool compMesh = (bool)experimentSpecs["CompMesh"];
+
+  nSteps = experimentSpecs["nSteps"];
+  dt = experimentSpecs["dt"];
+  tau = experimentSpecs["tau"];
+  rho = experimentSpecs["rho"];
+  w = experimentSpecs["w"];
 
   int nPnts;
   if (D == 2) {
-    inputFile >> nx >> ny;
-    nPnts = (nx+1)*(ny+1) + nx*ny;
-    inputFile >> xa >> xb >> ya >> yb;
+    nx = experimentSpecs["nx"];
+    ny = experimentSpecs["ny"];
 
+    nPnts = (nx+1)*(ny+1) + nx*ny;
+
+    xa = experimentSpecs["xa"];
+    xb = experimentSpecs["xb"];
+    ya = experimentSpecs["ya"];
+    yb = experimentSpecs["yb"];
     za = 0;
     zb = 0;
     nz = 0;
   } else {
-    inputFile >> nx >> ny >> nz;
+    nx = experimentSpecs["nx"];
+    ny = experimentSpecs["ny"];
+    nz = experimentSpecs["nz"];
     nPnts = (nx+1)*(ny+1)*(nz+1) + nx*ny*nz;
-    inputFile >> xa >> xb >> ya >> yb >> za >> zb;
+    xa = experimentSpecs["xa"];
+    xb = experimentSpecs["xb"];
+    ya = experimentSpecs["ya"];
+    yb = experimentSpecs["yb"];
+    za = experimentSpecs["za"];
+    zb = experimentSpecs["zb"];
   }
 
   // Parameters for the mesh
@@ -495,6 +565,7 @@ void setUpShoulderExperiment(string testName, ifstream &inputFile,
     }
   }
 
+
   // Sort the removed Id's into reverse order for easy removal
   std::sort(idsToBeRemoved.begin(), idsToBeRemoved.end(), std::greater<int>());
 
@@ -502,19 +573,39 @@ void setUpShoulderExperiment(string testName, ifstream &inputFile,
       utils::removeRow(*F, *id);
   }
 
-  runAlgo(testName, nSteps, dt, params, Vc, Vp, F, boundaryMask,
-    type, numThreads, mon, rho, tau);
+  double hx = (xb - xa)/((double)nx);
+  double hy = (yb - ya)/((double)ny);
+  double hz = (D == 3) ? (zb - za)/((double)nz) : 0;
+  double h = sqrt(hx*hx + hy*hy + hz*hz);
+  for (int i = 0; i < Vc->rows(); i++) {
+      if (boundaryMask->at(i) == NodeType::INTERIOR) {
+        // Generate random unit vector for direction
+        Eigen::Vector<double, D> dir(Eigen::Vector<double, D>::Random(D));
+        dir /= dir.norm();
+
+        // Now generate random length between [0, hx/5]
+        double r = (h/5.0)*static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+
+        // (*Vc)(i, Eigen::placeholders::all) += r*dir;
+        (*Vp)(i, Eigen::placeholders::all) += r*dir;
+      }
+  }
+
+  runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
+    type, numThreads, mon, rho, w, tau, methodType);
 }
 
 template <int D>
-void setUpBoxExperiment(string testName, ifstream &inputFile,
-    int numThreads, MonitorFunction<D> *mon) {
+void setUpBoxExperiment(string testName, int numThreads, MonitorFunction<D> *mon,
+    json &experimentSpecs) {
+  int methodType = experimentSpecs["Method"];
   int nx, ny, nz, nSteps;
-  double dt, tau, rho;
+  double dt, tau, rho, w;
   double xa, xb, ya, yb, za, zb;
 
-  int boundaryType;
-  inputFile >> boundaryType;
+  cout << "Dim = " << D << endl;
+
+  int boundaryType = experimentSpecs["BoundaryType"];
 
   NodeType type;
   if (boundaryType == 0) {
@@ -523,24 +614,39 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
     type = NodeType::BOUNDARY_FIXED;
   }
 
-  inputFile >> nSteps;
-  inputFile >> dt;
-  inputFile >> tau;
-  inputFile >> rho;
+  bool compMesh = (bool)experimentSpecs["CompMesh"];
+
+  nSteps = experimentSpecs["nSteps"];
+  dt = experimentSpecs["dt"];
+  tau = experimentSpecs["tau"];
+  rho = experimentSpecs["rho"];
+  w = experimentSpecs["w"];
 
   int nPnts;
   nz = 0;
   za = 0;
   zb = 0;
   if (D == 2) {
-    inputFile >> nx >> ny;
-    nPnts = (nx+1)*(ny+1) + nx*ny;
-    inputFile >> xa >> xb >> ya >> yb;
+    nx = experimentSpecs["nx"];
+    ny = experimentSpecs["ny"];
 
+    nPnts = (nx+1)*(ny+1) + nx*ny;
+
+    xa = experimentSpecs["xa"];
+    xb = experimentSpecs["xb"];
+    ya = experimentSpecs["ya"];
+    yb = experimentSpecs["yb"];
   } else {
-    inputFile >> nx >> ny >> nz;
+    nx = experimentSpecs["nx"];
+    ny = experimentSpecs["ny"];
+    nz = experimentSpecs["nz"];
     nPnts = (nx+1)*(ny+1)*(nz+1) + nx*ny*nz;
-    inputFile >> xa >> xb >> ya >> yb >> za >> zb;
+    xa = experimentSpecs["xa"];
+    xb = experimentSpecs["xb"];
+    ya = experimentSpecs["ya"];
+    yb = experimentSpecs["yb"];
+    za = experimentSpecs["za"];
+    zb = experimentSpecs["zb"];
   }
 
   // Parameters for the mesh
@@ -575,42 +681,65 @@ void setUpBoxExperiment(string testName, ifstream &inputFile,
 
   boundaryMask = new vector<NodeType>(Vc->rows());
 
+  cout << "genrerating the uniform rect mesh" << endl;
+
   utils::generateUniformRectMesh<D>(params, Vp, F, boundaryMask,
       type);
+  cout << "finsihed genrerating the uniform rect mesh" << endl;
   
   *Vc = *Vp;
 
-  runAlgo(testName, nSteps, dt, params, Vc, Vp, F, boundaryMask,
-    type, numThreads, mon, rho, tau);
+  cout << "running the algorithm" << endl;
+  runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
+    type, numThreads, mon, rho, w, tau, methodType);
+  cout << "finished running the algorithm" << endl;
 }
 
 
 int main(int argc, char *argv[]) {
-  srand(static_cast<unsigned int>(std::time(nullptr)));
+  srand (69);
 
   // Read in the input file
-  assert(argc <= 3);
   string inFileName = argv[1];
   cout << inFileName << endl;
 
-  int numThreads = 1;
-  if (argc == 3) {
-    numThreads = atoi(argv[2]);
+  int methodType = 0;
+  if (argc >= 3) {
+    methodType = atoi(argv[2]);
   }
 
-  ifstream inputFile("Experiments/InputFiles/" + inFileName);
+  int numThreads = 1;
+  if (argc == 4) {
+    numThreads = atoi(argv[3]);
+  }
 
-  string testType;
-  getline(inputFile, testType);
+  // cout << "reading in json" << endl;
+  ifstream inputFile(("Experiments/InputFiles/" + inFileName) + ".json");
+  json experimentSpecs;
+  inputFile >> experimentSpecs;
 
-  int D;
-  inputFile >> D;
+  cout << experimentSpecs << endl;
+  experimentSpecs["Method"] = methodType;
+  cout << experimentSpecs << endl;
+  // cout << "FINISHED reading in json" << endl;
+  // cout << experimentSpecs << endl;
+  // assert(false);
+
+
+  // Read in the input file
+
+  string testType(experimentSpecs["TestType"]);
+  // getline(inputFile, testType);
+
+  int D = experimentSpecs["Dim"];
 
   // Specify the monitor function
   auto *M0 = new MEx0<2>();
   auto *M1 = new MEx1<2>();
   auto *M2 = new MEx2<2>();
   auto *M3 = new MEx3<2>();
+  auto *M4 = new MEx4<2>();
+  auto *M5 = new MEx5<2>();
   auto *M03D = new MEx0<3>();
   auto *M13D = new MEx13D<3>();
   auto *M23D = new MEx23D<3>();
@@ -622,6 +751,8 @@ int main(int argc, char *argv[]) {
   Mvals.push_back(M1);
   Mvals.push_back(M2);
   Mvals.push_back(M3);
+  Mvals.push_back(M4);
+  Mvals.push_back(M5);
 
   Mvals3D.push_back(M03D);
   Mvals3D.push_back(M13D);
@@ -629,26 +760,30 @@ int main(int argc, char *argv[]) {
   Mvals3D.push_back(M33D);
 
   // Get monitor id
-  int monType;
-  inputFile >> monType;
+  int monType = experimentSpecs["MonType"];
 
+  // 0 - ADMM
+  // 1 - Euler
+  // 2 - Backward Euler
+
+  // assert(false);
   if (testType.compare("SquareGrid") == 0) {
     if (D == 2) {
-      setUpBoxExperiment<2>(inFileName, inputFile, numThreads, Mvals.at(monType));
+      setUpBoxExperiment<2>(inFileName, numThreads, Mvals.at(monType), experimentSpecs);
     } else {
-      setUpBoxExperiment<3>(inFileName, inputFile, numThreads, Mvals3D.at(monType));
+      setUpBoxExperiment<3>(inFileName, numThreads, Mvals3D.at(monType), experimentSpecs);
     }
   } else if (testType.compare("LevelSet") == 0) {
     if (D == 2) {
-      setUpLevelSetExperiment<2>(inFileName, inputFile, numThreads, Mvals.at(monType));
+      setUpLevelSetExperiment<2>(inFileName, numThreads, Mvals.at(monType), experimentSpecs);
     } else {
-      setUpLevelSetExperiment<3>(inFileName, inputFile, numThreads, Mvals3D.at(monType));
+      setUpLevelSetExperiment<3>(inFileName, numThreads, Mvals3D.at(monType), experimentSpecs);
     }
   } else if (testType.compare("Shoulder") == 0) {
     if (D == 2) {
-      setUpShoulderExperiment<2>(inFileName, inputFile, numThreads, Mvals.at(monType));
+      setUpShoulderExperiment<2>(inFileName, numThreads, Mvals.at(monType), experimentSpecs);
     } else {
-      setUpShoulderExperiment<3>(inFileName, inputFile, numThreads, Mvals3D.at(monType));
+      setUpShoulderExperiment<3>(inFileName, numThreads, Mvals3D.at(monType), experimentSpecs);
     }
   } else {
     assert(false);

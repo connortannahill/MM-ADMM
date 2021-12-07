@@ -2,6 +2,7 @@ import matplotlib
 from string import Template
 import subprocess
 import glob
+import ast
 import matplotlib.pyplot as plt
 import matplotlib.tri as mtri
 import numpy as np
@@ -20,6 +21,7 @@ grid_scale_test_2d()
 grid_scale_test_3d()
 output_grid_scale_test_2d()
 run_parallel_experiment()
+run_scale_experiment()
 create_parallel_plot()
 plot_single_thread_increase()
 plot_energy_decrease()
@@ -29,40 +31,44 @@ exit()
 FUNS_LIST = FUNS.split()
 
 def getTemplate2D():
-    TEMPLATE_2D = """$testType
-    2
-    $monType
-    $boundaryType
-    $nSteps
-    $dt
-    $tau
-    $rho
-    $nx
-    $ny
-    $xa
-    $xb
-    $ya
-    $yb"""
+    TEMPLATE_2D = """{"TestType": $testType,
+    "Dim": $dim,
+    "MonType": $monType,
+    "CompMesh": $compMesh,
+    "BoundaryType": $boundaryType,
+    "nSteps": $nSteps,
+    "dt": $dt,
+    "tau": $tau,
+    "rho": $rho,
+    "w": $w,
+    "nx": $nx,
+    "ny": $ny,
+    "xa": $xa,
+    "xb": $xb,
+    "ya": $ya,
+    "yb": $yb}"""
     return TEMPLATE_2D
 
 def getTemplate3D():
-    TEMPLATE_3D = """$testType
-    3
-    $monType
-    $boundaryType
-    $nSteps
-    $dt
-    $tau
-    $rho
-    $nx
-    $ny
-    $nz
-    $xa
-    $xb
-    $ya
-    $yb
-    $za
-    $zb"""
+    TEMPLATE_3D = """{"TestType": $testType,
+    "Dim": $dim,
+    "MonType": $monType,
+    "CompMesh": $compMesh,
+    "BoundaryType": $boundaryType,
+    "nSteps": $nSteps,
+    "dt": $dt,
+    "tau": $tau,
+    "rho": $rho,
+    "w": $w,
+    "nx": $nx,
+    "ny": $ny,
+    "nz": $nz,
+    "xa": $xa,
+    "xb": $xb,
+    "ya": $ya,
+    "yb": $yb}
+    "za": $za,
+    "zb": $zb}"""
     return TEMPLATE_3D
 
 OUT_DIR = './Experiments/InputFiles/'
@@ -136,12 +142,20 @@ Functions to be called
 
 def plot_energy_decrease():
     testName = input('test name = ')
+    timePlot = bool(input('time plot? (True False) '))
 
     vals = []
-    with open('./Experiments/Results/{0}/Ih.txt'.format(testName)) as f:
-        vals = np.array([float(i) for i in f.read().split()])
-    
-    plt.plot(np.arange(len(vals))+1, vals)
+    for methodType in range(3):
+        out =  np.genfromtxt('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodType), delimiter=',')
+        tVals = out[:,0]
+        Ih = out[:,1]
+        # with open('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodType)) as f:
+            # vals = np.array([float(i) for i in f.read().split()])
+        if (timePlot):
+            plt.plot(tVals, Ih, marker='o', ms=0.5, label='Method Type {}'.format(methodType))
+        else:
+            plt.plot(np.arange(len(vals))+1, Ih, marker='o', ms=0.5, label='Method Type {}'.format(methodType))
+
     plt.xlabel('Number of time steps')
     plt.ylabel('$I_h$')
     plt.title('{}'.format(testName))
@@ -220,12 +234,38 @@ def create_parallel_plot():
 def run_parallel_experiment():
 
     testName = input('test name = ')
-    dim = int(input('dimension = '))
 
     # Get all input file names
     inputFiles = [file[file.rfind('/')+1:] for file in glob.glob('./Experiments/InputFiles/{0}*'.format(testName))]
     num_list = np.argsort([int(file[len(testName):]) for file in inputFiles])
     inputFiles = list(np.array(inputFiles)[num_list])
+
+    subprocess.run('make')
+
+    for i, inputFile in enumerate(inputFiles):
+        times = {}
+        num_runs = 10
+        times[pow] = []
+        for run in range(num_runs):
+            start = time.time()
+            subprocess.run('./mesh.exe {0} 1'.format(inputFile).split())
+            times[pow].append(time.time() - start)
+        
+        # Dump the data file
+        Path("Experiments/Data/{0}/".format(testName)).mkdir(parents=True, exist_ok=True)
+
+        with open('Experiments/Data/{0}/{1}.json'.format(testName, inputFile), 'w+') as f:
+            f.write(json.dumps(times))
+
+def run_scale_experiment():
+
+    testName = input('test name = ')
+    dim = int(input('dimension = '))
+
+    # Get all input file names
+    inputFiles = [file[file.rfind('/')+1:] for file in glob.glob('./Experiments/InputFiles/{0}*'.format(testName))]
+    num_list = np.argsort([int(file[len(testName):file.rfind('.')]) for file in inputFiles])
+    inputFiles = [s[:s.rfind('.')] for s in list(np.array(inputFiles)[num_list])]
 
     HIGHEST_POW = 5
 
@@ -233,23 +273,21 @@ def run_parallel_experiment():
 
     subprocess.run('make')
 
-    color=cm.rainbow(np.linspace(0,1,len(inputFiles)))
-    if dim == 2:
-        num_simplices = [4*((2**i * 10)**2) for i in range(1, HIGHEST_POW+5)]
-    else:
-        num_simplices = [12*((2**i * 10)**3) for i in range(1, HIGHEST_POW+5)]
+
 
     fig, ax = plt.subplots()
+    print(inputFiles)
     for i, inputFile in enumerate(inputFiles):
-        times = {}
-        num_runs = 5
-        for pow in pows:
-            times[pow] = []
-            for run in range(num_runs):
-                start = time.time()
-                subprocess.run('./mesh.exe {0} {1}'.format(inputFile, pow).split())
-                times[pow].append(time.time() - start)
-        
+        times = {i: {} for i in range(3)}
+        for method in range(3):
+            num_runs = 10
+            for pow in pows:
+                times[method][pow] = []
+                for run in range(num_runs):
+                    start = time.time()
+                    subprocess.run('./mesh.exe {0} {1}'.format(inputFile, pow).split())
+                    times[method][pow].append(time.time() - start)
+            
         # Dump the data file
         Path("Experiments/Data/{0}/".format(testName)).mkdir(parents=True, exist_ok=True)
 
@@ -315,7 +353,7 @@ def output_grid_scale_test_2d():
         outputPng(dir)
 
 def grid_scale_test_2d():
-    paramList = [s[1:] for s in getTemplate2D().split()]
+    paramList = [s[1:-1] for s in getTemplate2D().split()[1::2]]
     paramList.remove('nx')
     paramList.remove('ny')
 
@@ -334,14 +372,12 @@ def grid_scale_test_2d():
         in_dict['ny'] = n
 
         create_input_from_dict(in_dict, getTemplate2D(),
-            OUT_DIR + outFileName + str(n))
+            OUT_DIR + outFileName + str(n) + '.json')
 
         in_files.append(outFileName + str(n))
     
-    # run_experiments(in_files)
-
 def grid_scale_test_3d():
-    paramList = [s[1:] for s in getTemplate3D().split() if s[0] == '$']
+    paramList = [s[1:-1] for s in getTemplate3D().split()[1::2] if s[0] == '$']
     paramList.remove('nx')
     paramList.remove('ny')
     paramList.remove('nz')
@@ -371,7 +407,7 @@ def create_input():
 
     D = input('DIM = ')
 
-    paramList = [s[1:] for s in getTemplate2D().split()]
+    paramList = [s[1:-1] for s in getTemplate2D().split()[1::2]]
     in_dict = {s: input('{} = '.format(s)) for s in paramList}
 
     outFileName = input('out file name = ')

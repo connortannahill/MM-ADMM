@@ -9,6 +9,7 @@ class MEx0 : public MonitorFunction<D> {
 public:
     void operator()(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &M) override {
         M = Eigen::Matrix<double,D,D>::Identity(M.rows(), M.cols());
+        // assert(false);
     }
     
 };
