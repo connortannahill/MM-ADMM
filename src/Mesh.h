@@ -5,12 +5,13 @@
 #include "MonitorFunction.h"
 #include "MeshInterpolator.h"
 #include "NodeType.h"
-// #include "../lib/LASolver/SparseItObj.h"
+#include "../lib/LASolver/SparseItObj.h"
 #include <Eigen/Sparse>
 #include <vector>
 #include <set>
 
 using namespace std;
+using namespace SparseItObj;
 
 template <int D=-1>
 class Mesh {
@@ -25,6 +26,7 @@ public:
     void copyX(Eigen::VectorXd &tar);
     void outputPoints(const char *fname);
     void computeNodalGrads(Eigen::VectorXd &grad);
+    void buildMatrix();
     void meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp, 
             Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
             MonitorFunction<D> *Mon, int numThreads, double rho, double w, double tau);
@@ -33,10 +35,17 @@ public:
     void buildEulerJac(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad);
     double backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad, double tol);
 
-    Eigen::SparseMatrix<double, Eigen::RowMajor> *jac;
-    Eigen::SparseMatrix<double, Eigen::RowMajor> *sparseId;
+//     Eigen::SparseMatrix<double, Eigen::RowMajor> *jac;
+    MatrixIter *jac;
+    ParamIter *cgParams;
+    double *tol;
+    double *rhs;
+
+//     Eigen::SparseMatrix<double, Eigen::RowMajor> *sparseId;
+//     Eigen::SparseMatrix<double, Eigen::RowMajor> *sparseId;
     Eigen::VectorXd *dx;
     Eigen::VectorXd *xn;
+//     MatrixIter *matrix;
 
     Eigen::BiCGSTAB<Eigen::SparseMatrix<double>> *cg;
 

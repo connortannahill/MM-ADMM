@@ -8,7 +8,7 @@
 #include <string>
 #include <map>
 #include <iostream>
-// #include "../lib/LASolver/SparseItObj.h"
+#include "../lib/LASolver/SparseItObj.h"
 // #include <LBFGS.h>
 #include <fstream>
 #include <unistd.h>
@@ -258,6 +258,158 @@ void Mesh<D>::reOrientElements(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F) {
 }
 
 template <int D>
+void Mesh<D>::buildMatrix() {
+    this->cgParams = new ParamIter();
+
+    const int ILU_LEVEL = 0;
+
+    (this->cgParams)->order = 0; // = 0 natural;
+                    //  =1, RCM
+
+    (this->cgParams)->level = ILU_LEVEL; // level of ilu
+
+    (this->cgParams)->drop_ilu = 0; // = 0 level ilu
+                        // = 1 drop tol
+
+    (this->cgParams)->iscal = 0; // = 0 no scaling by inverse of diag
+                    // = 1 scale by inverse of diag
+
+    (this->cgParams)->nitmax = 10000; // max number of iterations
+
+    (this->cgParams)->ipiv = 0; // 0 no pivoting
+                                    // 1 pivoting
+                                    // only if drop_ilu = 1
+
+    (this->cgParams)->resid_reduc = 1.e-6; // residual reduction toleranc
+                                // iterations stop if any of the following true
+                                //   l^2 residual reduced by ctol
+                                //   number of itns = nitmax
+                                //   update in each variable x[i]<toler[i]
+
+    (this->cgParams)->info = 0; // = 0 no iteration info written to "output"
+                    // = 1 write iteration info
+
+    (this->cgParams)->drop_tol = 1.e-3; // drop tolerance used if drop_ilu = 1
+
+    (this->cgParams)->new_rhat = 0; // = 0 use r^0 as rhat
+                        // = 1 use (LU)^{-1^0 for rhat
+
+    // (this->cgParams)->iaccel = -1; // = 0 cgstab
+    (this->cgParams)->iaccel = 0; // = 0 cgstab
+                        // = 1 orthomin
+                        // = -1 conj gradiend (SPD only!)
+
+    (this->cgParams)->north = 10; // number of orthogs for orthomin
+
+    // Get the number of non-zeros for the matrix
+    // int n = 0;
+    // for (int i = 0; i < F->rows(); i++) {
+    //     vector<int> pntList;
+
+    //     for (int j = 0; j < D+1; j++) {
+    //         pntList.push_back((*F)(i, j));
+    //     }
+
+    //     int iter = 0;
+    //     while (iter < D+1) {
+    //         int rowStart = pntList.at(0)*D;
+    //         int rowEnd = rowStart+(D-1);
+
+    //         for (int n = 0; n < D+1; n++) {
+    //             int colStart = pntList.at(n)*D;
+    //             int colEnd = colStart+(D-1);
+
+    //             for (int r = rowStart; r <= rowEnd; r++) {
+    //                 for (int c= colStart; c <= colEnd; c++) {
+    //                     n++;
+    //                 }
+    //             }
+    //         }
+
+    //         // Rotate the vector
+    //         iter++;
+    //         rotate(pntList.begin(), pntList.begin()+1, pntList.end());
+    //     }
+    // }
+
+    // Set up the system matrix. Matrix is set up to have a 5-stencil at every point
+    // except the sides & corners to permit changes in the stencils
+    MatrixStruc *matrixBuilder = NULL;
+    try {
+        // matrixBuilder = new MatrixStruc(n /*Number of unknowns*/, 0 /*Add non-zeros to diagonals*/);
+        matrixBuilder = new MatrixStruc(D*Vc->rows() /*Number of unknowns*/, 0 /*Add non-zeros to diagonals*/);
+
+        // Build the matrix
+        for (int i = 0; i < F->rows(); i++) {
+            vector<int> pntList;
+
+            for (int j = 0; j < D+1; j++) {
+                pntList.push_back((*F)(i, j));
+            }
+
+            int iter = 0;
+            while (iter < D+1) {
+                int rowStart = pntList.at(0)*D;
+                int rowEnd = rowStart+(D-1);
+
+                for (int n = 0; n < D+1; n++) {
+                    int colStart = pntList.at(n)*D;
+                    int colEnd = colStart+(D-1);
+
+                    for (int r = rowStart; r <= rowEnd; r++) {
+                        for (int c = colStart; c <= colEnd; c++) {
+                            // cout << "Inserting r = " << r << ", c = " << c << endl;
+                            matrixBuilder->set_entry(r, c);
+                        }
+                    }
+                }
+
+                // Rotate the vector
+                iter++;
+                rotate(pntList.begin(), pntList.begin()+1, pntList.end());
+            }
+        }
+
+        // Pack the data constructor: convert the LinkedList array to csr format
+        matrixBuilder->pack();
+    } catch(bad_alloc) {
+        delete matrixBuilder; matrixBuilder = NULL;
+        exit(1);
+    } catch(General_Exception excep) {
+        cout << "General exception" << endl;
+        cout << excep.p << endl;
+        delete matrixBuilder; matrixBuilder = NULL;
+        exit(1);
+    }
+
+    // Create the actual matrix
+    this->jac = NULL;
+
+    try {
+        jac = new MatrixIter(*matrixBuilder);
+        assert(jac != NULL);
+        delete matrixBuilder; 
+        matrixBuilder = NULL;
+    } catch(bad_alloc) {
+        delete matrixBuilder; matrixBuilder = NULL;
+        exit(1);
+    } catch(General_Exception excep) {
+        delete matrixBuilder; matrixBuilder= NULL;
+        exit(1);
+    } 
+
+    // Get tol
+    // Npts :
+    int nPts = D * F->rows();
+    tol = new double[nPts];
+    rhs = new double[nPts];
+    for (int i = 0; i < nPts; i++) {
+        tol[i] = 0.0;
+        rhs[i] = 0.0;
+    }
+}
+
+template <int D>
 void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp, 
             Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
             MonitorFunction<D> *Mon, int numThreads, double rho,
@@ -293,46 +445,9 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
 
     buildFaceList();
 
-    jac = new Eigen::SparseMatrix<double, Eigen::RowMajor>(Xp.size(), Xp.size());
-    sparseId = new Eigen::SparseMatrix<double, Eigen::RowMajor>(Xp.size(), Xp.size());
-    sparseId->reserve(Eigen::VectorXd::Constant(jac->rows(), 1));
+    // Build the matrix for backwards Euler's
+    buildMatrix();
 
-    for (int i = 0; i < sparseId->rows(); i++) {
-        sparseId->insert(i, i) = 1;
-    }
-
-    vector<Eigen::Triplet<double>> tripletList;
-    for (int i = 0; i < F.rows(); i++) {
-        vector<int> pntList;
-
-        for (int j = 0; j < D+1; j++) {
-            pntList.push_back(F(i, j));
-        }
-
-        int iter = 0;
-        while (iter < D+1) {
-            int rowStart = pntList.at(0)*D;
-            int rowEnd = rowStart+(D-1);
-
-            for (int n = 0; n < D+1; n++) {
-                int colStart = pntList.at(n)*D;
-                int colEnd = colStart+(D-1);
-
-                for (int r = rowStart; r <= rowEnd; r++) {
-                    for (int c= colStart; c <= colEnd; c++) {
-                        tripletList.push_back(Eigen::Triplet<double>(r, c, 1));
-                    }
-                }
-            }
-
-            // Rotate the vector
-            iter++;
-            rotate(pntList.begin(), pntList.begin()+1, pntList.end());
-        }
-    }
-    // cout << "Setting triplets size = " << tripletList.size() << endl;
-    jac->setFromTriplets(tripletList.begin(), tripletList.end());
-    jac->makeCompressed();
 
 #ifdef THREADS
     omp_set_num_threads(numThreads);
@@ -879,15 +994,39 @@ void Mesh<D>::setConstant(Eigen::SparseMatrix<double, Eigen::RowMajor> *jac, dou
 
 template <int D>
 void Mesh<D>::buildEulerJac(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad) {
-    this->setConstant(jac, 0.0);
+    // this->setConstant(jac, 0.0);
+    // cout << "setting const" << endl;
+    for (int r = 0; r < x.size(); r++) {
+        // cout << "r = " << r << endl;
+        for (int i = jac->rowBegin(r); i < jac->rowEndPlusOne(r); i++) {
+            jac->aValue(i) = 0;
+        }
+    }
+    // cout << "finsihed setting const" << endl;
 
     for (int i = 0; i < x.size()/D; i++) {
+        // cout << "Building pntRow " << endl;
         FSubJac(dt, i, x, grad);
     }
 
-    (*jac) *= (dt / tau);
+    // (*jac) *= (dt / tau);
 
-    *jac += *sparseId;
+    // *jac += *sparseId;
+
+    // cout << "adding diagonal" << endl;
+    for (int r = 0; r < x.size(); r++) {
+        for (int i = jac->rowBegin(r); i < jac->rowEndPlusOne(r); i++) {
+            int colIndex = jac->getColIndex(i);
+
+            jac->aValue(i) *= (dt / tau);
+
+            if (colIndex == r) {
+                jac->aValue(i) += 1.0;
+            }
+        }
+    }
+    // cout << "finished adding diagonal" << endl;
+
 }
 
 // template <int D>
@@ -961,12 +1100,8 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
     Eigen::Vector<double, D*(D+1)> Gkp1;
     Eigen::Vector<double, D*(D+1)> xPurt;
     Eigen::Matrix<double, D, D*(D+1)> derivs;
-    Eigen::Matrix<double, D, (D+1)> hess;
+    // Eigen::Matrix<double, D, (D+1)> hess;
     Eigen::Vector<double, D> pnt;
-
-    const int * ROWPTR = jac->outerIndexPtr();
-    const int * COLUMN = jac->innerIndexPtr();
-    double * VALUE = jac->valuePtr();
 
     for (auto sId = simplexIds.begin(); sId != simplexIds.end(); ++sId) {
         // Build point eval vectors
@@ -1019,24 +1154,161 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
 
         pairsort(sortedPntIds, relativePntIds, D+1);
 
-        for (int i = 0; i < D; i++) {
-            int colo = 0;
-            int r = 0;
-            for (int o = ROWPTR[(*F)(*sId,off)*D+i]; o < ROWPTR[(*F)(*sId,off)*D+i+1]; o++) {
-                if (int(COLUMN[o] / D) != sortedPntIds.at(r))
-                    continue;
+        // for (int i = 0; i < D; i++) {
+        //     int colo = 0;
+        //     int r = 0;
+        //     for (int o = ROWPTR[(*F)(*sId,off)*D+i]; o < ROWPTR[(*F)(*sId,off)*D+i+1]; o++) {
+        //         if (int(COLUMN[o] / D) != sortedPntIds.at(r))
+        //             continue;
 
-                VALUE[o] += derivs(i, relativePntIds.at(r)*D+colo);
+        //         VALUE[o] += derivs(i, relativePntIds.at(r)*D+colo);
 
-                colo = (colo + 1) % (D);
-                if (colo == 0)
-                    r++;
+        //         colo = (colo + 1) % (D);
+        //         if (colo == 0)
+        //             r++;
 
-                if (r > D)
-                    break;
+        //         if (r > D)
+        //             break;
+        //     }
+        // }
+
+        // for (int p = 0; p < D+1; p++) {
+        //     int pntId = sortedPntIds.at(p);
+        //     for (int r = 0; r < D; r++) {
+
+        //     }
+
+        // }
+        // cout << "sortedPntIds" << endl;
+        // for (int r = 0; r < D+1; r++) {
+        //     cout << sortedPntIds.at(r) << " ";
+        // }
+        // cout << endl;
+
+        // cout << "relativePntIds" << endl;
+        // for (int r = 0; r < D+1; r++) {
+        //     cout << relativePntIds.at(r) << " ";
+        // }
+        // cout << endl;
+
+
+        for (int p = 0; p < D; p++) {
+            for (int i = jac->rowBegin(D*pntId+p); i < jac->rowEndPlusOne(D*pntId+p); i++) {
+                int colIndex = (int)(jac->getColIndex(i) / D);
+                int colOff = (int)(jac->getColIndex(i) % D);
+
+                for (int j = 0; j < D+1; j++) {
+                    // cout << "row = " << pntId+p << endl;
+                    // cout << "j = " << j << endl;
+                    // cout << "Column = " << jac->getColIndex(i) << endl;
+                    // cout << "Column idx = " << colIndex << endl;
+                    // cout << "Column off = " << colOff << endl;
+                    if (sortedPntIds.at(j) == colIndex) {
+                        // cout << "========================================================" << endl;
+                        // cout << "accessing derivs (r, c) = (" << p << ", " << D*relativePntIds.at(j)+colOff << ")" << endl;
+                        jac->aValue(i) += derivs(p, D*relativePntIds.at(j)+colOff);
+                        // cout << "========================================================" << endl;
+                    } else {
+                        jac->aValue(i) += 0.0;
+                    }
+                }
             }
+            // cout << "iter" << endl;
         }
+        // assert(false);
     }
+
+    // const double h = 10.0*sqrt(std::numeric_limits<double>::epsilon());
+
+    // // Get set of connected points
+    // set<int> simplexIds;
+    // for (auto sId = simplexConnects->at(pntId).begin(); sId != simplexConnects->at(pntId).end(); ++sId) {
+    //     simplexIds.insert(*sId);
+    // }
+
+    // // Evaluate FSub and place result into matrix for this point
+    // Eigen::Vector<double, D*(D+1)> xiLoc;
+    // Eigen::Vector<double, D*(D+1)> xLoc;
+    // Eigen::Vector<double, D*(D+1)> Gk;
+    // Eigen::Vector<double, D*(D+1)> Gkp1;
+    // Eigen::Vector<double, D*(D+1)> xPurt;
+    // Eigen::Matrix<double, D, D*(D+1)> derivs;
+    // Eigen::Matrix<double, D, (D+1)> hess;
+    // Eigen::Vector<double, D> pnt;
+
+    // const int * ROWPTR = jac->outerIndexPtr();
+    // const int * COLUMN = jac->innerIndexPtr();
+    // double * VALUE = jac->valuePtr();
+
+    // for (auto sId = simplexIds.begin(); sId != simplexIds.end(); ++sId) {
+    //     // Build point eval vectors
+    //     int off;
+    //     if (compMesh) {
+    //         for (int n = 0; n < D+1; n++) {
+    //             pnt = (*Vc)((*F)(*sId, n), Eigen::all);
+                
+    //             for (int l = 0; l < D; l++) {
+    //                 xiLoc(n*D+l) = pnt(l);
+    //             }
+    //         }
+    //     }
+
+    //     for (int n = 0; n < D+1; n++) {
+    //         pnt = (*Vp)((*F)(*sId, n), Eigen::all);
+
+    //         if ((*F)(*sId,n) == pntId) {
+    //             off = n;
+    //         }
+            
+    //         for (int l = 0; l < D; l++) {
+    //             xLoc(n*D+l) = pnt(l);
+    //         }
+    //     }
+
+    //     // Compute the Hessian
+    //     I_wx->blockGrad(*sId, xLoc, xiLoc, Gk, *mapEvaluator, true, false);
+
+    //     // Compute purturbation
+    //     xPurt = xLoc;
+    //     for (int i = 0; i < D; i++) {
+    //         xPurt(D*off+i) += h;
+
+    //         // Compute gradient at purturbed point
+    //         I_wx->blockGrad(*sId, xPurt, xiLoc, Gkp1, *mapEvaluator, true, false);
+
+    //         derivs(i, Eigen::all) = (Gkp1 - Gk)/h;
+
+    //         xPurt(D*off+i) = xLoc(D*off+i);
+    //     }
+
+    //     vector<int> sortedPntIds(D+1);
+    //     vector<int> relativePntIds(D+1);
+
+    //     for (int r = 0; r < D+1; r++) {
+    //         sortedPntIds.at(r) = ((*F)(*sId,r));
+    //         relativePntIds.at(r) = r;
+    //     }
+
+    //     pairsort(sortedPntIds, relativePntIds, D+1);
+
+    //     for (int i = 0; i < D; i++) {
+    //         int colo = 0;
+    //         int r = 0;
+    //         for (int o = ROWPTR[(*F)(*sId,off)*D+i]; o < ROWPTR[(*F)(*sId,off)*D+i+1]; o++) {
+    //             if (int(COLUMN[o] / D) != sortedPntIds.at(r))
+    //                 continue;
+
+    //             VALUE[o] += derivs(i, relativePntIds.at(r)*D+colo);
+
+    //             colo = (colo + 1) % (D);
+    //             if (colo == 0)
+    //                 r++;
+
+    //             if (r > D)
+    //                 break;
+    //         }
+    //     }
+    // }
 }
 
 template <int D>
@@ -1071,13 +1343,38 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
         }
 
         // Perform Newton step solving J(f)dx = -F
-        if (nIter == 0 || abs(gradOneN - gradOneNPrev)/(gradOneN) < 0.1) {
+        if (!stepTaken || abs(gradOneN - gradOneNPrev)/(gradOneN) < 0.1) {
+            cout << "building euler jac" << endl;
             buildEulerJac(dt, x, grad);
-            cg->compute(*jac);
+            jac->sfac(*cgParams);
+            cout << "finsihed factorizing matrix" << endl;
+            // cg->compute(*jac);
+            jac->set_toler(this->tol);
+            stepTaken = true;
         }
 
-        *dx = cg->solve(-grad);
+        // *dx = cg->solve(-grad);
+        int cgIter = 0;
+
+        // Set up the b matrix
+        for (int i = 0; i < grad.size(); i++) {
+            jac->bValue(i) = -grad(i);
+        }
+
+        jac->solve(*cgParams, rhs, cgIter);
+
+
+        for (int i = 0; i < dx->size(); i++) {
+            (*dx)(i) = rhs[i];
+        }
+
+        // cout << "||x|| = " << x.norm() << endl;
         x += *dx;
+        // cout << "||x|| = " << x.norm() << endl;
+        cout << "cgiter = " << cgIter << endl;
+        assert(cgIter > 0);
+
+        // assert(false);
 
         nIter++;
 
@@ -1118,9 +1415,12 @@ Mesh<D>::~Mesh() {
 
     delete simplexConnects;
 
-    delete sparseId;
+    // delete sparseId;
     delete cg;
     delete xn;
+    delete cgParams;
+    delete tol;
+    delete rhs;
 }
 
 // explicit instantiation for each dimension of interest
