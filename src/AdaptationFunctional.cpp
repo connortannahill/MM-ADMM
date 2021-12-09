@@ -208,7 +208,6 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
     Eigen::Matrix<double, D, D> JMJt = FJ * MinvJt;
     double trJMJt = JMJt.trace();
     double detM = sqrt(1.0 / Minv.determinant());
-    // cout << "line 221" << endl;
 
     G = theta * detM * pow(trJMJt, d*p/2.0)
         + (1.0 - 2.0*theta) * pow(d, d*p/2.0) * detM * pow(detFJ/detM, p);

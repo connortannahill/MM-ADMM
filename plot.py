@@ -29,6 +29,14 @@ if mode == -1:
 
             for line in lines:
                 f.write('{0}\n'.format(line))
+
+if mode == -2:
+    x = np.linspace(-6, 0, 5)[::-1]
+    t = 0.3*np.exp(x)
+
+    y_euler = []
+    y_newton = []
+    y_admm = []
             
 
 if mode == 0:

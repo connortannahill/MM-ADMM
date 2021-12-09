@@ -337,7 +337,7 @@ void Mesh<D>::buildMatrix() {
     MatrixStruc *matrixBuilder = NULL;
     try {
         // matrixBuilder = new MatrixStruc(n /*Number of unknowns*/, 0 /*Add non-zeros to diagonals*/);
-        matrixBuilder = new MatrixStruc(D*Vc->rows() /*Number of unknowns*/, 0 /*Add non-zeros to diagonals*/);
+        matrixBuilder = new MatrixStruc(D*Vp->rows() /*Number of unknowns*/, 0 /*Add non-zeros to diagonals*/);
 
         // Build the matrix
         for (int i = 0; i < F->rows(); i++) {
@@ -511,7 +511,7 @@ template <int D>
 Mesh<D>::Mesh(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
             MonitorFunction<D> *Mon, int numThreads, double rho, double w, double tau, int integrationMode) {
     
-    compMesh = true;
+    this->compMesh = true;
 
     meshInit(Xc, Xp, F, boundaryMask, Mon, numThreads, rho, w, tau);
 }
@@ -548,14 +548,15 @@ double Mesh<D>::computeEnergy(Eigen::VectorXd &x) {
         }
 
         // Compute the local energy
-        Ih += I_wx->blockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, false, false);
+        // Ih += I_wx->blockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, false, false);
+        Ih += computeBlockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, false, false);
     }
 
     return Ih;
 }
 
 template <int D>
-double Mesh<D>::eulerStep(Eigen::VectorXd &x, Eigen::VectorXd &grad) {
+double Mesh<D>::eulerStepMod(Eigen::VectorXd &x, Eigen::VectorXd &grad) {
     Eigen::Vector<double, D*(D+1)> x_i;
     Eigen::Vector<double, D*(D+1)> xi_i;
     Eigen::Vector<double, D*(D+1)> gradSimp;
@@ -603,13 +604,86 @@ double Mesh<D>::eulerStep(Eigen::VectorXd &x, Eigen::VectorXd &grad) {
 }
 
 
+template <int D>
+double Mesh<D>::eulerGrad(Eigen::VectorXd &x, Eigen::VectorXd &grad) {
+    Eigen::Vector<double, D*(D+1)> x_i;
+    Eigen::Vector<double, D*(D+1)> xi_i;
+    Eigen::Vector<double, D*(D+1)> gradSimp;
+    Eigen::Vector<double, D> pnt;
+
+    grad.setZero();
+    double Ihorig = 0.0;
+
+    for (int i = 0; i < F->rows(); i++) {
+        if (compMesh) {
+            for (int n = 0; n < D+1; n++) {
+                pnt = (*Vc)((*F)(i,n), Eigen::all);
+                
+                for (int l = 0; l < D; l++) {
+                    xi_i(n*D+l) = pnt(l);
+                }
+            }
+        }
+
+        for (int n = 0; n < D+1; n++) {
+            pnt = x.segment(D*(*F)(i,n), D);
+
+            for (int l = 0; l < D; l++) {
+                x_i(n*D+l) = pnt(l);
+            }
+        }
+
+        // Compute the local gradient
+        Ihorig += computeBlockGrad(i, x_i, xi_i, gradSimp, *mapEvaluator, true, false);
+
+        // For place into the respective gradients
+        for (int n = 0; n < D+1; n++) {
+            int off = (*F)(i,n);
+                
+            grad.segment(D*off, D) += gradSimp.segment(D*n, D);
+        }
+    }
+
+    return Ihorig;
+}
+
+template <int D>
+double Mesh<D>::eulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad) {
+    Eigen::Vector<double, D*(D+1)> x_i;
+    Eigen::Vector<double, D*(D+1)> xi_i;
+    Eigen::Vector<double, D> pnt;
+
+    double Ihorig = eulerGrad(x, grad);
+
+    x -= (dt / tau) * grad;
+
+    // for (int pntId = 0; pntId < Vp->rows(); pntId++) {
+    //     if (boundaryMask->at(pntId) == NodeType::BOUNDARY_FREE) {
+    //         Eigen::Vector<double, D> xTemp(x.segment(D*pntId, D));
+    //         projectOntoBoundary(pntId, xTemp);
+    //         x.segment(D*pntId, D) = xTemp;
+    //     }
+    // }
+
+    return Ihorig;
+}
+
+
 // TODO: add external forces (would be handled in this object, as the meshing object should control its own props)
 template <int D>
 double Mesh<D>::predictX(double dt, double I, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar) {
     double dtNew = 0;
-    double Ihorig = eulerStep(x, *grad);
+    double Ihorig = eulerGrad(x, *grad);
 
-    xBar = x - (dt / tau) * (*grad);
+    if (!stepTaken) {
+        xBar = x - (dt / tau) * (*grad);
+    } else {
+        cout << "in second case " << endl;
+        // cout << "norm x = " << x.norm() << endl;
+        // cout << "norm xPrev = " << xPrev.norm() << endl;
+        // cout << "dt = " << dt << endl;
+        xBar = x + dt*((x - xPrev)/dt);
+    }
 
     dtNew = dt;
 
@@ -695,6 +769,25 @@ void Mesh<D>::buildDMatrix() {
     Dmat = new Eigen::SparseMatrix<double>(Dt.transpose());
 }
 
+template <int D>
+double Mesh<D>::computeBlockGrad(int zId, Eigen::Vector<double, D*(D+1)> &z,
+            Eigen::Vector<double, D*(D+1)> &xi,
+            Eigen::Vector<double, D*(D+1)> &grad,
+            MeshInterpolator<D> &interp, bool computeGrad, bool regularize) {
+
+    double Ix = I_wx->blockGrad(zId, z, xi, grad, interp, computeGrad, regularize);
+
+    for (int i = 0; i < D+1; i++) {
+        int pntId = (*F)(zId, i);
+
+        if (boundaryMask->at(pntId) == NodeType::BOUNDARY_FIXED) {
+            grad.segment(D*i, D) = Eigen::Vector<double, D>::Zero(D);
+        }
+    }
+
+    return Ix;
+}
+
 /**
  * BFGS quasi-Newton's method over a single simplex
 */
@@ -711,7 +804,8 @@ double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
 
     // If this is the first step for this simplex, compute the initial
     // Hessian and gradient
-    Ix = I_wx->blockGrad(zId, z, xi, Gk, *mapEvaluator, true, true);
+    // Ix = I_wx->blockGrad(zId, z, xi, Gk, *mapEvaluator, true, true);
+    Ix = computeBlockGrad(zId, z, xi, Gk, *mapEvaluator, true, true);
     if (!hessComputed) {
         zPurt = z;
         for (int i = 0; i < D*(D+1); i++) {
@@ -719,17 +813,30 @@ double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
             zPurt(i) += h;
 
             // Compute gradient at purturbed point
-            I_wx->blockGrad(zId, zPurt, xi, Gkp1, *mapEvaluator, true, true);
+            // I_wx->blockGrad(zId, zPurt, xi, Gkp1, *mapEvaluator, true, true);
+            computeBlockGrad(zId, zPurt, xi, Gkp1, *mapEvaluator, true, true);
             hessInvs->at(zId).col(i) = (Gkp1 - Gk)/h;
+
 
             zPurt(i) = z(i);
         }
+
+        for (int n = 0; n < D+1; n++) {
+            int pntId = (*F)(zId, n);
+
+            if (boundaryMask->at(pntId) != NodeType::INTERIOR) {
+                for (int m = 0; m < D; m++) {
+                    hessInvs->at(zId)(D*n+m, D*n+m) = 1.0;
+                }
+            }
+        }
+
         hessInvs->at(zId) = hessInvs->at(zId).inverse();
     }
 
-    if (Gk.norm() < tol) {
-        return Ix;
-    }
+    // if (Gk.norm() < tol) {
+    //     return Ix;
+    // }
 
     // Get the existing information
     Eigen::Matrix<double, D*(D+1), D*(D+1)> Bkinv = hessInvs->at(zId);
@@ -747,7 +854,8 @@ double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         z += pk;
 
         // Update the secant direction, first computing the new gradient
-        Ix = I_wx->blockGrad(zId, z, xi, Gkp1, *mapEvaluator, true, true);
+        Ix = computeBlockGrad(zId, z, xi, Gkp1, *mapEvaluator, true, true);
+        // Ix = I_wx->blockGrad(zId, z, xi, Gkp1, *mapEvaluator, true, true);
 
         if (Gkp1.norm() < tol) {
             Gk = Gkp1;
@@ -761,7 +869,13 @@ double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         c1 = (pk.dot(yk) + yk.dot(Bkinv*yk))/(pow(c2, 2.0));
         Bkinv += c1 * (pk * pk.transpose()) - Bkinv*(yk*pk.transpose()) / c2 - pk*(yk.transpose()*Bkinv) / c2; 
         Gk = Gkp1;
+
+        // cout << "||Gk|| = " << Gk.norm() << endl;
     }
+    // cout << "hessITers = " << iter << endl;
+
+    // cout << Bkinv.inverse() << endl;
+    // assert(false);
 
     hessInvs->at(zId) = Bkinv;
 
@@ -789,7 +903,8 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
     double IxPrev = INFINITY;
 
     for (int iters = 0; iters < nIter; iters++) {
-        Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator, true, true);
+        // Ix = I_wx->blockGrad(zId, z, xi, gradZ, *mapEvaluator, true, true);
+        Ix = computeBlockGrad(zId, z, xi, gradZ, *mapEvaluator, true, true);
 
         if (iters != 0 && (abs((IxPrev - Ix) / IxPrev) < tol)) {
             break;
@@ -805,7 +920,8 @@ double Mesh<D>::newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
                 zPurt(i) += h;
 
                 // Compute gradient at purturbed point
-                I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator, true, true);
+                // I_wx->blockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator, true, true);
+                computeBlockGrad(zId, zPurt, xi, gradZPurt, *mapEvaluator, true, true);
                 hess.col(i) = (gradZPurt - gradZ)/h;
 
                 zPurt(i) = z(i);
@@ -862,26 +978,26 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
 
-        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 100, tol/50.0, hessComputed);
+        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 10, 1e-12, hessComputed);
+        // (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 1000, tol/50);
 
         for (int l = 0; l < D*(D+1); l++) {
             z(D*(D+1)*i+l) = z_i(l);
         }
 
         // Moving boundary points
-        for (int n = 0; n < D+1; n++) {
-            if (boundaryMask->at((*F)(i,n)) == NodeType::BOUNDARY_FREE) {
-                zTemp = z.segment(D*(D+1)*i+n*D, D);
-                projectOntoBoundary((*F)(i,n), zTemp);
-                for (int l = 0; l < D; l++) {
-                    z(D*(D+1)*i+n*D + l) = zTemp(l);
-                }
-            } else if (boundaryMask->at((*F)(i,n)) == NodeType::BOUNDARY_FIXED) { 
-                z.segment(D*(D+1)*i+n*D, D) = x.segment((*F)(i,n)*D, D);
-            }
-        }
-
+        // for (int n = 0; n < D+1; n++) {
+        //     if (boundaryMask->at((*F)(i,n)) == NodeType::BOUNDARY_FREE) {
+        //         zTemp = z.segment(D*(D+1)*i+n*D, D);
+        //         projectOntoBoundary((*F)(i,n), zTemp);
+        //         for (int l = 0; l < D; l++) {
+        //             z(D*(D+1)*i+n*D + l) = zTemp(l);
+        //         }
+        //     }
+        // }
     }
+    // cout << "tol = " <<  tol/(x.size()) << endl;
+    // assert(false);
     hessComputed = true;
 
     return Ih->sum();
@@ -910,9 +1026,18 @@ void Mesh<D>::setUp() {
 template <int D>
 void Mesh<D>::updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x) {
     int cols = Vp->cols();
+
+    // for (int pntId = 0; pntId < Vp->rows(); pntId++) {
+    //     if (boundaryMask->at(pntId) == NodeType::BOUNDARY_FREE) {
+    //         Eigen::Vector<double, D> xTemp(x.segment(D*pntId, D));
+    //         projectOntoBoundary(pntId, xTemp);
+    //         x.segment(D*pntId, D) = xTemp;
+    //     }
+    // }
+
     for (int i = 0; i < Vp->rows(); i++) {
         for (int j = 0; j < cols; j++) {
-            // (*Vc)(i, j) = xPrev(i*cols+j);
+            // (*Vp)(i, j) = xPrev(i*cols+j);
             (*Vp)(i, j) = x(i*cols+j);
         }
     }
@@ -1029,36 +1154,6 @@ void Mesh<D>::buildEulerJac(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad
 
 }
 
-// template <int D>
-// void Mesh<D>::FSub(double dt, int sId, Eigen::VectorXd &xk, Eigen::VectorXd &xkp1, Eigen::VectorXd &grad, Eigen::Vector<double, D*(D+1)> &F) {
-//     int off;
-//     Eigen::Vector<double, D*(D+1)> xloc;
-//     Eigen::Vector<double, D*(D+1)> Gk;
-//     Eigen::Vector<double, D*(D+1)> xiloc;
-//     if (compMesh) {
-//         for (int n = 0; n < D+1; n++) {
-//             pnt = (*Vc)((*F)(sId,n), Eigen::all);
-            
-//             for (int l = 0; l < D; l++) {
-//                 xiloc(n*D+l) = pnt(l);
-//             }
-//         }
-//     }
-
-//     for (int n = 0; n < D+1; n++) {
-//         pnt = (*Vp)((*F)(sId,n), Eigen::all);
-
-//         if ((*F)(sId,n) == pntId) {
-//             off = n;
-//         }
-        
-//         for (int l = 0; l < D; l++) {
-//             xloc(n*D+l) = pnt(l);
-//         }
-//     }
-
-//     I_wx->blockGrad(sId, xloc, xiloc, Gk, *mapEvaluator, true, false);
-// }
 
 void pairsort(vector<int> &a, vector<int> &b, int n)
 {
@@ -1133,16 +1228,39 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
 
         // Compute purturbation
         xPurt = xLoc;
-        for (int i = 0; i < D; i++) {
-            xPurt(D*off+i) += h;
+        
+        if (boundaryMask->at(pntId) == BOUNDARY_FIXED) {
+            derivs.setZero();
 
-            // Compute gradient at purturbed point
-            I_wx->blockGrad(*sId, xPurt, xiLoc, Gkp1, *mapEvaluator, true, false);
+            for (int r = 0; r < D; r++) {
+                for (int c = D*off; c < D*(off+1); c++) {
+                    if (r == c) {
+                        derivs(r, c) = 1.0;
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < D; i++) {
+                xPurt(D*off+i) += h;
 
-            derivs(i, Eigen::all) = (Gkp1 - Gk)/h;
+                // Compute gradient at purturbed point
+                I_wx->blockGrad(*sId, xPurt, xiLoc, Gkp1, *mapEvaluator, true, false);
 
-            xPurt(D*off+i) = xLoc(D*off+i);
+                derivs(i, Eigen::all) = (Gkp1 - Gk)/h;
+
+                xPurt(D*off+i) = xLoc(D*off+i);
+            }
         }
+        // for (int n = 0; n < D+1; n++) {
+        //     int pntId = (*F)(zId, n);
+
+        //     if (boundaryMask->at(pntId) != NodeType::INTERIOR) {
+        //         for (int m = 0; m < D; m++) {
+        //             hessInvs->at(zId)(D*n+m, D*n+m) = 1.0;
+        //         }
+        //     }
+        // }
+
 
         vector<int> sortedPntIds(D+1);
         vector<int> relativePntIds(D+1);
@@ -1217,98 +1335,6 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
         }
         // assert(false);
     }
-
-    // const double h = 10.0*sqrt(std::numeric_limits<double>::epsilon());
-
-    // // Get set of connected points
-    // set<int> simplexIds;
-    // for (auto sId = simplexConnects->at(pntId).begin(); sId != simplexConnects->at(pntId).end(); ++sId) {
-    //     simplexIds.insert(*sId);
-    // }
-
-    // // Evaluate FSub and place result into matrix for this point
-    // Eigen::Vector<double, D*(D+1)> xiLoc;
-    // Eigen::Vector<double, D*(D+1)> xLoc;
-    // Eigen::Vector<double, D*(D+1)> Gk;
-    // Eigen::Vector<double, D*(D+1)> Gkp1;
-    // Eigen::Vector<double, D*(D+1)> xPurt;
-    // Eigen::Matrix<double, D, D*(D+1)> derivs;
-    // Eigen::Matrix<double, D, (D+1)> hess;
-    // Eigen::Vector<double, D> pnt;
-
-    // const int * ROWPTR = jac->outerIndexPtr();
-    // const int * COLUMN = jac->innerIndexPtr();
-    // double * VALUE = jac->valuePtr();
-
-    // for (auto sId = simplexIds.begin(); sId != simplexIds.end(); ++sId) {
-    //     // Build point eval vectors
-    //     int off;
-    //     if (compMesh) {
-    //         for (int n = 0; n < D+1; n++) {
-    //             pnt = (*Vc)((*F)(*sId, n), Eigen::all);
-                
-    //             for (int l = 0; l < D; l++) {
-    //                 xiLoc(n*D+l) = pnt(l);
-    //             }
-    //         }
-    //     }
-
-    //     for (int n = 0; n < D+1; n++) {
-    //         pnt = (*Vp)((*F)(*sId, n), Eigen::all);
-
-    //         if ((*F)(*sId,n) == pntId) {
-    //             off = n;
-    //         }
-            
-    //         for (int l = 0; l < D; l++) {
-    //             xLoc(n*D+l) = pnt(l);
-    //         }
-    //     }
-
-    //     // Compute the Hessian
-    //     I_wx->blockGrad(*sId, xLoc, xiLoc, Gk, *mapEvaluator, true, false);
-
-    //     // Compute purturbation
-    //     xPurt = xLoc;
-    //     for (int i = 0; i < D; i++) {
-    //         xPurt(D*off+i) += h;
-
-    //         // Compute gradient at purturbed point
-    //         I_wx->blockGrad(*sId, xPurt, xiLoc, Gkp1, *mapEvaluator, true, false);
-
-    //         derivs(i, Eigen::all) = (Gkp1 - Gk)/h;
-
-    //         xPurt(D*off+i) = xLoc(D*off+i);
-    //     }
-
-    //     vector<int> sortedPntIds(D+1);
-    //     vector<int> relativePntIds(D+1);
-
-    //     for (int r = 0; r < D+1; r++) {
-    //         sortedPntIds.at(r) = ((*F)(*sId,r));
-    //         relativePntIds.at(r) = r;
-    //     }
-
-    //     pairsort(sortedPntIds, relativePntIds, D+1);
-
-    //     for (int i = 0; i < D; i++) {
-    //         int colo = 0;
-    //         int r = 0;
-    //         for (int o = ROWPTR[(*F)(*sId,off)*D+i]; o < ROWPTR[(*F)(*sId,off)*D+i+1]; o++) {
-    //             if (int(COLUMN[o] / D) != sortedPntIds.at(r))
-    //                 continue;
-
-    //             VALUE[o] += derivs(i, relativePntIds.at(r)*D+colo);
-
-    //             colo = (colo + 1) % (D);
-    //             if (colo == 0)
-    //                 r++;
-
-    //             if (r > D)
-    //                 break;
-    //         }
-    //     }
-    // }
 }
 
 template <int D>
@@ -1318,7 +1344,7 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
 
     // Compute initial guess
     double Ih;
-    Ih = eulerStep(x, grad);
+    Ih = eulerStepMod(x, grad);
     x -= (dt/tau)*grad;
 
     const int MAX_ITERS = 1000;
@@ -1329,7 +1355,7 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
 
     do {
         // Form F (= 0 the function to minimize)
-        Ih = eulerStep(x, grad);
+        Ih = eulerStepMod(x, grad);
 
         grad *= (dt / tau);
         grad += (x - *xn);
@@ -1386,10 +1412,10 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
     return Ih;
 }
 
-template <int D>
-void Mesh<D>::printDiff() {
-    cout << "Difference after step: " << (*Vp - *Vc).norm() << endl;
-}
+// template <int D>
+// void Mesh<D>::printDiff() {
+//     cout << "Difference after step: " << (*Vp - *Vc).norm() << endl;
+// }
 
 template <int D>
 Mesh<D>::~Mesh() {

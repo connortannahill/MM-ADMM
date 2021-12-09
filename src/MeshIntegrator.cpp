@@ -79,7 +79,7 @@ double MeshIntegrator<D>::getEnergy() {
 template <int D>
 double MeshIntegrator<D>::eulerStep(double tol) {
     Eigen::VectorXd grad(x->size());
-    double Ih = a->eulerStep(*x, grad);
+    double Ih = a->eulerStepMod(*x, grad);
     *x -= (dt / a->tau) * grad;
 
     // return a->computeEnergy(*x);
@@ -108,6 +108,9 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
 
     *xPrev = *x;
     *z = (*a->Dmat) * *this->xBar;
+    // *z = (*a->Dmat) * *this->xPrev;
+
+    // uBar->setZero();
 
     *x = *xBar;
 
@@ -146,8 +149,9 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
 
     stepsTaken++;
     this->energyCur = a->computeEnergy(*x);
+    // return a->eulerStep(*x, *vec);
     return energyCur;
-    return Ih;
+    // return Ih;
 }
 
 template <int D>
