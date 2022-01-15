@@ -136,17 +136,19 @@ void outputVecToFile(string fileName, vector<T> &tVals, vector<T> &outVec) {
 template <int D>
 void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double> params, Eigen::MatrixXd *Vc,
       Eigen::MatrixXd *Vp, bool compMesh, Eigen::MatrixXi *F, vector<NodeType> *boundaryMask,
-      NodeType bType, int numThreads, MonitorFunction<D> *mon, double rho, double w, double tau, int methodType) {
+      NodeType bType, int numThreads, MonitorFunction<D> *mon, double rho, double w, double tau, int methodType,
+      bool gradUse, int admmIter) {
 
   cout << "nsteps = " << nSteps << endl;
   Mesh<D> *adaptiveMesh;
   if (!compMesh) {
     adaptiveMesh = new Mesh<D>(*Vp, *F, *boundaryMask, mon,
-        numThreads, rho, w, tau, 0);
+        numThreads, rho, w, tau, methodType, gradUse);
   } else {
     cout << "creating the adaptive mesh" << endl;
+    // *Vc = *Vp;
     adaptiveMesh = new Mesh<D>(*Vc, *Vp, *F, *boundaryMask, mon,
-        numThreads, rho, w, tau, 0);
+        numThreads, rho, w, tau, methodType, gradUse);
     cout << "finsihed creating the adaptive mesh" << endl;
   }
 
@@ -169,13 +171,13 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
 
     switch (methodType) {
       case 0:
-        Ih = solver.step(100, 1e-3);
+        Ih = solver.step(admmIter, 1e-3);
         break;
       case 1:
         Ih = solver.eulerStep(1e-3);
         break;
       default:
-        Ih = solver.backwardsEulerStep(dt, 1e-5);
+        Ih = solver.backwardsEulerStep(dt, 1e-3);
     }
 
     Ivals.push_back(Ih);
@@ -213,18 +215,15 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
   string triangleOutDir = outDir + "/triangles.txt";
   adaptiveMesh->outputPoints(pointsOutDir.c_str());
   adaptiveMesh->outputSimplices(triangleOutDir.c_str());
-  // adaptiveMesh->outputMonitor();
   string Ihdir = outDir + "/Ih";
   Ihdir = Ihdir + to_string(methodType);
   Ihdir = Ihdir + ".txt";
-  // string Ihdir = outDir + "/Ih.txt";
   outputVecToFile(Ihdir, tVals, Ivals);
 
   delete Vc;
   delete F;
   delete boundaryMask;
   delete Vp;
-
   delete adaptiveMesh;
 }
 
@@ -246,6 +245,8 @@ void setUpLevelSetExperiment(string testName,
   }
 
   bool compMesh = experimentSpecs["CompMesh"];
+  bool gradUse = experimentSpecs["GradUse"];
+  int admmIter = experimentSpecs["AdmmIter"];
 
   nSteps = experimentSpecs["nSteps"];
   dt = experimentSpecs["dt"];
@@ -368,7 +369,7 @@ void setUpLevelSetExperiment(string testName,
   }
 
   runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
-    type, numThreads, mon, rho, w, tau, methodType);
+    type, numThreads, mon, rho, w, tau, methodType, gradUse, admmIter);
 }
 
 template <int D>
@@ -389,6 +390,8 @@ void setUpShoulderExperiment(string testName,
   }
 
   bool compMesh = (bool)experimentSpecs["CompMesh"];
+  bool gradUse = experimentSpecs["GradUse"];
+  int admmIter = experimentSpecs["AdmmIter"];
 
   nSteps = experimentSpecs["nSteps"];
   dt = experimentSpecs["dt"];
@@ -594,7 +597,7 @@ void setUpShoulderExperiment(string testName,
   }
 
   runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
-    type, numThreads, mon, rho, w, tau, methodType);
+    type, numThreads, mon, rho, w, tau, methodType, gradUse, admmIter);
 }
 
 template <int D>
@@ -621,6 +624,8 @@ void setUpBoxExperiment(string testName, int numThreads, MonitorFunction<D> *mon
   // assert(false);
 
   bool compMesh = (bool)experimentSpecs["CompMesh"];
+  bool gradUse = experimentSpecs["GradUse"];
+  int admmIter = experimentSpecs["AdmmIter"];
 
   nSteps = experimentSpecs["nSteps"];
   dt = experimentSpecs["dt"];
@@ -697,7 +702,7 @@ void setUpBoxExperiment(string testName, int numThreads, MonitorFunction<D> *mon
 
   cout << "running the algorithm" << endl;
   runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
-    type, numThreads, mon, rho, w, tau, methodType);
+    type, numThreads, mon, rho, w, tau, methodType, gradUse, admmIter);
   cout << "finished running the algorithm" << endl;
 }
 
@@ -719,7 +724,6 @@ int main(int argc, char *argv[]) {
     numThreads = atoi(argv[3]);
   }
 
-  // cout << "reading in json" << endl;
   ifstream inputFile(("Experiments/InputFiles/" + inFileName) + ".json");
   json experimentSpecs;
   inputFile >> experimentSpecs;
@@ -727,15 +731,8 @@ int main(int argc, char *argv[]) {
   cout << experimentSpecs << endl;
   experimentSpecs["Method"] = methodType;
   cout << experimentSpecs << endl;
-  // cout << "FINISHED reading in json" << endl;
-  // cout << experimentSpecs << endl;
-  // assert(false);
-
-
-  // Read in the input file
 
   string testType(experimentSpecs["TestType"]);
-  // getline(inputFile, testType);
 
   int D = experimentSpecs["Dim"];
 

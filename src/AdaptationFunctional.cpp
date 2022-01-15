@@ -167,6 +167,8 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
     // The element volume
     double Edet = E.determinant();
 
+    assert(Edet > 0);
+
     if (!compMesh) {
         if (D == 2) {
             Ehat(0, 0) = 1.0;

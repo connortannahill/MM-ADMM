@@ -198,6 +198,7 @@ def plot_energy_decrease():
     plt.title('{}'.format(testName))
     plt.legend()
     plt.savefig('./Experiments/Results/{0}/IhPlot.png'.format(testName))
+    plt.show()
 
 def create_parallel_plot():
     testName = input('test name = ')
