@@ -169,13 +169,13 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
 
     switch (methodType) {
       case 0:
-        Ih = solver.step(100, 1e-4);
+        Ih = solver.step(100, 1e-3);
         break;
       case 1:
-        Ih = solver.eulerStep(1e-4);
+        Ih = solver.eulerStep(1e-3);
         break;
       default:
-        Ih = solver.backwardsEulerStep(dt, 1e-4);
+        Ih = solver.backwardsEulerStep(dt, 1e-5);
     }
 
     Ivals.push_back(Ih);
@@ -197,6 +197,8 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
   cout << "Took " << ((double)clock() - (double)start)
         / ((double)CLOCKS_PER_SEC) << " seconds" << endl;
   cout << "Took " << i << " iters" << endl;
+  cout << "Number of simplices = " << F->rows() << endl;
+  cout << "Number of points = " << Vp->rows() << endl;
 
   solver.done();
 
@@ -613,6 +615,10 @@ void setUpBoxExperiment(string testName, int numThreads, MonitorFunction<D> *mon
   } else {
     type = NodeType::BOUNDARY_FIXED;
   }
+
+  // cout << "boundaryType = " << boundaryType << endl;
+  // cout << "type = " << type << endl;
+  // assert(false);
 
   bool compMesh = (bool)experimentSpecs["CompMesh"];
 

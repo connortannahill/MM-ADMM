@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=20:00:00
+#SBATCH --time=10:00:00
 #SBATCH --account=def-wan
 #SBATCH --cpus-per-task=32
 #SBATCH --mail-user=connor.tannahill@uwaterloo.ca

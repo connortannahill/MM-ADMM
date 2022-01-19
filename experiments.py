@@ -142,21 +142,58 @@ Functions to be called
 
 def plot_energy_decrease():
     testName = input('test name = ')
-    timePlot = bool(input('time plot? (True False) '))
+    timePlot = input('time plot? (True False) ')
+    allPlot = input('Plot all experiments? (True False) ')
+    print(allPlot)
+    methodNum = 0
+    if allPlot == 'False':
+        methodNum = int(input('Which method? (0 1 2) '))
+
 
     vals = []
-    for methodType in range(3):
-        out =  np.genfromtxt('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodType), delimiter=',')
+    if allPlot == 'True':
+        for methodType in range(3):
+            methodName = ''
+            if methodType == 0:
+                methodName = 'ADMM'
+            elif methodType == 1:
+                methodName = 'Euler'
+            else:
+                methodName = 'Backwards Euler'
+
+            out =  np.genfromtxt('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodType), delimiter=',')
+            tVals = out[:,0]
+            Ih = out[:,1]
+            # with open('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodType)) as f:
+                # vals = np.array([float(i) for i in f.read().split()])
+            if (timePlot):
+                plt.plot(tVals, Ih, marker='o', ms=0.5, label='Method Type {}'.format(methodName))
+            else:
+                plt.plot(np.arange(len(vals))+1, Ih, marker='o', ms=0.5, label='Method Type {}'.format(methodType))
+    else:
+        out =  np.genfromtxt('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodNum), delimiter=',')
         tVals = out[:,0]
         Ih = out[:,1]
+
+        methodName = ''
+        if methodNum == 0:
+            methodName = 'ADMM'
+        elif methodNum == 1:
+            methodName = 'Euler'
+        else:
+            methodName = 'Backwards Euler'
+
         # with open('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodType)) as f:
             # vals = np.array([float(i) for i in f.read().split()])
         if (timePlot):
-            plt.plot(tVals, Ih, marker='o', ms=0.5, label='Method Type {}'.format(methodType))
+            plt.plot(tVals, Ih, marker='o', ms=0.5, label='Method Type {}'.format(methodName))
         else:
-            plt.plot(np.arange(len(vals))+1, Ih, marker='o', ms=0.5, label='Method Type {}'.format(methodType))
+            plt.plot(np.arange(len(vals))+1, Ih, marker='o', ms=0.5, label='Method Type {}'.format(methodNum))
 
-    plt.xlabel('Number of time steps')
+    if timePlot == 'True':
+        plt.xlabel('CPU time')
+    else:
+        plt.xlabel('number of time steps')
     plt.ylabel('$I_h$')
     plt.title('{}'.format(testName))
     plt.legend()
@@ -264,16 +301,20 @@ def run_scale_experiment():
 
     # Get all input file names
     inputFiles = [file[file.rfind('/')+1:] for file in glob.glob('./Experiments/InputFiles/{0}*'.format(testName))]
-    num_list = np.argsort([int(file[len(testName):file.rfind('.')]) for file in inputFiles])
+    print(inputFiles)
+    num_literal = [int(file[len(testName):file.rfind('.')]) for file in inputFiles]
+    print(num_literal)
+    num_list = np.argsort(num_literal)
+    print(num_list)
+    num_literal = np.sort(num_literal)
+    print(num_list)
     inputFiles = [s[:s.rfind('.')] for s in list(np.array(inputFiles)[num_list])]
 
-    HIGHEST_POW = 5
+    # HIGHEST_POW = 5
 
-    pows = [2**i for i in range(HIGHEST_POW+1)]
+    # pows = [2**i for i in range(HIGHEST_POW+1)]
 
     subprocess.run('make')
-
-
 
     fig, ax = plt.subplots()
     print(inputFiles)
@@ -281,12 +322,12 @@ def run_scale_experiment():
         times = {i: {} for i in range(3)}
         for method in range(3):
             num_runs = 10
-            for pow in pows:
-                times[method][pow] = []
-                for run in range(num_runs):
-                    start = time.time()
-                    subprocess.run('./mesh.exe {0} {1}'.format(inputFile, pow).split())
-                    times[method][pow].append(time.time() - start)
+            # for pow in pows:
+            times[method][int(num_literal[i])] = []
+            for run in range(num_runs):
+                start = time.time()
+                subprocess.run('./mesh.exe {0} {1}'.format(inputFile, method).split())
+                times[method][int(num_literal[i])].append(time.time() - start)
             
         # Dump the data file
         Path("Experiments/Data/{0}/".format(testName)).mkdir(parents=True, exist_ok=True)

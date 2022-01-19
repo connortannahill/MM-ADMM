@@ -34,6 +34,11 @@ public:
     void FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd &grad);
     void buildEulerJac(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad);
     double backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad, double tol);
+    double computeBlockGrad(int zId, Eigen::Vector<double, D*(D+1)> &z,
+                Eigen::Vector<double, D*(D+1)> &xi,
+                Eigen::Vector<double, D*(D+1)> &grad,
+                MeshInterpolator<D> &interp, bool computeGrad,
+                bool regularize);
 
 //     Eigen::SparseMatrix<double, Eigen::RowMajor> *jac;
     MatrixIter *jac;
@@ -91,7 +96,9 @@ public:
     double BFGSSimplex(int zId, Eigen::Vector<double,D*(D+1)> &z,
         Eigen::Vector<double,D*(D+1)> &xi, int nIter);
     double approximateGrads();
-    double eulerStep(Eigen::VectorXd &x, Eigen::VectorXd &grad);
+    double eulerGrad(Eigen::VectorXd &x, Eigen::VectorXd &grad);
+    double eulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad);
+    double eulerStepMod(Eigen::VectorXd &x, Eigen::VectorXd &grad);
     // MatrixIter *matrix;
 
     Eigen::MatrixXi *faceList;

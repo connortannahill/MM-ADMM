@@ -3,7 +3,7 @@
     "MonType": 3,
     "Method": 2,
     "CompMesh": false,
-    "BoundaryType": 0,
+    "BoundaryType": 1,
     "nSteps": 1000,
     "dt": 0.0015,
     "tau": 1e-1,
