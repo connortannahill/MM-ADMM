@@ -589,7 +589,7 @@ void setUpShoulderExperiment(string testName,
         dir /= dir.norm();
 
         // Now generate random length between [0, hx/5]
-        double r = (h/5.0)*static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+        double r = (h/8.0)*static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
 
         // (*Vc)(i, Eigen::all) += r*dir;
         (*Vp)(i, Eigen::all) += r*dir;
