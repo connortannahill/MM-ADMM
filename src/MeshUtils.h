@@ -340,24 +340,24 @@ namespace utils {
     }
 
     inline double phiSdf(double x, double y, std::function<double(double,double)> phiFun) {
-        const double h = sqrt(std::numeric_limits<double>::epsilon());
-        double grad[2] = {(phiFun(x+h, y) - phiFun(x-h, y))/(2.0*h), 
-                       (phiFun(x, y+h) - phiFun(x, y-h))/(2.0*h)
-                      };
-        double gradNorm = sqrt(grad[0]*grad[0] + grad[1]*grad[1]);
+        // const double h = sqrt(std::numeric_limits<double>::epsilon());
+        // double grad[2] = {(phiFun(x+h, y) - phiFun(x-h, y))/(2.0*h), 
+        //                (phiFun(x, y+h) - phiFun(x, y-h))/(2.0*h)
+        //               };
+        // double gradNorm = sqrt(grad[0]*grad[0] + grad[1]*grad[1]);
 
-        return phiFun(x, y)/(gradNorm);
+        return phiFun(x, y);///(gradNorm);
     }
 
     inline double phiSdf(double x, double y, double z, std::function<double(double,double, double)> phiFun) {
-        const double h = sqrt(std::numeric_limits<double>::epsilon());
-        double grad[3] = {(phiFun(x+h, y, z) - phiFun(x-h, y, z))/(2.0*h), 
-                       (phiFun(x, y+h, z) - phiFun(x, y-h, z))/(2.0*h),
-                       (phiFun(x, y, z+h) - phiFun(x, y, z-h))/(2.0*h)
-                      };
-        double gradNorm = sqrt(grad[0]*grad[0] + grad[1]*grad[1] + grad[2]*grad[2]);
+        // const double h = sqrt(std::numeric_limits<double>::epsilon());
+        // double grad[3] = {(phiFun(x+h, y, z) - phiFun(x-h, y, z))/(2.0*h), 
+        //                (phiFun(x, y+h, z) - phiFun(x, y-h, z))/(2.0*h),
+        //                (phiFun(x, y, z+h) - phiFun(x, y, z-h))/(2.0*h)
+        //               };
+        //double gradNorm = sqrt(grad[0]*grad[0] + grad[1]*grad[1] + grad[2]*grad[2]);
 
-        return phiFun(x, y, z)/(gradNorm);
+        return phiFun(x, y, z);
     }
 
     inline void interpolateBoundaryLocation(Eigen::Vector<double, 2> &pnt, std::function<double(double, double)> phiFun,
@@ -444,7 +444,7 @@ namespace utils {
             double phiX1 = phiSdf(x1[0], x1[1], phiFun);
             double phiX2 = phiSdf(x2[0], x2[1], phiFun);
 
-            // If all of the sides are outside the mesh domain, remove the simplex entirely
+            // If all of the points are outside the mesh domain, remove the simplex entirely
             if (phiX0 > -EPS && phiX1 > -EPS && phiX2 > -EPS) {
                 idsToBeRemoved.push_back(sId);
             }
@@ -470,7 +470,9 @@ namespace utils {
         for (auto pnt = usedPnts.begin(); pnt != usedPnts.end(); ++pnt) {
             xPnt = (*Vp)(*pnt, Eigen::placeholders::all);
 
-            if (phiSdf(xPnt[0], xPnt[1], phiFun) > -EPS) {
+            double phi = phiSdf(xPnt[0], xPnt[1], phiFun);
+
+            if (abs(phi) < EPS || phi > 0) {
                 interpolateBoundaryLocation(xPnt, phiFun, nVals, bb);
                 boundaryMask->at(*pnt) = bType;
             }
@@ -511,8 +513,19 @@ namespace utils {
         *Vc = *Vcnew;
         *Vp = *Vpnew;
 
+
         delete Vcnew;
         delete Vpnew;
+
+        for (int pnt = 0; pnt < Vp->rows(); pnt++) {
+            xPnt = (*Vp)(pnt, Eigen::all);
+
+            double phi = phiSdf(xPnt[0], xPnt[1], phiFun);
+
+            if (abs(phi) < 1e-10) {
+                boundaryMask->at(pnt) = NodeType::BOUNDARY_FIXED;
+            }
+        }
     }
 
     inline void meshFromLevelSetFun(std::function<double(double, double, double)> phiFun, std::vector<int> &nVals,

@@ -17,10 +17,12 @@ template <int D=-1>
 class Mesh {
 public:
     double m;
+    int integrationMode;
+    int gradUse;
     Mesh(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
-            MonitorFunction<D> *M, int numThreads, double rho, double w, double tau, int integrationMode);
+            MonitorFunction<D> *M, int numThreads, double rho, double w, double tau, int integrationMode, bool gradUse);
     Mesh(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
-            MonitorFunction<D> *M, int numThreads, double rho, double w, double tau, int integratioMode);
+            MonitorFunction<D> *M, int numThreads, double rho, double w, double tau, int integrationMode, bool gradUse);
     void evalMonitorAtPoint(Eigen::Vector<double,D> &x, Eigen::Matrix<double,D,D> &mVal);
     void outputSimplices(const char *fname);
     void copyX(Eigen::VectorXd &tar);
@@ -29,7 +31,7 @@ public:
     void buildMatrix();
     void meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp, 
             Eigen::MatrixXi &F, vector<NodeType> &boundaryMask,
-            MonitorFunction<D> *Mon, int numThreads, double rho, double w, double tau);
+            MonitorFunction<D> *Mon, int numThreads, double rho, double w, double tau, bool gradUse);
     map<int, vector<int>> *simplexMembership;
     void FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd &grad);
     void buildEulerJac(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad);

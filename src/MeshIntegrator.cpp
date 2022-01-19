@@ -99,33 +99,42 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     // Make prediction for next value of x (sorta) and the next time step
     this->dtPrev = dt;
     double Ih;
-    cout << "predicting X" << endl;
+    // cout << "predicting X" << endl;
     Ih = (this->a)->predictX(dt, energyCur, *this->xPrev, *this->x, *this->xBar);
 
     // Get xBar, the predicted (explicit) location of the nodes independent of constraints
     double dtsq = dt*dt;
-    cout << "finsihed predicting X" << endl;
+    // cout << "finsihed predicting X" << endl;
 
     *xPrev = *x;
-    *z = (*a->Dmat) * *this->xBar;
-    // *z = (*a->Dmat) * *this->xPrev;
+    // if (stepsTaken)
+    if (!a->stepTaken) {
+        *z = (*a->Dmat) * *this->x;
+    }
+    // *z = (*a->Dmat) * *this->x;
 
     // uBar->setZero();
 
-    *x = *xBar;
+    // *x = *xBar;
 
     if (dt != dtPrev) {
         *t = *M + dtsq*(*WD_TWD);
         this->cg->compute(*t);
     }
 
+    // Update the solution x^{n+1}
+    *vec =  ((a->m) * (*xBar)) + dtsq*(( *WD_T * ((a->w) * (*z - *uBar))));
+    *x = this->cg->solveWithGuess(*vec, *xBar);
+
     int i;
     double IhCur = 0;
     double IhPrev = 0;
     for (i = 0; i < nIters; i++) {
+        // cout << "on Iter = " << i << endl;
         // Update z_{n+1} using the assembly prox algorithm
         *DXpU = (*(a->Dmat))*(*x) + (*uBar);
         IhCur = a->prox(dt, *x, *DXpU, *z, tol);
+        // cout << "finished prox on iter " << i << endl;
         a->stepTaken = true;
 
         // Update the Lagrange multiplier uBar^{n+1}
@@ -136,23 +145,25 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         // *x = this->cg->solveWithGuess(*vec, *xBar);
         *x = this->cgSol->solve(*vec);
 
+        // cout << "primal res = " << ((*a->Dmat) * *this->x - *z).norm() << endl;
+
         if (((*a->Dmat) * *this->x - *z).norm() < tol) {
             break;
         }
 
         IhPrev = IhCur;
     }
-    cout << "ADMM in " << i << " iters" << endl;
-    cout << "primal res = " << ((*a->Dmat) * *this->x - *z).norm() << endl;
+    // cout << "ADMM in " << i << " iters" << endl;
+    // cout << "primal res = " << ((*a->Dmat) * *this->x - *z).norm() << endl;
 
     // Update the assembly using the new locations
     a->updateAfterStep(dt, *xPrev, *x);
 
     stepsTaken++;
-    this->energyCur = a->computeEnergy(*x);
-    // return a->eulerStep(*x, *vec);
-    return energyCur;
-    // return Ih;
+    // this->energyCur = a->computeEnergy(*x);
+    // // return a->eulerStep(*x, *vec);
+    // return energyCur;
+    return Ih;
 }
 
 template <int D>
