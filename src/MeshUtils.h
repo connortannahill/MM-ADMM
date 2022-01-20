@@ -522,7 +522,7 @@ namespace utils {
 
             double phi = phiSdf(xPnt[0], xPnt[1], phiFun);
 
-            if (abs(phi) < 1e-10) {
+            if (abs(phi) < EPS) {
                 boundaryMask->at(pnt) = NodeType::BOUNDARY_FIXED;
             }
         }

@@ -844,9 +844,9 @@ double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
     //     Ix += abs(Gk(i));
     // }
 
-    if (iter == nIter) {
-        cout << "MAX IN BFGS" << endl;
-    }
+    // if (iter == nIter) {
+    //     cout << "MAX IN BFGS" << endl;
+    // }
 
     hessInvs->at(zId) = Bkinv;
 
@@ -947,7 +947,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
 
-        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 10, 1e-8, hessComputed);
+        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 5, 1e-8, hessComputed);
         // (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 1000, tol/50);
 
         for (int l = 0; l < D*(D+1); l++) {
