@@ -142,7 +142,8 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
 
         // Update the solution x^{n+1}
         *vec =  ((a->m) * (*xBar)) + dtsq*(( *WD_T * ((a->w) * (*z - *uBar))));
-        *x = this->cg->solveWithGuess(*vec, *xBar);
+        // *x = this->cg->solveWithGuess(*vec, *xBar);
+        *x = this->cgSol->solve(*vec);
 
         // cout << "primal res = " << ((*a->Dmat) * *this->x - *z).norm() << endl;
 

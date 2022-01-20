@@ -25,9 +25,9 @@ namespace utils {
     inline void computeCentroid2D(int simplexId, Eigen::MatrixXd *X, Eigen::MatrixXi *F, 
             Eigen::Vector<double, 2> &pnt) {
 
-        Eigen::Vector<double, 2> x0((*X)((*F)(simplexId, 0), Eigen::all));
-        Eigen::Vector<double, 2> x1((*X)((*F)(simplexId, 1), Eigen::all));
-        Eigen::Vector<double, 2> x2((*X)((*F)(simplexId, 2), Eigen::all));
+        Eigen::Vector<double, 2> x0((*X)((*F)(simplexId, 0), Eigen::placeholders::all));
+        Eigen::Vector<double, 2> x1((*X)((*F)(simplexId, 1), Eigen::placeholders::all));
+        Eigen::Vector<double, 2> x2((*X)((*F)(simplexId, 2), Eigen::placeholders::all));
 
         pnt = 1.0/3.0 * (x0 + x1 + x2);
     }
@@ -287,7 +287,7 @@ namespace utils {
                 }
             }
 
-            for (int i = 0; i < boundaryMask->size(); i++) {
+            for (uint32_t i = 0; i < boundaryMask->size(); i++) {
                 boundaryMask->at(i) = NodeType::INTERIOR;
             }
 
@@ -327,6 +327,7 @@ namespace utils {
             }
         }
     }
+
 
     inline void removeRow(Eigen::MatrixXi &matrix, unsigned int rowToRemove) {
         unsigned int numRows = matrix.rows()-1;
@@ -435,9 +436,9 @@ namespace utils {
         Eigen::Vector<double, 2> x2;
 
         for (int sId = 0; sId < F->rows(); sId++) {
-            x0 = (*Vp)((*F)(sId, 0), Eigen::all);
-            x1 = (*Vp)((*F)(sId, 1), Eigen::all);
-            x2 = (*Vp)((*F)(sId, 2), Eigen::all);
+            x0 = (*Vp)((*F)(sId, 0), Eigen::placeholders::all);
+            x1 = (*Vp)((*F)(sId, 1), Eigen::placeholders::all);
+            x2 = (*Vp)((*F)(sId, 2), Eigen::placeholders::all);
 
             double phiX0 = phiSdf(x0[0], x0[1], phiFun);
             double phiX1 = phiSdf(x1[0], x1[1], phiFun);
@@ -467,7 +468,7 @@ namespace utils {
         // Interpolate the points onto the boundaries
         Eigen::Vector<double, D> xPnt;
         for (auto pnt = usedPnts.begin(); pnt != usedPnts.end(); ++pnt) {
-            xPnt = (*Vp)(*pnt, Eigen::all);
+            xPnt = (*Vp)(*pnt, Eigen::placeholders::all);
 
             double phi = phiSdf(xPnt[0], xPnt[1], phiFun);
 
@@ -476,7 +477,7 @@ namespace utils {
                 boundaryMask->at(*pnt) = bType;
             }
 
-            (*Vp)(*pnt, Eigen::all) = xPnt;
+            (*Vp)(*pnt, Eigen::placeholders::all) = xPnt;
         }
 
         Eigen::MatrixXd *Vpnew = new Eigen::MatrixXd(usedPnts.size(), D);
@@ -492,8 +493,8 @@ namespace utils {
             int off = pntsSorted.at(i);
             pntMap[off] = i;
 
-            (*Vpnew)(i, Eigen::all) = (*Vp)(off, Eigen::all);
-            (*Vcnew)(i, Eigen::all) = (*Vc)(off, Eigen::all);
+            (*Vpnew)(i, Eigen::placeholders::all) = (*Vp)(off, Eigen::placeholders::all);
+            (*Vcnew)(i, Eigen::placeholders::all) = (*Vc)(off, Eigen::placeholders::all);
         }
 
         for (auto pnt = pntsSorted.begin(); pnt != pntsSorted.end(); ++pnt) {
@@ -579,10 +580,10 @@ namespace utils {
         Eigen::Vector<double, 3> x3;
 
         for (int sId = 0; sId < F->rows(); sId++) {
-            x0 = (*Vp)((*F)(sId, 0), Eigen::all);
-            x1 = (*Vp)((*F)(sId, 1), Eigen::all);
-            x2 = (*Vp)((*F)(sId, 2), Eigen::all);
-            x3 = (*Vp)((*F)(sId, 3), Eigen::all);
+            x0 = (*Vp)((*F)(sId, 0), Eigen::placeholders::all);
+            x1 = (*Vp)((*F)(sId, 1), Eigen::placeholders::all);
+            x2 = (*Vp)((*F)(sId, 2), Eigen::placeholders::all);
+            x3 = (*Vp)((*F)(sId, 3), Eigen::placeholders::all);
 
             double phiX0 = phiSdf(x0[0], x0[1], x0[2], phiFun);
             double phiX1 = phiSdf(x1[0], x1[1], x1[2], phiFun);
@@ -613,14 +614,14 @@ namespace utils {
         // Interpolate the points onto the boundaries
         Eigen::Vector<double, 3> xPnt;
         for (auto pnt = usedPnts.begin(); pnt != usedPnts.end(); ++pnt) {
-            xPnt = (*Vp)(*pnt, Eigen::all);
+            xPnt = (*Vp)(*pnt, Eigen::placeholders::all);
 
             if (phiSdf(xPnt[0], xPnt[1], xPnt[2], phiFun) > -EPS) {
                 interpolateBoundaryLocation(xPnt, phiFun, nVals, bb);
                 boundaryMask->at(*pnt) = bType;
             }
 
-            (*Vp)(*pnt, Eigen::all) = xPnt;
+            (*Vp)(*pnt, Eigen::placeholders::all) = xPnt;
         }
 
         Eigen::MatrixXd *Vpnew = new Eigen::MatrixXd(usedPnts.size(), D);
@@ -636,8 +637,8 @@ namespace utils {
             int off = pntsSorted.at(pntsSorted.size()-i-1);
             pntMap[off] = i;
 
-            (*Vpnew)(i, Eigen::all) = (*Vp)(off, Eigen::all);
-            (*Vcnew)(i, Eigen::all) = (*Vc)(off, Eigen::all);
+            (*Vpnew)(i, Eigen::placeholders::all) = (*Vp)(off, Eigen::placeholders::all);
+            (*Vcnew)(i, Eigen::placeholders::all) = (*Vc)(off, Eigen::placeholders::all);
         }
 
         for (auto pnt = pntsSorted.begin(); pnt != pntsSorted.end(); ++pnt) {
