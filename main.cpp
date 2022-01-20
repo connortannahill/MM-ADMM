@@ -137,7 +137,7 @@ template <int D>
 void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double> params, Eigen::MatrixXd *Vc,
       Eigen::MatrixXd *Vp, bool compMesh, Eigen::MatrixXi *F, vector<NodeType> *boundaryMask,
       NodeType bType, int numThreads, MonitorFunction<D> *mon, double rho, double w, double tau, int methodType,
-      bool gradUse, int admmIter) {
+      bool gradUse, int admmIter, double dtTol) {
 
   cout << "nsteps = " << nSteps << endl;
   Mesh<D> *adaptiveMesh;
@@ -188,7 +188,8 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
     cout << "d/dt = " << (Ih - Ihprev) / dt << endl;
     cout << "Ih = " << Ih << endl;
 
-    if (i != 0 && (abs(dIdt) < 1e-3 || dIdt > 0)) {
+    if (i != 0 && (abs(dIdt) < dtTol || dIdt > 0)) {
+    // if (i != 0 && (abs(dIdt) < dtTol)) {
         cout << "converged" << endl;
         break;
     }
@@ -247,6 +248,7 @@ void setUpLevelSetExperiment(string testName,
   bool compMesh = experimentSpecs["CompMesh"];
   bool gradUse = experimentSpecs["GradUse"];
   int admmIter = experimentSpecs["AdmmIter"];
+  double dtTol = experimentSpecs["DtTol"];
 
   nSteps = experimentSpecs["nSteps"];
   dt = experimentSpecs["dt"];
@@ -369,7 +371,7 @@ void setUpLevelSetExperiment(string testName,
   }
 
   runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
-    type, numThreads, mon, rho, w, tau, methodType, gradUse, admmIter);
+    type, numThreads, mon, rho, w, tau, methodType, gradUse, admmIter, dtTol);
 }
 
 template <int D>
@@ -392,6 +394,7 @@ void setUpShoulderExperiment(string testName,
   bool compMesh = (bool)experimentSpecs["CompMesh"];
   bool gradUse = experimentSpecs["GradUse"];
   int admmIter = experimentSpecs["AdmmIter"];
+  double dtTol = experimentSpecs["DtTol"];
 
   nSteps = experimentSpecs["nSteps"];
   dt = experimentSpecs["dt"];
@@ -597,7 +600,7 @@ void setUpShoulderExperiment(string testName,
   }
 
   runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
-    type, numThreads, mon, rho, w, tau, methodType, gradUse, admmIter);
+    type, numThreads, mon, rho, w, tau, methodType, gradUse, admmIter, dtTol);
 }
 
 template <int D>
@@ -626,6 +629,7 @@ void setUpBoxExperiment(string testName, int numThreads, MonitorFunction<D> *mon
   bool compMesh = (bool)experimentSpecs["CompMesh"];
   bool gradUse = experimentSpecs["GradUse"];
   int admmIter = experimentSpecs["AdmmIter"];
+  double dtTol = experimentSpecs["DtTol"];
 
   nSteps = experimentSpecs["nSteps"];
   dt = experimentSpecs["dt"];
@@ -702,7 +706,7 @@ void setUpBoxExperiment(string testName, int numThreads, MonitorFunction<D> *mon
 
   cout << "running the algorithm" << endl;
   runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
-    type, numThreads, mon, rho, w, tau, methodType, gradUse, admmIter);
+    type, numThreads, mon, rho, w, tau, methodType, gradUse, admmIter, dtTol);
   cout << "finished running the algorithm" << endl;
 }
 
