@@ -42,17 +42,13 @@ public:
                 MeshInterpolator<D> &interp, bool computeGrad,
                 bool regularize);
 
-//     Eigen::SparseMatrix<double, Eigen::RowMajor> *jac;
     MatrixIter *jac;
     ParamIter *cgParams;
     double *tol;
     double *rhs;
 
-//     Eigen::SparseMatrix<double, Eigen::RowMajor> *sparseId;
-//     Eigen::SparseMatrix<double, Eigen::RowMajor> *sparseId;
     Eigen::VectorXd *dx;
     Eigen::VectorXd *xn;
-//     MatrixIter *matrix;
 
     Eigen::BiCGSTAB<Eigen::SparseMatrix<double>> *cg;
 

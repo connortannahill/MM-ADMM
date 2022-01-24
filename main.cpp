@@ -25,7 +25,7 @@ using namespace std;
 using namespace nlohmann;
 
 double circlePhi(double x, double y) {
-  double r = 0.4;
+  double r = 0.35;
   double cx = 0.5;
   double cy = 0.5;
   double xval = (x - cx);
@@ -141,6 +141,9 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
 
   cout << "nsteps = " << nSteps << endl;
   Mesh<D> *adaptiveMesh;
+  cout << "size of Vp " << Vp->rows() << ", " << Vp->cols() << endl;
+  cout << "size of F " << F->rows() << ", " << F->cols() << endl;
+  cout << "size of mask " << boundaryMask->size() << endl;
   if (!compMesh) {
     adaptiveMesh = new Mesh<D>(*Vp, *F, *boundaryMask, mon,
         numThreads, rho, w, tau, methodType, gradUse);
@@ -622,10 +625,6 @@ void setUpBoxExperiment(string testName, int numThreads, MonitorFunction<D> *mon
     type = NodeType::BOUNDARY_FIXED;
   }
 
-  // cout << "boundaryType = " << boundaryType << endl;
-  // cout << "type = " << type << endl;
-  // assert(false);
-
   bool compMesh = (bool)experimentSpecs["CompMesh"];
   bool gradUse = experimentSpecs["GradUse"];
   int admmIter = experimentSpecs["AdmmIter"];
@@ -710,6 +709,53 @@ void setUpBoxExperiment(string testName, int numThreads, MonitorFunction<D> *mon
   cout << "finished running the algorithm" << endl;
 }
 
+template <int D>
+void setUpFileExperiment(string testName, int numThreads, MonitorFunction<D> *mon,
+    json &experimentSpecs, string &triFile, string &pntsFile, string &maskFile) {
+  int methodType = experimentSpecs["Method"];
+  int nSteps;
+  double dt, tau, rho, w;
+
+  cout << "Dim = " << D << endl;
+
+  int boundaryType = experimentSpecs["BoundaryType"];
+
+  NodeType type;
+  if (boundaryType == 0) {
+    type = NodeType::BOUNDARY_FREE;
+  } else {
+    type = NodeType::BOUNDARY_FIXED;
+  }
+
+  bool compMesh = (bool)experimentSpecs["CompMesh"];
+  bool gradUse = experimentSpecs["GradUse"];
+  int admmIter = experimentSpecs["AdmmIter"];
+  double dtTol = experimentSpecs["DtTol"];
+
+  nSteps = experimentSpecs["nSteps"];
+  dt = experimentSpecs["dt"];
+  tau = experimentSpecs["tau"];
+  rho = experimentSpecs["rho"];
+  w = experimentSpecs["w"];
+
+  // Parameters for the mesh
+  std::unordered_map<std::string, double> params;
+  params["d"] = D;
+  params["rho"] = rho;
+  params["tau"] = tau;
+
+  Eigen::MatrixXd *Vp = new Eigen::MatrixXd(1, 1);
+  Eigen::MatrixXi *F = new Eigen::MatrixXi(1, 1);
+  vector<NodeType> *boundaryMask = new vector<NodeType>(0);
+  utils::readTriangles(D, triFile.c_str(), pntsFile.c_str(), maskFile.c_str(),
+    *F, *Vp, *boundaryMask);
+  Eigen::MatrixXd *Vc = new Eigen::MatrixXd(*Vp);
+
+  cout << "running the algorithm" << endl;
+  runAlgo(testName, nSteps, dt, params, Vc, Vp, compMesh, F, boundaryMask,
+    type, numThreads, mon, rho, w, tau, methodType, gradUse, admmIter, dtTol);
+  cout << "finished running the algorithm" << endl;
+}
 
 int main(int argc, char *argv[]) {
   srand (69);
@@ -737,6 +783,25 @@ int main(int argc, char *argv[]) {
   cout << experimentSpecs << endl;
 
   string testType(experimentSpecs["TestType"]);
+
+  bool isTriFile = experimentSpecs.contains("TrianglesFile");
+  bool isPntsFile = experimentSpecs.contains("PntsFile");
+  bool isMaskFile = experimentSpecs.contains("MaskFile");
+
+  string triFile = "";
+  string pntsFile = "";
+  string maskFile = "";
+
+  // Get file names if that mode chosen
+  if (testType.compare("FromFile") == 0) {
+    if (isTriFile + isPntsFile + isMaskFile < 3) {
+      cout << "PROBLEM: Need to have points file and triangle file" << endl;
+    } else {
+      triFile = experimentSpecs["TrianglesFile"];
+      pntsFile = experimentSpecs["PntsFile"];
+      maskFile = experimentSpecs["MaskFile"];
+    }
+  }
 
   int D = experimentSpecs["Dim"];
 
@@ -791,6 +856,14 @@ int main(int argc, char *argv[]) {
       setUpShoulderExperiment<2>(inFileName, numThreads, Mvals.at(monType), experimentSpecs);
     } else {
       setUpShoulderExperiment<3>(inFileName, numThreads, Mvals3D.at(monType), experimentSpecs);
+    }
+  } else if (testType.compare("FromFile") == 0) {
+    if (D == 2) {
+      setUpFileExperiment<2>(inFileName, numThreads, Mvals.at(monType), experimentSpecs,
+        triFile, pntsFile, maskFile);
+    } else {
+      setUpFileExperiment<3>(inFileName, numThreads, Mvals3D.at(monType), experimentSpecs,
+        triFile, pntsFile, maskFile);
     }
   } else {
     assert(false);
