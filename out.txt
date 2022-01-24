@@ -1,0 +1,193 @@
+Monitor240
+{"BoundaryType":0,"CompMesh":true,"Dim":2,"Method":0,"MonType":3,"TestType":"SquareGrid","dt":0.0115,"nSteps":1000,"nx":40,"ny":40,"rho":500,"tau":0.5,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"BoundaryType":0,"CompMesh":true,"Dim":2,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.0115,"nSteps":1000,"nx":40,"ny":40,"rho":500,"tau":0.5,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+creating the adaptive mesh
+finsihed creating the adaptive mesh
+creating the solver
+finihsed creating the solver
+||grad|| = 0.276292
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.00253409
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000274492
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 6.55226e-05
+Newton in 0 iters
+d/dt = -inf
+Ih = 7.00849
+||grad|| = 0.117936
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.00196567
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000213155
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 4.88954e-05
+Newton in 0 iters
+d/dt = -0.281861
+Ih = 7.00525
+||grad|| = 0.0520377
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.00137779
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000166814
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 3.76024e-05
+Newton in 0 iters
+d/dt = -0.253224
+Ih = 7.00234
+||grad|| = 0.0296972
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000964165
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000131742
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 2.95687e-05
+Newton in 0 iters
+d/dt = -0.229085
+Ih = 6.9997
+||grad|| = 0.0268151
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000696559
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000104721
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 2.35124e-05
+Newton in 0 iters
+d/dt = -0.207734
+Ih = 6.99731
+||grad|| = 0.0249492
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000541343
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 8.46581e-05
+Newton in 0 iters
+d/dt = -0.188647
+Ih = 6.99514
+||grad|| = 0.0233296
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000459804
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 7.00323e-05
+Newton in 0 iters
+d/dt = -0.171685
+Ih = 6.99317
+||grad|| = 0.0218723
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000405115
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 5.93411e-05
+Newton in 0 iters
+d/dt = -0.156446
+Ih = 6.99137
+||grad|| = 0.0205483
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000365036
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 5.12206e-05
+Newton in 0 iters
+d/dt = -0.14283
+Ih = 6.98973
+||grad|| = 0.0193377
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000335174
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 4.50759e-05
+Newton in 0 iters
+d/dt = -0.130481
+Ih = 6.98823
+||grad|| = 0.0182211
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 0.000311198
+building euler jac
+factorizing matrix
+finsihed factorizing matrix
+niter = 2
+||grad|| = 4.011e-05
+Newton in 0 iters
+d/dt = -0.119302
+Ih = 6.98685
+||grad|| = 0.0171845
+building euler jac
