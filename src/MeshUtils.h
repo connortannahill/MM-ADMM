@@ -7,6 +7,12 @@
 #include <map>
 #include <unordered_map>
 #include "Mesh.h"
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <filesystem>
+#include <unistd.h>
 
 using namespace std;
 
@@ -346,7 +352,7 @@ namespace utils {
         //               };
         // double gradNorm = sqrt(grad[0]*grad[0] + grad[1]*grad[1]);
 
-        return phiFun(x, y);///(gradNorm);
+        return phiFun(x, y);//(gradNorm);
     }
 
     inline double phiSdf(double x, double y, double z, std::function<double(double,double, double)> phiFun) {
@@ -367,12 +373,16 @@ namespace utils {
 
         // Compute the inward normal vector
         Eigen::Vector<double, 2> phiGrad;
-        phiGrad[0] = (phiSdf(pnt[0]+h, pnt[1], phiFun) - phiSdf(pnt[0]-h, pnt[1], phiFun))/(2.0*h);
-        phiGrad[1] = (phiSdf(pnt[0], pnt[1]+h, phiFun) - phiSdf(pnt[0], pnt[1]-h, phiFun))/(2.0*h);
+        // phiGrad[0] = (phiSdf(pnt[0]+h, pnt[1], phiFun) - phiSdf(pnt[0]-h, pnt[1], phiFun))/(2.0*h);
+        // phiGrad[1] = (phiSdf(pnt[0], pnt[1]+h, phiFun) - phiSdf(pnt[0], pnt[1]-h, phiFun))/(2.0*h);
+        double xvals = (pnt[0] - 0.5);
+        double yvals = (pnt[1] - 0.5);
+        phiGrad[0] = (xvals) / sqrt(xvals*xvals + yvals*yvals);//(phiFun(pnt[0]+h, pnt[1]) - phiFun(pnt[0]-h, pnt[1]))/(2.0*h);
+        phiGrad[1] = (yvals) / sqrt(xvals*xvals + yvals*yvals);//(phiFun(pnt[0], pnt[1]+h) - phiFun(pnt[0], pnt[1]-h))/(2.0*h);
 
-        phiGrad.normalize();
+        // phiGrad.normalize();
 
-        pnt = pnt - phiSdf(pnt[0], pnt[1], phiFun) * phiGrad;
+        pnt = pnt - phiFun(pnt[0], pnt[1]) * phiGrad;
     }
 
     inline void interpolateBoundaryLocation(Eigen::Vector<double, 3> &pnt, std::function<double(double, double, double)> phiFun,
@@ -440,9 +450,9 @@ namespace utils {
             x1 = (*Vp)((*F)(sId, 1), Eigen::all);
             x2 = (*Vp)((*F)(sId, 2), Eigen::all);
 
-            double phiX0 = phiSdf(x0[0], x0[1], phiFun);
-            double phiX1 = phiSdf(x1[0], x1[1], phiFun);
-            double phiX2 = phiSdf(x2[0], x2[1], phiFun);
+            double phiX0 = phiFun(x0[0], x0[1]);
+            double phiX1 = phiFun(x1[0], x1[1]);
+            double phiX2 = phiFun(x2[0], x2[1]);
 
             // If all of the points are outside the mesh domain, remove the simplex entirely
             if (phiX0 > -EPS && phiX1 > -EPS && phiX2 > -EPS) {
@@ -512,7 +522,6 @@ namespace utils {
 
         *Vc = *Vcnew;
         *Vp = *Vpnew;
-
 
         delete Vcnew;
         delete Vpnew;
@@ -655,6 +664,72 @@ namespace utils {
         Vc = Vcnew;
         delete Vp;
         Vp = Vpnew;
+    }
+
+    inline void readTriangles(int D, const char *triFileName, const char *pntFileName,
+            const char *maskFileName, Eigen::MatrixXi &F, Eigen::MatrixXd &Vp,
+            vector<NodeType> &boundaryMask) {
+
+        vector<double> pntData;
+        vector<int> triData;
+        string line, word;
+        fstream fin;
+
+        fin.open(triFileName);
+        assert(fin);
+
+        int count = 0;
+        while (fin) {
+            getline(fin, line);
+            stringstream s(line);
+            while (getline(s, word, ',')) {
+                triData.push_back(stoi(word));
+            }
+            count++;
+        }
+        fin.close();
+
+        // Read points
+        fin.open(pntFileName);
+        while (fin) {
+            getline(fin, line);
+            stringstream s(line);
+            while (getline(s, word, ',')) {
+                pntData.push_back(stod(word));
+            }
+        }
+        fin.close();
+
+        // Read mask
+        fin.open(maskFileName);
+        boundaryMask.clear();
+        while (fin) {
+            int tmp;
+            fin >> tmp;
+            cout << tmp << endl;
+            boundaryMask.push_back((NodeType)tmp);
+        }
+        fin.close();
+
+        // Resize the matrices based on the inputs
+        F.resize(triData.size() / (D+1), D+1);
+        Vp.resize(pntData.size() / D, D);
+
+        int off = 0;
+        for (int i = 0; i < F.rows(); i++) {
+            for (int j = 0; j < F.cols(); j++) {
+                F(i, j) = triData.at(off);
+                off++;
+            }
+        }
+
+        off = 0;
+        for (int i = 0; i < Vp.rows(); i++) {
+            for (int j = 0; j < Vp.cols(); j++) {
+                Vp(i, j) = pntData.at(off);
+                off++;
+            }
+        }
     }
 }
 

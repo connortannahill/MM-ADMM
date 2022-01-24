@@ -241,6 +241,7 @@ void Mesh<D>::projectOntoBoundary(int nodeId, Eigen::Vector<double, D> &node) {
 template <int D>
 void Mesh<D>::reOrientElements(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F) {
     Eigen::Matrix<double,D,D> E;
+    cout << "Xp size = " << Xp.rows() << ", " << Xp.cols() << endl;
 
     // Compute the edge matrix
     for (int i = 0; i < F.rows(); i++) {
@@ -399,15 +400,20 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
     } else {
         this->Vc = nullptr;
     }
+    cout << "line 402" << endl;
 
     this->Vp = &Xp;
 
+    cout << "line 406" << endl;
     // Should only use positive orientation elements
     reOrientElements(Xp, F);
+    cout << "line 409" << endl;
 
     this->F = &F;
 
+    cout << "line 413" << endl;
     buildSimplexMap();
+    cout << "line 415" << endl;
 
     this->boundaryMask = &boundaryMask;
 
@@ -418,7 +424,9 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
     buildFaceList();
 
     // Build the matrix for backwards Euler's
+    cout << "line 426" << endl;
     buildMatrix();
+    cout << "line 428" << endl;
 
 
 #ifdef THREADS
@@ -426,10 +434,12 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
 #endif
 
     // Create mesh interpolator
+    cout << "line 436" << endl;
     mapEvaluator = new MeshInterpolator<D>();
     mapEvaluator->updateMesh((*this->Vp), (*this->F));
     mapEvaluator->interpolateMonitor(*Mon);
     this->nPnts = Xp.rows();
+    cout << "line 441" << endl;
 
     this->Mon = Mon;
 
@@ -622,7 +632,7 @@ double Mesh<D>::eulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad) 
     Eigen::Vector<double, D*(D+1)> xi_i;
     Eigen::Vector<double, D> pnt;
 
-    double Ihorig = eulerGrad(x, grad);
+    double Ihorig = eulerStepMod(x, grad);
 
     x -= (dt / tau) * grad;
 
