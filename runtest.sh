@@ -1,2 +1,2 @@
 #!/bin/bash
-sbatch meshjob3.sh
+sbatch meshjob4.sh

@@ -21364,3 +21364,8178 @@ d/dt = -0.0288011
 Ih = 7.84552
 d/dt = -0.0284612
 Ih = 7.84509
+d/dt = -0.0281195
+Ih = 7.84467
+d/dt = -0.027777
+Ih = 7.84426
+d/dt = -0.0274314
+Ih = 7.84384
+d/dt = -0.0270836
+Ih = 7.84344
+d/dt = -0.0267358
+Ih = 7.84304
+d/dt = -0.0263859
+Ih = 7.84264
+d/dt = -0.0260332
+Ih = 7.84225
+d/dt = -0.0256772
+Ih = 7.84186
+d/dt = -0.0253182
+Ih = 7.84149
+d/dt = -0.024956
+Ih = 7.84111
+d/dt = -0.0245916
+Ih = 7.84074
+d/dt = -0.0242256
+Ih = 7.84038
+d/dt = -0.0238567
+Ih = 7.84002
+d/dt = -0.0234861
+Ih = 7.83967
+d/dt = -0.0231154
+Ih = 7.83932
+d/dt = -0.0227442
+Ih = 7.83898
+d/dt = -0.0223713
+Ih = 7.83864
+d/dt = -0.0219986
+Ih = 7.83831
+d/dt = -0.0216249
+Ih = 7.83799
+d/dt = -0.0212501
+Ih = 7.83767
+d/dt = -0.0208758
+Ih = 7.83736
+d/dt = -0.0205013
+Ih = 7.83705
+d/dt = -0.0201254
+Ih = 7.83675
+d/dt = -0.0197497
+Ih = 7.83645
+d/dt = -0.0193753
+Ih = 7.83616
+d/dt = -0.0190005
+Ih = 7.83588
+d/dt = -0.018626
+Ih = 7.8356
+d/dt = -0.0182526
+Ih = 7.83532
+d/dt = -0.0178799
+Ih = 7.83506
+d/dt = -0.0175081
+Ih = 7.83479
+d/dt = -0.0171368
+Ih = 7.83454
+d/dt = -0.0167664
+Ih = 7.83428
+d/dt = -0.0163986
+Ih = 7.83404
+d/dt = -0.0160336
+Ih = 7.8338
+d/dt = -0.0156715
+Ih = 7.83356
+d/dt = -0.0153117
+Ih = 7.83333
+d/dt = -0.0149537
+Ih = 7.83311
+d/dt = -0.0145994
+Ih = 7.83289
+d/dt = -0.0142479
+Ih = 7.83268
+d/dt = -0.013898
+Ih = 7.83247
+d/dt = -0.0135501
+Ih = 7.83226
+d/dt = -0.0132046
+Ih = 7.83207
+d/dt = -0.0128623
+Ih = 7.83187
+d/dt = -0.0125238
+Ih = 7.83169
+d/dt = -0.0121887
+Ih = 7.8315
+d/dt = -0.0118568
+Ih = 7.83133
+d/dt = -0.0115284
+Ih = 7.83115
+d/dt = -0.0112036
+Ih = 7.83098
+d/dt = -0.010883
+Ih = 7.83082
+d/dt = -0.0105657
+Ih = 7.83066
+d/dt = -0.0102513
+Ih = 7.83051
+d/dt = -0.00994004
+Ih = 7.83036
+converged
+Took 221.335 seconds
+Took 100 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":1,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+line 402
+line 406
+Xp size = 205441, 2
+line 409
+line 413
+line 415
+line 426
+line 428
+line 436
+line 441
+creating the solver
+finihsed creating the solver
+d/dt = -inf
+Ih = 7.86983
+d/dt = -0.0328881
+Ih = 7.86933
+d/dt = 0.745049
+Ih = 7.88051
+converged
+Took 0.50077 seconds
+Took 2 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":1,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+line 402
+line 406
+Xp size = 205441, 2
+line 409
+line 413
+line 415
+line 426
+line 428
+line 436
+line 441
+creating the solver
+finihsed creating the solver
+d/dt = -inf
+Ih = 7.86983
+d/dt = -0.0328881
+Ih = 7.86933
+d/dt = 0.745049
+Ih = 7.88051
+converged
+Took 0.519816 seconds
+Took 2 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":1,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+line 402
+line 406
+Xp size = 205441, 2
+line 409
+line 413
+line 415
+line 426
+line 428
+line 436
+line 441
+creating the solver
+finihsed creating the solver
+d/dt = -inf
+Ih = 7.86983
+d/dt = -0.0328881
+Ih = 7.86933
+d/dt = 0.745049
+Ih = 7.88051
+converged
+Took 0.498837 seconds
+Took 2 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":1,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+line 402
+line 406
+Xp size = 205441, 2
+line 409
+line 413
+line 415
+line 426
+line 428
+line 436
+line 441
+creating the solver
+finihsed creating the solver
+d/dt = -inf
+Ih = 7.86983
+d/dt = -0.0328881
+Ih = 7.86933
+d/dt = 0.745049
+Ih = 7.88051
+converged
+Took 0.52071 seconds
+Took 2 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":1,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+line 402
+line 406
+Xp size = 205441, 2
+line 409
+line 413
+line 415
+line 426
+line 428
+line 436
+line 441
+creating the solver
+finihsed creating the solver
+d/dt = -inf
+Ih = 7.86983
+d/dt = -0.0328881
+Ih = 7.86933
+d/dt = 0.745049
+Ih = 7.88051
+converged
+Took 0.501464 seconds
+Took 2 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":1,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+line 402
+line 406
+Xp size = 205441, 2
+line 409
+line 413
+line 415
+line 426
+line 428
+line 436
+line 441
+creating the solver
+finihsed creating the solver
+d/dt = -inf
+Ih = 7.86983
+d/dt = -0.0328881
+Ih = 7.86933
+d/dt = 0.745049
+Ih = 7.88051
+converged
+Took 0.504683 seconds
+Took 2 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":1,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+line 402
+line 406
+Xp size = 205441, 2
+line 409
+line 413
+line 415
+line 426
+line 428
+line 436
+line 441
+creating the solver
+finihsed creating the solver
+d/dt = -inf
+Ih = 7.86983
+d/dt = -0.0328881
+Ih = 7.86933
+d/dt = 0.745049
+Ih = 7.88051
+converged
+Took 0.525183 seconds
+Took 2 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":1,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+line 402
+line 406
+Xp size = 205441, 2
+line 409
+line 413
+line 415
+line 426
+line 428
+line 436
+line 441
+creating the solver
+finihsed creating the solver
+d/dt = -inf
+Ih = 7.86983
+d/dt = -0.0328881
+Ih = 7.86933
+d/dt = 0.745049
+Ih = 7.88051
+converged
+Took 0.527064 seconds
+Took 2 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":1,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+Xp size = 205441, 2
+creating the solver
+finished creating the solver
+dt = 0.015
+tau = 0.1
+d/dt = -inf
+Ih = 7.86983
+dt = 0.015
+tau = 0.1
+d/dt = -0.0328881
+Ih = 7.86933
+dt = 0.015
+tau = 0.1
+d/dt = 0.745049
+Ih = 7.88051
+converged
+Took 0.5148 seconds
+Took 2 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":1,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+Xp size = 205441, 2
+creating the solver
+finished creating the solver
+dt = 0.015
+tau = 0.1
+d/dt = -inf
+Ih = 7.86983
+dt = 0.015
+tau = 0.1
+d/dt = -0.0328881
+Ih = 7.86933
+dt = 0.015
+tau = 0.1
+d/dt = 0.745049
+Ih = 7.88051
+converged
+Took 0.530578 seconds
+Took 2 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+Xp size = 205441, 2
+creating the solver
+finished creating the solver
+||grad|| = 9.86916
+building euler jac
+finsihed factorizing matrix
+cgiter = 7
+||grad|| = 0.0110696
+cgiter = 9
+||grad|| = 3.09316e-05
+Newton in 2 iters
+d/dt = -inf
+Ih = 7.86927
+||grad|| = 0.693618
+cgiter = 8
+||grad|| = 0.00181322
+cgiter = 9
+||grad|| = 1.267e-05
+Newton in 2 iters
+d/dt = -0.0367291
+Ih = 7.86871
+||grad|| = 0.0708507
+cgiter = 9
+||grad|| = 0.000362897
+Newton in 1 iters
+d/dt = -0.0360818
+Ih = 7.86817
+||grad|| = 0.0478921
+cgiter = 9
+||grad|| = 0.000169681
+Newton in 1 iters
+d/dt = -0.03548
+Ih = 7.86764
+||grad|| = 0.0443998
+cgiter = 9
+||grad|| = 0.000122111
+Newton in 1 iters
+d/dt = -0.0349069
+Ih = 7.86712
+||grad|| = 0.0420515
+cgiter = 8
+||grad|| = 9.87487e-05
+Newton in 1 iters
+d/dt = -0.0343582
+Ih = 7.8666
+||grad|| = 0.0403088
+cgiter = 8
+||grad|| = 8.38515e-05
+Newton in 1 iters
+d/dt = -0.0338307
+Ih = 7.86609
+||grad|| = 0.038927
+cgiter = 8
+||grad|| = 7.3624e-05
+Newton in 1 iters
+d/dt = -0.03332
+Ih = 7.86559
+||grad|| = 0.0377816
+cgiter = 8
+||grad|| = 6.63661e-05
+Newton in 1 iters
+d/dt = -0.0328241
+Ih = 7.8651
+||grad|| = 0.0368
+cgiter = 8
+||grad|| = 6.08405e-05
+Newton in 1 iters
+d/dt = -0.0323403
+Ih = 7.86462
+||grad|| = 0.0359389
+cgiter = 8
+||grad|| = 5.66238e-05
+Newton in 1 iters
+d/dt = -0.0318688
+Ih = 7.86414
+||grad|| = 0.0351696
+cgiter = 8
+||grad|| = 5.38412e-05
+Newton in 1 iters
+d/dt = -0.0314088
+Ih = 7.86367
+||grad|| = 0.0344721
+cgiter = 7
+||grad|| = 5.20667e-05
+Newton in 1 iters
+d/dt = -0.0309595
+Ih = 7.8632
+||grad|| = 0.0338324
+cgiter = 7
+||grad|| = 5.12511e-05
+Newton in 1 iters
+d/dt = -0.0305202
+Ih = 7.86275
+||grad|| = 0.0332409
+cgiter = 7
+||grad|| = 5.22328e-05
+Newton in 1 iters
+d/dt = -0.0300932
+Ih = 7.86229
+||grad|| = 0.032702
+cgiter = 7
+||grad|| = 5.50446e-05
+Newton in 1 iters
+d/dt = -0.0296744
+Ih = 7.86185
+||grad|| = 0.0322207
+cgiter = 7
+||grad|| = 5.98305e-05
+Newton in 1 iters
+d/dt = -0.0292632
+Ih = 7.86141
+||grad|| = 0.0317923
+cgiter = 8
+||grad|| = 6.73433e-05
+Newton in 1 iters
+d/dt = -0.0288596
+Ih = 7.86098
+||grad|| = 0.031421
+cgiter = 8
+||grad|| = 7.89702e-05
+Newton in 1 iters
+d/dt = -0.0284637
+Ih = 7.86055
+||grad|| = 0.0311241
+cgiter = 8
+||grad|| = 9.71017e-05
+Newton in 1 iters
+d/dt = -0.0280747
+Ih = 7.86013
+||grad|| = 0.0309379
+cgiter = 9
+||grad|| = 0.000125893
+Newton in 1 iters
+d/dt = -0.0276927
+Ih = 7.85971
+||grad|| = 0.0309182
+cgiter = 9
+||grad|| = 0.0001723
+Newton in 1 iters
+d/dt = -0.027318
+Ih = 7.8593
+||grad|| = 0.031149
+cgiter = 9
+||grad|| = 0.000248678
+Newton in 1 iters
+d/dt = -0.0269502
+Ih = 7.8589
+||grad|| = 0.0317977
+cgiter = 9
+||grad|| = 0.000377228
+Newton in 1 iters
+d/dt = -0.0265891
+Ih = 7.8585
+||grad|| = 0.0331649
+cgiter = 9
+||grad|| = 0.000598635
+Newton in 1 iters
+d/dt = -0.0262352
+Ih = 7.85811
+||grad|| = 0.0357935
+cgiter = 9
+||grad|| = 0.000988368
+Newton in 1 iters
+d/dt = -0.0258882
+Ih = 7.85772
+||grad|| = 0.040724
+cgiter = 9
+||grad|| = 0.0016909
+cgiter = 7
+||grad|| = 0.000216657
+Newton in 2 iters
+d/dt = -0.0255467
+Ih = 7.85734
+||grad|| = 0.0295541
+cgiter = 9
+||grad|| = 0.00028522
+Newton in 1 iters
+d/dt = -0.0252111
+Ih = 7.85696
+||grad|| = 0.0307332
+cgiter = 9
+||grad|| = 0.00049576
+Newton in 1 iters
+d/dt = -0.0248813
+Ih = 7.85658
+||grad|| = 0.0332738
+cgiter = 9
+||grad|| = 0.000901534
+Newton in 1 iters
+d/dt = -0.0245567
+Ih = 7.85622
+||grad|| = 0.0384848
+cgiter = 9
+||grad|| = 0.00169488
+cgiter = 7
+||grad|| = 0.000238762
+Newton in 2 iters
+d/dt = -0.0242377
+Ih = 7.85585
+||grad|| = 0.0287766
+cgiter = 9
+||grad|| = 0.000367393
+Newton in 1 iters
+d/dt = -0.0239236
+Ih = 7.85549
+||grad|| = 0.0307351
+cgiter = 9
+||grad|| = 0.000705186
+Newton in 1 iters
+d/dt = -0.0236146
+Ih = 7.85514
+||grad|| = 0.0350546
+cgiter = 9
+||grad|| = 0.00140968
+cgiter = 7
+||grad|| = 0.000209609
+Newton in 2 iters
+d/dt = -0.0233109
+Ih = 7.85479
+||grad|| = 0.027787
+cgiter = 9
+||grad|| = 0.000356176
+Newton in 1 iters
+d/dt = -0.0230117
+Ih = 7.85445
+||grad|| = 0.0298186
+cgiter = 9
+||grad|| = 0.000719414
+Newton in 1 iters
+d/dt = -0.0227175
+Ih = 7.8541
+||grad|| = 0.0345378
+cgiter = 9
+||grad|| = 0.00151368
+cgiter = 7
+||grad|| = 0.000237111
+Newton in 2 iters
+d/dt = -0.0224291
+Ih = 7.85377
+||grad|| = 0.0274022
+cgiter = 9
+||grad|| = 0.000433397
+Newton in 1 iters
+d/dt = -0.022145
+Ih = 7.85344
+||grad|| = 0.030162
+cgiter = 9
+||grad|| = 0.000931353
+Newton in 1 iters
+d/dt = -0.0218655
+Ih = 7.85311
+||grad|| = 0.0367685
+cgiter = 9
+||grad|| = 0.00207886
+cgiter = 7
+||grad|| = 0.000341938
+Newton in 2 iters
+d/dt = -0.0215903
+Ih = 7.85278
+||grad|| = 0.0278951
+cgiter = 9
+||grad|| = 0.000654242
+Newton in 1 iters
+d/dt = -0.0213189
+Ih = 7.85246
+||grad|| = 0.0325294
+cgiter = 9
+||grad|| = 0.00148804
+cgiter = 7
+||grad|| = 0.000250881
+Newton in 2 iters
+d/dt = -0.0210525
+Ih = 7.85215
+||grad|| = 0.0265141
+cgiter = 9
+||grad|| = 0.000510929
+Newton in 1 iters
+d/dt = -0.0207903
+Ih = 7.85184
+||grad|| = 0.0301396
+cgiter = 9
+||grad|| = 0.00119191
+cgiter = 7
+||grad|| = 0.000205535
+Newton in 2 iters
+d/dt = -0.0205322
+Ih = 7.85153
+||grad|| = 0.0256118
+cgiter = 9
+||grad|| = 0.000439001
+Newton in 1 iters
+d/dt = -0.0202776
+Ih = 7.85122
+||grad|| = 0.0287435
+cgiter = 9
+||grad|| = 0.00104362
+cgiter = 7
+||grad|| = 0.000184083
+Newton in 2 iters
+d/dt = -0.020027
+Ih = 7.85092
+||grad|| = 0.0249835
+cgiter = 9
+||grad|| = 0.000411492
+Newton in 1 iters
+d/dt = -0.0197799
+Ih = 7.85063
+||grad|| = 0.0279677
+cgiter = 9
+||grad|| = 0.00100408
+cgiter = 7
+||grad|| = 0.000181121
+Newton in 2 iters
+d/dt = -0.0195362
+Ih = 7.85033
+||grad|| = 0.0245664
+cgiter = 9
+||grad|| = 0.000417695
+Newton in 1 iters
+d/dt = -0.019296
+Ih = 7.85004
+||grad|| = 0.0276746
+cgiter = 9
+||grad|| = 0.00104311
+cgiter = 7
+||grad|| = 0.000192687
+Newton in 2 iters
+d/dt = -0.0190598
+Ih = 7.84976
+||grad|| = 0.0243333
+cgiter = 9
+||grad|| = 0.000457787
+Newton in 1 iters
+d/dt = -0.018827
+Ih = 7.84948
+||grad|| = 0.0278615
+cgiter = 9
+||grad|| = 0.00117858
+cgiter = 7
+||grad|| = 0.000222938
+Newton in 2 iters
+d/dt = -0.0185975
+Ih = 7.8492
+||grad|| = 0.02433
+cgiter = 9
+||grad|| = 0.000539744
+Newton in 1 iters
+d/dt = -0.0183715
+Ih = 7.84892
+||grad|| = 0.0286524
+cgiter = 9
+||grad|| = 0.00142704
+cgiter = 7
+||grad|| = 0.000276552
+Newton in 2 iters
+d/dt = -0.0181496
+Ih = 7.84865
+||grad|| = 0.0246248
+cgiter = 9
+||grad|| = 0.000684
+Newton in 1 iters
+d/dt = -0.0179311
+Ih = 7.84838
+||grad|| = 0.0303299
+cgiter = 9
+||grad|| = 0.00186831
+cgiter = 7
+||grad|| = 0.000370521
+Newton in 2 iters
+d/dt = -0.0177158
+Ih = 7.84811
+||grad|| = 0.0254259
+cgiter = 9
+||grad|| = 0.000929957
+Newton in 1 iters
+d/dt = -0.0175033
+Ih = 7.84785
+||grad|| = 0.0334541
+cgiter = 8
+||grad|| = 0.00260304
+cgiter = 7
+||grad|| = 0.000527912
+Newton in 2 iters
+d/dt = -0.0172937
+Ih = 7.84759
+||grad|| = 0.0270318
+cgiter = 9
+||grad|| = 0.0013533
+cgiter = 7
+||grad|| = 0.000274929
+Newton in 2 iters
+d/dt = -0.0170871
+Ih = 7.84734
+||grad|| = 0.0238001
+cgiter = 9
+||grad|| = 0.000725539
+Newton in 1 iters
+d/dt = -0.016884
+Ih = 7.84708
+||grad|| = 0.0301065
+cgiter = 9
+||grad|| = 0.00208432
+cgiter = 7
+||grad|| = 0.000433821
+Newton in 2 iters
+d/dt = -0.0166842
+Ih = 7.84683
+||grad|| = 0.0254416
+cgiter = 9
+||grad|| = 0.00115899
+cgiter = 7
+||grad|| = 0.000241146
+Newton in 2 iters
+d/dt = -0.0164873
+Ih = 7.84659
+||grad|| = 0.0229222
+cgiter = 9
+||grad|| = 0.000662829
+Newton in 1 iters
+d/dt = -0.0162929
+Ih = 7.84634
+||grad|| = 0.028766
+cgiter = 9
+||grad|| = 0.00195588
+cgiter = 7
+||grad|| = 0.000417357
+Newton in 2 iters
+d/dt = -0.0161015
+Ih = 7.8461
+||grad|| = 0.0248077
+cgiter = 9
+||grad|| = 0.00115514
+cgiter = 7
+||grad|| = 0.000246423
+Newton in 2 iters
+d/dt = -0.0159124
+Ih = 7.84586
+||grad|| = 0.0225383
+cgiter = 9
+||grad|| = 0.000699505
+Newton in 1 iters
+d/dt = -0.0157257
+Ih = 7.84563
+||grad|| = 0.028847
+cgiter = 9
+||grad|| = 0.00212451
+cgiter = 7
+||grad|| = 0.000464733
+Newton in 2 iters
+d/dt = -0.0155415
+Ih = 7.84539
+||grad|| = 0.0249871
+cgiter = 9
+||grad|| = 0.00132586
+cgiter = 7
+||grad|| = 0.000290363
+Newton in 2 iters
+d/dt = -0.0153598
+Ih = 7.84516
+||grad|| = 0.0226575
+cgiter = 9
+||grad|| = 0.000845574
+Newton in 1 iters
+d/dt = -0.0151804
+Ih = 7.84493
+||grad|| = 0.0305049
+cgiter = 8
+||grad|| = 0.00264723
+cgiter = 7
+||grad|| = 0.000593462
+Newton in 2 iters
+d/dt = -0.0150035
+Ih = 7.84471
+||grad|| = 0.0262252
+cgiter = 9
+||grad|| = 0.0017394
+cgiter = 7
+||grad|| = 0.000391143
+Newton in 2 iters
+d/dt = -0.0148287
+Ih = 7.84449
+||grad|| = 0.0235231
+cgiter = 9
+||grad|| = 0.00116417
+cgiter = 7
+||grad|| = 0.000262397
+Newton in 2 iters
+d/dt = -0.0146564
+Ih = 7.84427
+||grad|| = 0.0217486
+cgiter = 9
+||grad|| = 0.000798181
+Newton in 1 iters
+d/dt = -0.0144865
+Ih = 7.84405
+||grad|| = 0.0293021
+cgiter = 8
+||grad|| = 0.00258941
+cgiter = 7
+||grad|| = 0.00059724
+Newton in 2 iters
+d/dt = -0.0143195
+Ih = 7.84383
+||grad|| = 0.0257678
+cgiter = 9
+||grad|| = 0.00181229
+cgiter = 7
+||grad|| = 0.000419736
+Newton in 2 iters
+d/dt = -0.0141545
+Ih = 7.84362
+||grad|| = 0.0233724
+cgiter = 9
+||grad|| = 0.00129772
+cgiter = 7
+||grad|| = 0.000301308
+Newton in 2 iters
+d/dt = -0.0139915
+Ih = 7.84341
+||grad|| = 0.0217202
+cgiter = 9
+||grad|| = 0.000944728
+Newton in 1 iters
+d/dt = -0.0138307
+Ih = 7.84321
+||grad|| = 0.0308901
+cgiter = 8
+||grad|| = 0.00315962
+cgiter = 7
+||grad|| = 0.000749806
+Newton in 2 iters
+d/dt = -0.0136719
+Ih = 7.843
+||grad|| = 0.0272875
+cgiter = 8
+||grad|| = 0.00236141
+cgiter = 7
+||grad|| = 0.000562709
+Newton in 2 iters
+d/dt = -0.0135148
+Ih = 7.8428
+||grad|| = 0.0247341
+cgiter = 9
+||grad|| = 0.0017883
+cgiter = 7
+||grad|| = 0.000428235
+Newton in 2 iters
+d/dt = -0.0133598
+Ih = 7.8426
+||grad|| = 0.022869
+cgiter = 9
+||grad|| = 0.00138166
+cgiter = 7
+||grad|| = 0.000331758
+Newton in 2 iters
+d/dt = -0.0132074
+Ih = 7.8424
+||grad|| = 0.0214916
+cgiter = 9
+||grad|| = 0.00108231
+cgiter = 7
+||grad|| = 0.000260514
+Newton in 2 iters
+d/dt = -0.0130572
+Ih = 7.8422
+||grad|| = 0.0204408
+cgiter = 9
+||grad|| = 0.000863289
+Newton in 1 iters
+d/dt = -0.0129089
+Ih = 7.84201
+||grad|| = 0.0290156
+cgiter = 8
+||grad|| = 0.00302141
+cgiter = 7
+||grad|| = 0.000743804
+Newton in 2 iters
+d/dt = -0.0127626
+Ih = 7.84182
+||grad|| = 0.0265375
+cgiter = 8
+||grad|| = 0.00245025
+cgiter = 7
+||grad|| = 0.000606279
+Newton in 2 iters
+d/dt = -0.0126178
+Ih = 7.84163
+||grad|| = 0.0246349
+cgiter = 9
+||grad|| = 0.0020259
+cgiter = 7
+||grad|| = 0.00050348
+Newton in 2 iters
+d/dt = -0.0124746
+Ih = 7.84144
+||grad|| = 0.0231615
+cgiter = 9
+||grad|| = 0.00169406
+cgiter = 7
+||grad|| = 0.000422884
+Newton in 2 iters
+d/dt = -0.0123335
+Ih = 7.84126
+||grad|| = 0.0219914
+cgiter = 9
+||grad|| = 0.0014411
+cgiter = 7
+||grad|| = 0.000360955
+Newton in 2 iters
+d/dt = -0.0121939
+Ih = 7.84107
+||grad|| = 0.0210588
+cgiter = 9
+||grad|| = 0.00123969
+cgiter = 7
+||grad|| = 0.000311638
+Newton in 2 iters
+d/dt = -0.012056
+Ih = 7.84089
+||grad|| = 0.0202952
+cgiter = 9
+||grad|| = 0.00108319
+cgiter = 7
+||grad|| = 0.000273059
+Newton in 2 iters
+d/dt = -0.01192
+Ih = 7.84071
+||grad|| = 0.0196715
+cgiter = 9
+||grad|| = 0.000956859
+Newton in 1 iters
+d/dt = -0.0117858
+Ih = 7.84054
+||grad|| = 0.0294847
+cgiter = 8
+||grad|| = 0.00352084
+cgiter = 7
+||grad|| = 0.000907364
+Newton in 2 iters
+d/dt = -0.0116531
+Ih = 7.84036
+||grad|| = 0.0279292
+cgiter = 8
+||grad|| = 0.0031791
+cgiter = 7
+||grad|| = 0.000822806
+Newton in 2 iters
+d/dt = -0.011522
+Ih = 7.84019
+||grad|| = 0.0266837
+cgiter = 8
+||grad|| = 0.00289363
+cgiter = 7
+||grad|| = 0.000753382
+Newton in 2 iters
+d/dt = -0.0113925
+Ih = 7.84002
+||grad|| = 0.0256664
+cgiter = 8
+||grad|| = 0.00267948
+cgiter = 7
+||grad|| = 0.000700636
+Newton in 2 iters
+d/dt = -0.0112645
+Ih = 7.83985
+||grad|| = 0.0248491
+cgiter = 8
+||grad|| = 0.0025013
+cgiter = 7
+||grad|| = 0.000657577
+Newton in 2 iters
+d/dt = -0.0111384
+Ih = 7.83968
+||grad|| = 0.0241836
+cgiter = 8
+||grad|| = 0.00237255
+cgiter = 7
+||grad|| = 0.000626341
+Newton in 2 iters
+d/dt = -0.0110141
+Ih = 7.83952
+||grad|| = 0.0236564
+cgiter = 8
+||grad|| = 0.00226822
+cgiter = 7
+||grad|| = 0.000601882
+Newton in 2 iters
+d/dt = -0.0108914
+Ih = 7.83935
+||grad|| = 0.0232392
+cgiter = 8
+||grad|| = 0.0022013
+cgiter = 7
+||grad|| = 0.000586552
+Newton in 2 iters
+d/dt = -0.0107702
+Ih = 7.83919
+||grad|| = 0.0229275
+cgiter = 8
+||grad|| = 0.00215272
+cgiter = 7
+||grad|| = 0.000576521
+Newton in 2 iters
+d/dt = -0.0106504
+Ih = 7.83903
+||grad|| = 0.0227045
+cgiter = 8
+||grad|| = 0.00213565
+cgiter = 7
+||grad|| = 0.000574347
+Newton in 2 iters
+d/dt = -0.0105319
+Ih = 7.83887
+||grad|| = 0.022572
+cgiter = 8
+||grad|| = 0.00213436
+cgiter = 7
+||grad|| = 0.000576921
+Newton in 2 iters
+d/dt = -0.010415
+Ih = 7.83872
+||grad|| = 0.0225209
+cgiter = 8
+||grad|| = 0.002163
+cgiter = 7
+||grad|| = 0.000587142
+Newton in 2 iters
+d/dt = -0.0102993
+Ih = 7.83856
+||grad|| = 0.022558
+cgiter = 8
+||grad|| = 0.00220744
+cgiter = 7
+||grad|| = 0.000602295
+Newton in 2 iters
+d/dt = -0.0101855
+Ih = 7.83841
+||grad|| = 0.0226806
+cgiter = 8
+||grad|| = 0.00228387
+cgiter = 7
+||grad|| = 0.000625802
+Newton in 2 iters
+d/dt = -0.0100733
+Ih = 7.83826
+||grad|| = 0.0229003
+cgiter = 8
+||grad|| = 0.00237854
+cgiter = 7
+||grad|| = 0.000655134
+Newton in 2 iters
+d/dt = -0.00996252
+Ih = 7.83811
+converged
+Took 147.03 seconds
+Took 105 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+Xp size = 205441, 2
+creating the solver
+finished creating the solver
+||grad|| = 9.86916
+building euler jac
+finsihed factorizing matrix
+cgiter = 7
+||grad|| = 0.0110696
+cgiter = 9
+||grad|| = 3.09316e-05
+Newton in 2 iters
+d/dt = -inf
+Ih = 7.86927
+||grad|| = 0.693618
+cgiter = 8
+||grad|| = 0.00181322
+cgiter = 9
+||grad|| = 1.267e-05
+Newton in 2 iters
+d/dt = -0.0367291
+Ih = 7.86871
+||grad|| = 0.0708507
+cgiter = 9
+||grad|| = 0.000362897
+Newton in 1 iters
+d/dt = -0.0360818
+Ih = 7.86817
+||grad|| = 0.0478921
+cgiter = 9
+||grad|| = 0.000169681
+Newton in 1 iters
+d/dt = -0.03548
+Ih = 7.86764
+||grad|| = 0.0443998
+cgiter = 9
+||grad|| = 0.000122111
+Newton in 1 iters
+d/dt = -0.0349069
+Ih = 7.86712
+||grad|| = 0.0420515
+cgiter = 8
+||grad|| = 9.87487e-05
+Newton in 1 iters
+d/dt = -0.0343582
+Ih = 7.8666
+||grad|| = 0.0403088
+cgiter = 8
+||grad|| = 8.38515e-05
+Newton in 1 iters
+d/dt = -0.0338307
+Ih = 7.86609
+||grad|| = 0.038927
+cgiter = 8
+||grad|| = 7.3624e-05
+Newton in 1 iters
+d/dt = -0.03332
+Ih = 7.86559
+||grad|| = 0.0377816
+cgiter = 8
+||grad|| = 6.63661e-05
+Newton in 1 iters
+d/dt = -0.0328241
+Ih = 7.8651
+||grad|| = 0.0368
+cgiter = 8
+||grad|| = 6.08405e-05
+Newton in 1 iters
+d/dt = -0.0323403
+Ih = 7.86462
+||grad|| = 0.0359389
+cgiter = 8
+||grad|| = 5.66238e-05
+Newton in 1 iters
+d/dt = -0.0318688
+Ih = 7.86414
+||grad|| = 0.0351696
+cgiter = 8
+||grad|| = 5.38412e-05
+Newton in 1 iters
+d/dt = -0.0314088
+Ih = 7.86367
+||grad|| = 0.0344721
+cgiter = 7
+||grad|| = 5.20667e-05
+Newton in 1 iters
+d/dt = -0.0309595
+Ih = 7.8632
+||grad|| = 0.0338324
+cgiter = 7
+||grad|| = 5.12511e-05
+Newton in 1 iters
+d/dt = -0.0305202
+Ih = 7.86275
+||grad|| = 0.0332409
+cgiter = 7
+||grad|| = 5.22328e-05
+Newton in 1 iters
+d/dt = -0.0300932
+Ih = 7.86229
+||grad|| = 0.032702
+cgiter = 7
+||grad|| = 5.50446e-05
+Newton in 1 iters
+d/dt = -0.0296744
+Ih = 7.86185
+||grad|| = 0.0322207
+cgiter = 7
+||grad|| = 5.98305e-05
+Newton in 1 iters
+d/dt = -0.0292632
+Ih = 7.86141
+||grad|| = 0.0317923
+cgiter = 8
+||grad|| = 6.73433e-05
+Newton in 1 iters
+d/dt = -0.0288596
+Ih = 7.86098
+||grad|| = 0.031421
+cgiter = 8
+||grad|| = 7.89702e-05
+Newton in 1 iters
+d/dt = -0.0284637
+Ih = 7.86055
+||grad|| = 0.0311241
+cgiter = 8
+||grad|| = 9.71017e-05
+Newton in 1 iters
+d/dt = -0.0280747
+Ih = 7.86013
+||grad|| = 0.0309379
+cgiter = 9
+||grad|| = 0.000125893
+Newton in 1 iters
+d/dt = -0.0276927
+Ih = 7.85971
+||grad|| = 0.0309182
+cgiter = 9
+||grad|| = 0.0001723
+Newton in 1 iters
+d/dt = -0.027318
+Ih = 7.8593
+||grad|| = 0.031149
+cgiter = 9
+||grad|| = 0.000248678
+Newton in 1 iters
+d/dt = -0.0269502
+Ih = 7.8589
+||grad|| = 0.0317977
+cgiter = 9
+||grad|| = 0.000377228
+Newton in 1 iters
+d/dt = -0.0265891
+Ih = 7.8585
+||grad|| = 0.0331649
+cgiter = 9
+||grad|| = 0.000598635
+Newton in 1 iters
+d/dt = -0.0262352
+Ih = 7.85811
+||grad|| = 0.0357935
+cgiter = 9
+||grad|| = 0.000988368
+Newton in 1 iters
+d/dt = -0.0258882
+Ih = 7.85772
+||grad|| = 0.040724
+cgiter = 9
+||grad|| = 0.0016909
+cgiter = 7
+||grad|| = 0.000216657
+Newton in 2 iters
+d/dt = -0.0255467
+Ih = 7.85734
+||grad|| = 0.0295541
+cgiter = 9
+||grad|| = 0.00028522
+Newton in 1 iters
+d/dt = -0.0252111
+Ih = 7.85696
+||grad|| = 0.0307332
+cgiter = 9
+||grad|| = 0.00049576
+Newton in 1 iters
+d/dt = -0.0248813
+Ih = 7.85658
+||grad|| = 0.0332738
+cgiter = 9
+||grad|| = 0.000901534
+Newton in 1 iters
+d/dt = -0.0245567
+Ih = 7.85622
+||grad|| = 0.0384848
+cgiter = 9
+||grad|| = 0.00169488
+cgiter = 7
+||grad|| = 0.000238762
+Newton in 2 iters
+d/dt = -0.0242377
+Ih = 7.85585
+||grad|| = 0.0287766
+cgiter = 9
+||grad|| = 0.000367393
+Newton in 1 iters
+d/dt = -0.0239236
+Ih = 7.85549
+||grad|| = 0.0307351
+cgiter = 9
+||grad|| = 0.000705186
+Newton in 1 iters
+d/dt = -0.0236146
+Ih = 7.85514
+||grad|| = 0.0350546
+cgiter = 9
+||grad|| = 0.00140968
+cgiter = 7
+||grad|| = 0.000209609
+Newton in 2 iters
+d/dt = -0.0233109
+Ih = 7.85479
+||grad|| = 0.027787
+cgiter = 9
+||grad|| = 0.000356176
+Newton in 1 iters
+d/dt = -0.0230117
+Ih = 7.85445
+||grad|| = 0.0298186
+cgiter = 9
+||grad|| = 0.000719414
+Newton in 1 iters
+d/dt = -0.0227175
+Ih = 7.8541
+||grad|| = 0.0345378
+cgiter = 9
+||grad|| = 0.00151368
+cgiter = 7
+||grad|| = 0.000237111
+Newton in 2 iters
+d/dt = -0.0224291
+Ih = 7.85377
+||grad|| = 0.0274022
+cgiter = 9
+||grad|| = 0.000433397
+Newton in 1 iters
+d/dt = -0.022145
+Ih = 7.85344
+||grad|| = 0.030162
+cgiter = 9
+||grad|| = 0.000931353
+Newton in 1 iters
+d/dt = -0.0218655
+Ih = 7.85311
+||grad|| = 0.0367685
+cgiter = 9
+||grad|| = 0.00207886
+cgiter = 7
+||grad|| = 0.000341938
+Newton in 2 iters
+d/dt = -0.0215903
+Ih = 7.85278
+||grad|| = 0.0278951
+cgiter = 9
+||grad|| = 0.000654242
+Newton in 1 iters
+d/dt = -0.0213189
+Ih = 7.85246
+||grad|| = 0.0325294
+cgiter = 9
+||grad|| = 0.00148804
+cgiter = 7
+||grad|| = 0.000250881
+Newton in 2 iters
+d/dt = -0.0210525
+Ih = 7.85215
+||grad|| = 0.0265141
+cgiter = 9
+||grad|| = 0.000510929
+Newton in 1 iters
+d/dt = -0.0207903
+Ih = 7.85184
+||grad|| = 0.0301396
+cgiter = 9
+||grad|| = 0.00119191
+cgiter = 7
+||grad|| = 0.000205535
+Newton in 2 iters
+d/dt = -0.0205322
+Ih = 7.85153
+||grad|| = 0.0256118
+cgiter = 9
+||grad|| = 0.000439001
+Newton in 1 iters
+d/dt = -0.0202776
+Ih = 7.85122
+||grad|| = 0.0287435
+cgiter = 9
+||grad|| = 0.00104362
+cgiter = 7
+||grad|| = 0.000184083
+Newton in 2 iters
+d/dt = -0.020027
+Ih = 7.85092
+||grad|| = 0.0249835
+cgiter = 9
+||grad|| = 0.000411492
+Newton in 1 iters
+d/dt = -0.0197799
+Ih = 7.85063
+||grad|| = 0.0279677
+cgiter = 9
+||grad|| = 0.00100408
+cgiter = 7
+||grad|| = 0.000181121
+Newton in 2 iters
+d/dt = -0.0195362
+Ih = 7.85033
+||grad|| = 0.0245664
+cgiter = 9
+||grad|| = 0.000417695
+Newton in 1 iters
+d/dt = -0.019296
+Ih = 7.85004
+||grad|| = 0.0276746
+cgiter = 9
+||grad|| = 0.00104311
+cgiter = 7
+||grad|| = 0.000192687
+Newton in 2 iters
+d/dt = -0.0190598
+Ih = 7.84976
+||grad|| = 0.0243333
+cgiter = 9
+||grad|| = 0.000457787
+Newton in 1 iters
+d/dt = -0.018827
+Ih = 7.84948
+||grad|| = 0.0278615
+cgiter = 9
+||grad|| = 0.00117858
+cgiter = 7
+||grad|| = 0.000222938
+Newton in 2 iters
+d/dt = -0.0185975
+Ih = 7.8492
+||grad|| = 0.02433
+cgiter = 9
+||grad|| = 0.000539744
+Newton in 1 iters
+d/dt = -0.0183715
+Ih = 7.84892
+||grad|| = 0.0286524
+cgiter = 9
+||grad|| = 0.00142704
+cgiter = 7
+||grad|| = 0.000276552
+Newton in 2 iters
+d/dt = -0.0181496
+Ih = 7.84865
+||grad|| = 0.0246248
+cgiter = 9
+||grad|| = 0.000684
+Newton in 1 iters
+d/dt = -0.0179311
+Ih = 7.84838
+||grad|| = 0.0303299
+cgiter = 9
+||grad|| = 0.00186831
+cgiter = 7
+||grad|| = 0.000370521
+Newton in 2 iters
+d/dt = -0.0177158
+Ih = 7.84811
+||grad|| = 0.0254259
+cgiter = 9
+||grad|| = 0.000929957
+Newton in 1 iters
+d/dt = -0.0175033
+Ih = 7.84785
+||grad|| = 0.0334541
+cgiter = 8
+||grad|| = 0.00260304
+cgiter = 7
+||grad|| = 0.000527912
+Newton in 2 iters
+d/dt = -0.0172937
+Ih = 7.84759
+||grad|| = 0.0270318
+cgiter = 9
+||grad|| = 0.0013533
+cgiter = 7
+||grad|| = 0.000274929
+Newton in 2 iters
+d/dt = -0.0170871
+Ih = 7.84734
+||grad|| = 0.0238001
+cgiter = 9
+||grad|| = 0.000725539
+Newton in 1 iters
+d/dt = -0.016884
+Ih = 7.84708
+||grad|| = 0.0301065
+cgiter = 9
+||grad|| = 0.00208432
+cgiter = 7
+||grad|| = 0.000433821
+Newton in 2 iters
+d/dt = -0.0166842
+Ih = 7.84683
+||grad|| = 0.0254416
+cgiter = 9
+||grad|| = 0.00115899
+cgiter = 7
+||grad|| = 0.000241146
+Newton in 2 iters
+d/dt = -0.0164873
+Ih = 7.84659
+||grad|| = 0.0229222
+cgiter = 9
+||grad|| = 0.000662829
+Newton in 1 iters
+d/dt = -0.0162929
+Ih = 7.84634
+||grad|| = 0.028766
+cgiter = 9
+||grad|| = 0.00195588
+cgiter = 7
+||grad|| = 0.000417357
+Newton in 2 iters
+d/dt = -0.0161015
+Ih = 7.8461
+||grad|| = 0.0248077
+cgiter = 9
+||grad|| = 0.00115514
+cgiter = 7
+||grad|| = 0.000246423
+Newton in 2 iters
+d/dt = -0.0159124
+Ih = 7.84586
+||grad|| = 0.0225383
+cgiter = 9
+||grad|| = 0.000699505
+Newton in 1 iters
+d/dt = -0.0157257
+Ih = 7.84563
+||grad|| = 0.028847
+cgiter = 9
+||grad|| = 0.00212451
+cgiter = 7
+||grad|| = 0.000464733
+Newton in 2 iters
+d/dt = -0.0155415
+Ih = 7.84539
+||grad|| = 0.0249871
+cgiter = 9
+||grad|| = 0.00132586
+cgiter = 7
+||grad|| = 0.000290363
+Newton in 2 iters
+d/dt = -0.0153598
+Ih = 7.84516
+||grad|| = 0.0226575
+cgiter = 9
+||grad|| = 0.000845574
+Newton in 1 iters
+d/dt = -0.0151804
+Ih = 7.84493
+||grad|| = 0.0305049
+cgiter = 8
+||grad|| = 0.00264723
+cgiter = 7
+||grad|| = 0.000593462
+Newton in 2 iters
+d/dt = -0.0150035
+Ih = 7.84471
+||grad|| = 0.0262252
+cgiter = 9
+||grad|| = 0.0017394
+cgiter = 7
+||grad|| = 0.000391143
+Newton in 2 iters
+d/dt = -0.0148287
+Ih = 7.84449
+||grad|| = 0.0235231
+cgiter = 9
+||grad|| = 0.00116417
+cgiter = 7
+||grad|| = 0.000262397
+Newton in 2 iters
+d/dt = -0.0146564
+Ih = 7.84427
+||grad|| = 0.0217486
+cgiter = 9
+||grad|| = 0.000798181
+Newton in 1 iters
+d/dt = -0.0144865
+Ih = 7.84405
+||grad|| = 0.0293021
+cgiter = 8
+||grad|| = 0.00258941
+cgiter = 7
+||grad|| = 0.00059724
+Newton in 2 iters
+d/dt = -0.0143195
+Ih = 7.84383
+||grad|| = 0.0257678
+cgiter = 9
+||grad|| = 0.00181229
+cgiter = 7
+||grad|| = 0.000419736
+Newton in 2 iters
+d/dt = -0.0141545
+Ih = 7.84362
+||grad|| = 0.0233724
+cgiter = 9
+||grad|| = 0.00129772
+cgiter = 7
+||grad|| = 0.000301308
+Newton in 2 iters
+d/dt = -0.0139915
+Ih = 7.84341
+||grad|| = 0.0217202
+cgiter = 9
+||grad|| = 0.000944728
+Newton in 1 iters
+d/dt = -0.0138307
+Ih = 7.84321
+||grad|| = 0.0308901
+cgiter = 8
+||grad|| = 0.00315962
+cgiter = 7
+||grad|| = 0.000749806
+Newton in 2 iters
+d/dt = -0.0136719
+Ih = 7.843
+||grad|| = 0.0272875
+cgiter = 8
+||grad|| = 0.00236141
+cgiter = 7
+||grad|| = 0.000562709
+Newton in 2 iters
+d/dt = -0.0135148
+Ih = 7.8428
+||grad|| = 0.0247341
+cgiter = 9
+||grad|| = 0.0017883
+cgiter = 7
+||grad|| = 0.000428235
+Newton in 2 iters
+d/dt = -0.0133598
+Ih = 7.8426
+||grad|| = 0.022869
+cgiter = 9
+||grad|| = 0.00138166
+cgiter = 7
+||grad|| = 0.000331758
+Newton in 2 iters
+d/dt = -0.0132074
+Ih = 7.8424
+||grad|| = 0.0214916
+cgiter = 9
+||grad|| = 0.00108231
+cgiter = 7
+||grad|| = 0.000260514
+Newton in 2 iters
+d/dt = -0.0130572
+Ih = 7.8422
+||grad|| = 0.0204408
+cgiter = 9
+||grad|| = 0.000863289
+Newton in 1 iters
+d/dt = -0.0129089
+Ih = 7.84201
+||grad|| = 0.0290156
+cgiter = 8
+||grad|| = 0.00302141
+cgiter = 7
+||grad|| = 0.000743804
+Newton in 2 iters
+d/dt = -0.0127626
+Ih = 7.84182
+||grad|| = 0.0265375
+cgiter = 8
+||grad|| = 0.00245025
+cgiter = 7
+||grad|| = 0.000606279
+Newton in 2 iters
+d/dt = -0.0126178
+Ih = 7.84163
+||grad|| = 0.0246349
+cgiter = 9
+||grad|| = 0.0020259
+cgiter = 7
+||grad|| = 0.00050348
+Newton in 2 iters
+d/dt = -0.0124746
+Ih = 7.84144
+||grad|| = 0.0231615
+cgiter = 9
+||grad|| = 0.00169406
+cgiter = 7
+||grad|| = 0.000422884
+Newton in 2 iters
+d/dt = -0.0123335
+Ih = 7.84126
+||grad|| = 0.0219914
+cgiter = 9
+||grad|| = 0.0014411
+cgiter = 7
+||grad|| = 0.000360955
+Newton in 2 iters
+d/dt = -0.0121939
+Ih = 7.84107
+||grad|| = 0.0210588
+cgiter = 9
+||grad|| = 0.00123969
+cgiter = 7
+||grad|| = 0.000311638
+Newton in 2 iters
+d/dt = -0.012056
+Ih = 7.84089
+||grad|| = 0.0202952
+cgiter = 9
+||grad|| = 0.00108319
+cgiter = 7
+||grad|| = 0.000273059
+Newton in 2 iters
+d/dt = -0.01192
+Ih = 7.84071
+||grad|| = 0.0196715
+cgiter = 9
+||grad|| = 0.000956859
+Newton in 1 iters
+d/dt = -0.0117858
+Ih = 7.84054
+||grad|| = 0.0294847
+cgiter = 8
+||grad|| = 0.00352084
+cgiter = 7
+||grad|| = 0.000907364
+Newton in 2 iters
+d/dt = -0.0116531
+Ih = 7.84036
+||grad|| = 0.0279292
+cgiter = 8
+||grad|| = 0.0031791
+cgiter = 7
+||grad|| = 0.000822806
+Newton in 2 iters
+d/dt = -0.011522
+Ih = 7.84019
+||grad|| = 0.0266837
+cgiter = 8
+||grad|| = 0.00289363
+cgiter = 7
+||grad|| = 0.000753382
+Newton in 2 iters
+d/dt = -0.0113925
+Ih = 7.84002
+||grad|| = 0.0256664
+cgiter = 8
+||grad|| = 0.00267948
+cgiter = 7
+||grad|| = 0.000700636
+Newton in 2 iters
+d/dt = -0.0112645
+Ih = 7.83985
+||grad|| = 0.0248491
+cgiter = 8
+||grad|| = 0.0025013
+cgiter = 7
+||grad|| = 0.000657577
+Newton in 2 iters
+d/dt = -0.0111384
+Ih = 7.83968
+||grad|| = 0.0241836
+cgiter = 8
+||grad|| = 0.00237255
+cgiter = 7
+||grad|| = 0.000626341
+Newton in 2 iters
+d/dt = -0.0110141
+Ih = 7.83952
+||grad|| = 0.0236564
+cgiter = 8
+||grad|| = 0.00226822
+cgiter = 7
+||grad|| = 0.000601882
+Newton in 2 iters
+d/dt = -0.0108914
+Ih = 7.83935
+||grad|| = 0.0232392
+cgiter = 8
+||grad|| = 0.0022013
+cgiter = 7
+||grad|| = 0.000586552
+Newton in 2 iters
+d/dt = -0.0107702
+Ih = 7.83919
+||grad|| = 0.0229275
+cgiter = 8
+||grad|| = 0.00215272
+cgiter = 7
+||grad|| = 0.000576521
+Newton in 2 iters
+d/dt = -0.0106504
+Ih = 7.83903
+||grad|| = 0.0227045
+cgiter = 8
+||grad|| = 0.00213565
+cgiter = 7
+||grad|| = 0.000574347
+Newton in 2 iters
+d/dt = -0.0105319
+Ih = 7.83887
+||grad|| = 0.022572
+cgiter = 8
+||grad|| = 0.00213436
+cgiter = 7
+||grad|| = 0.000576921
+Newton in 2 iters
+d/dt = -0.010415
+Ih = 7.83872
+||grad|| = 0.0225209
+cgiter = 8
+||grad|| = 0.002163
+cgiter = 7
+||grad|| = 0.000587142
+Newton in 2 iters
+d/dt = -0.0102993
+Ih = 7.83856
+||grad|| = 0.022558
+cgiter = 8
+||grad|| = 0.00220744
+cgiter = 7
+||grad|| = 0.000602295
+Newton in 2 iters
+d/dt = -0.0101855
+Ih = 7.83841
+||grad|| = 0.0226806
+cgiter = 8
+||grad|| = 0.00228387
+cgiter = 7
+||grad|| = 0.000625802
+Newton in 2 iters
+d/dt = -0.0100733
+Ih = 7.83826
+||grad|| = 0.0229003
+cgiter = 8
+||grad|| = 0.00237854
+cgiter = 7
+||grad|| = 0.000655134
+Newton in 2 iters
+d/dt = -0.00996252
+Ih = 7.83811
+converged
+Took 147.491 seconds
+Took 105 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+Xp size = 205441, 2
+creating the solver
+finished creating the solver
+||grad|| = 9.86916
+building euler jac
+finsihed factorizing matrix
+cgiter = 7
+||grad|| = 0.0110696
+cgiter = 9
+||grad|| = 3.09316e-05
+Newton in 2 iters
+d/dt = -inf
+Ih = 7.86927
+||grad|| = 0.693618
+cgiter = 8
+||grad|| = 0.00181322
+cgiter = 9
+||grad|| = 1.267e-05
+Newton in 2 iters
+d/dt = -0.0367291
+Ih = 7.86871
+||grad|| = 0.0708507
+cgiter = 9
+||grad|| = 0.000362897
+Newton in 1 iters
+d/dt = -0.0360818
+Ih = 7.86817
+||grad|| = 0.0478921
+cgiter = 9
+||grad|| = 0.000169681
+Newton in 1 iters
+d/dt = -0.03548
+Ih = 7.86764
+||grad|| = 0.0443998
+cgiter = 9
+||grad|| = 0.000122111
+Newton in 1 iters
+d/dt = -0.0349069
+Ih = 7.86712
+||grad|| = 0.0420515
+cgiter = 8
+||grad|| = 9.87487e-05
+Newton in 1 iters
+d/dt = -0.0343582
+Ih = 7.8666
+||grad|| = 0.0403088
+cgiter = 8
+||grad|| = 8.38515e-05
+Newton in 1 iters
+d/dt = -0.0338307
+Ih = 7.86609
+||grad|| = 0.038927
+cgiter = 8
+||grad|| = 7.3624e-05
+Newton in 1 iters
+d/dt = -0.03332
+Ih = 7.86559
+||grad|| = 0.0377816
+cgiter = 8
+||grad|| = 6.63661e-05
+Newton in 1 iters
+d/dt = -0.0328241
+Ih = 7.8651
+||grad|| = 0.0368
+cgiter = 8
+||grad|| = 6.08405e-05
+Newton in 1 iters
+d/dt = -0.0323403
+Ih = 7.86462
+||grad|| = 0.0359389
+cgiter = 8
+||grad|| = 5.66238e-05
+Newton in 1 iters
+d/dt = -0.0318688
+Ih = 7.86414
+||grad|| = 0.0351696
+cgiter = 8
+||grad|| = 5.38412e-05
+Newton in 1 iters
+d/dt = -0.0314088
+Ih = 7.86367
+||grad|| = 0.0344721
+cgiter = 7
+||grad|| = 5.20667e-05
+Newton in 1 iters
+d/dt = -0.0309595
+Ih = 7.8632
+||grad|| = 0.0338324
+cgiter = 7
+||grad|| = 5.12511e-05
+Newton in 1 iters
+d/dt = -0.0305202
+Ih = 7.86275
+||grad|| = 0.0332409
+cgiter = 7
+||grad|| = 5.22328e-05
+Newton in 1 iters
+d/dt = -0.0300932
+Ih = 7.86229
+||grad|| = 0.032702
+cgiter = 7
+||grad|| = 5.50446e-05
+Newton in 1 iters
+d/dt = -0.0296744
+Ih = 7.86185
+||grad|| = 0.0322207
+cgiter = 7
+||grad|| = 5.98305e-05
+Newton in 1 iters
+d/dt = -0.0292632
+Ih = 7.86141
+||grad|| = 0.0317923
+cgiter = 8
+||grad|| = 6.73433e-05
+Newton in 1 iters
+d/dt = -0.0288596
+Ih = 7.86098
+||grad|| = 0.031421
+cgiter = 8
+||grad|| = 7.89702e-05
+Newton in 1 iters
+d/dt = -0.0284637
+Ih = 7.86055
+||grad|| = 0.0311241
+cgiter = 8
+||grad|| = 9.71017e-05
+Newton in 1 iters
+d/dt = -0.0280747
+Ih = 7.86013
+||grad|| = 0.0309379
+cgiter = 9
+||grad|| = 0.000125893
+Newton in 1 iters
+d/dt = -0.0276927
+Ih = 7.85971
+||grad|| = 0.0309182
+cgiter = 9
+||grad|| = 0.0001723
+Newton in 1 iters
+d/dt = -0.027318
+Ih = 7.8593
+||grad|| = 0.031149
+cgiter = 9
+||grad|| = 0.000248678
+Newton in 1 iters
+d/dt = -0.0269502
+Ih = 7.8589
+||grad|| = 0.0317977
+cgiter = 9
+||grad|| = 0.000377228
+Newton in 1 iters
+d/dt = -0.0265891
+Ih = 7.8585
+||grad|| = 0.0331649
+cgiter = 9
+||grad|| = 0.000598635
+Newton in 1 iters
+d/dt = -0.0262352
+Ih = 7.85811
+||grad|| = 0.0357935
+cgiter = 9
+||grad|| = 0.000988368
+Newton in 1 iters
+d/dt = -0.0258882
+Ih = 7.85772
+||grad|| = 0.040724
+cgiter = 9
+||grad|| = 0.0016909
+cgiter = 7
+||grad|| = 0.000216657
+Newton in 2 iters
+d/dt = -0.0255467
+Ih = 7.85734
+||grad|| = 0.0295541
+cgiter = 9
+||grad|| = 0.00028522
+Newton in 1 iters
+d/dt = -0.0252111
+Ih = 7.85696
+||grad|| = 0.0307332
+cgiter = 9
+||grad|| = 0.00049576
+Newton in 1 iters
+d/dt = -0.0248813
+Ih = 7.85658
+||grad|| = 0.0332738
+cgiter = 9
+||grad|| = 0.000901534
+Newton in 1 iters
+d/dt = -0.0245567
+Ih = 7.85622
+||grad|| = 0.0384848
+cgiter = 9
+||grad|| = 0.00169488
+cgiter = 7
+||grad|| = 0.000238762
+Newton in 2 iters
+d/dt = -0.0242377
+Ih = 7.85585
+||grad|| = 0.0287766
+cgiter = 9
+||grad|| = 0.000367393
+Newton in 1 iters
+d/dt = -0.0239236
+Ih = 7.85549
+||grad|| = 0.0307351
+cgiter = 9
+||grad|| = 0.000705186
+Newton in 1 iters
+d/dt = -0.0236146
+Ih = 7.85514
+||grad|| = 0.0350546
+cgiter = 9
+||grad|| = 0.00140968
+cgiter = 7
+||grad|| = 0.000209609
+Newton in 2 iters
+d/dt = -0.0233109
+Ih = 7.85479
+||grad|| = 0.027787
+cgiter = 9
+||grad|| = 0.000356176
+Newton in 1 iters
+d/dt = -0.0230117
+Ih = 7.85445
+||grad|| = 0.0298186
+cgiter = 9
+||grad|| = 0.000719414
+Newton in 1 iters
+d/dt = -0.0227175
+Ih = 7.8541
+||grad|| = 0.0345378
+cgiter = 9
+||grad|| = 0.00151368
+cgiter = 7
+||grad|| = 0.000237111
+Newton in 2 iters
+d/dt = -0.0224291
+Ih = 7.85377
+||grad|| = 0.0274022
+cgiter = 9
+||grad|| = 0.000433397
+Newton in 1 iters
+d/dt = -0.022145
+Ih = 7.85344
+||grad|| = 0.030162
+cgiter = 9
+||grad|| = 0.000931353
+Newton in 1 iters
+d/dt = -0.0218655
+Ih = 7.85311
+||grad|| = 0.0367685
+cgiter = 9
+||grad|| = 0.00207886
+cgiter = 7
+||grad|| = 0.000341938
+Newton in 2 iters
+d/dt = -0.0215903
+Ih = 7.85278
+||grad|| = 0.0278951
+cgiter = 9
+||grad|| = 0.000654242
+Newton in 1 iters
+d/dt = -0.0213189
+Ih = 7.85246
+||grad|| = 0.0325294
+cgiter = 9
+||grad|| = 0.00148804
+cgiter = 7
+||grad|| = 0.000250881
+Newton in 2 iters
+d/dt = -0.0210525
+Ih = 7.85215
+||grad|| = 0.0265141
+cgiter = 9
+||grad|| = 0.000510929
+Newton in 1 iters
+d/dt = -0.0207903
+Ih = 7.85184
+||grad|| = 0.0301396
+cgiter = 9
+||grad|| = 0.00119191
+cgiter = 7
+||grad|| = 0.000205535
+Newton in 2 iters
+d/dt = -0.0205322
+Ih = 7.85153
+||grad|| = 0.0256118
+cgiter = 9
+||grad|| = 0.000439001
+Newton in 1 iters
+d/dt = -0.0202776
+Ih = 7.85122
+||grad|| = 0.0287435
+cgiter = 9
+||grad|| = 0.00104362
+cgiter = 7
+||grad|| = 0.000184083
+Newton in 2 iters
+d/dt = -0.020027
+Ih = 7.85092
+||grad|| = 0.0249835
+cgiter = 9
+||grad|| = 0.000411492
+Newton in 1 iters
+d/dt = -0.0197799
+Ih = 7.85063
+||grad|| = 0.0279677
+cgiter = 9
+||grad|| = 0.00100408
+cgiter = 7
+||grad|| = 0.000181121
+Newton in 2 iters
+d/dt = -0.0195362
+Ih = 7.85033
+||grad|| = 0.0245664
+cgiter = 9
+||grad|| = 0.000417695
+Newton in 1 iters
+d/dt = -0.019296
+Ih = 7.85004
+||grad|| = 0.0276746
+cgiter = 9
+||grad|| = 0.00104311
+cgiter = 7
+||grad|| = 0.000192687
+Newton in 2 iters
+d/dt = -0.0190598
+Ih = 7.84976
+||grad|| = 0.0243333
+cgiter = 9
+||grad|| = 0.000457787
+Newton in 1 iters
+d/dt = -0.018827
+Ih = 7.84948
+||grad|| = 0.0278615
+cgiter = 9
+||grad|| = 0.00117858
+cgiter = 7
+||grad|| = 0.000222938
+Newton in 2 iters
+d/dt = -0.0185975
+Ih = 7.8492
+||grad|| = 0.02433
+cgiter = 9
+||grad|| = 0.000539744
+Newton in 1 iters
+d/dt = -0.0183715
+Ih = 7.84892
+||grad|| = 0.0286524
+cgiter = 9
+||grad|| = 0.00142704
+cgiter = 7
+||grad|| = 0.000276552
+Newton in 2 iters
+d/dt = -0.0181496
+Ih = 7.84865
+||grad|| = 0.0246248
+cgiter = 9
+||grad|| = 0.000684
+Newton in 1 iters
+d/dt = -0.0179311
+Ih = 7.84838
+||grad|| = 0.0303299
+cgiter = 9
+||grad|| = 0.00186831
+cgiter = 7
+||grad|| = 0.000370521
+Newton in 2 iters
+d/dt = -0.0177158
+Ih = 7.84811
+||grad|| = 0.0254259
+cgiter = 9
+||grad|| = 0.000929957
+Newton in 1 iters
+d/dt = -0.0175033
+Ih = 7.84785
+||grad|| = 0.0334541
+cgiter = 8
+||grad|| = 0.00260304
+cgiter = 7
+||grad|| = 0.000527912
+Newton in 2 iters
+d/dt = -0.0172937
+Ih = 7.84759
+||grad|| = 0.0270318
+cgiter = 9
+||grad|| = 0.0013533
+cgiter = 7
+||grad|| = 0.000274929
+Newton in 2 iters
+d/dt = -0.0170871
+Ih = 7.84734
+||grad|| = 0.0238001
+cgiter = 9
+||grad|| = 0.000725539
+Newton in 1 iters
+d/dt = -0.016884
+Ih = 7.84708
+||grad|| = 0.0301065
+cgiter = 9
+||grad|| = 0.00208432
+cgiter = 7
+||grad|| = 0.000433821
+Newton in 2 iters
+d/dt = -0.0166842
+Ih = 7.84683
+||grad|| = 0.0254416
+cgiter = 9
+||grad|| = 0.00115899
+cgiter = 7
+||grad|| = 0.000241146
+Newton in 2 iters
+d/dt = -0.0164873
+Ih = 7.84659
+||grad|| = 0.0229222
+cgiter = 9
+||grad|| = 0.000662829
+Newton in 1 iters
+d/dt = -0.0162929
+Ih = 7.84634
+||grad|| = 0.028766
+cgiter = 9
+||grad|| = 0.00195588
+cgiter = 7
+||grad|| = 0.000417357
+Newton in 2 iters
+d/dt = -0.0161015
+Ih = 7.8461
+||grad|| = 0.0248077
+cgiter = 9
+||grad|| = 0.00115514
+cgiter = 7
+||grad|| = 0.000246423
+Newton in 2 iters
+d/dt = -0.0159124
+Ih = 7.84586
+||grad|| = 0.0225383
+cgiter = 9
+||grad|| = 0.000699505
+Newton in 1 iters
+d/dt = -0.0157257
+Ih = 7.84563
+||grad|| = 0.028847
+cgiter = 9
+||grad|| = 0.00212451
+cgiter = 7
+||grad|| = 0.000464733
+Newton in 2 iters
+d/dt = -0.0155415
+Ih = 7.84539
+||grad|| = 0.0249871
+cgiter = 9
+||grad|| = 0.00132586
+cgiter = 7
+||grad|| = 0.000290363
+Newton in 2 iters
+d/dt = -0.0153598
+Ih = 7.84516
+||grad|| = 0.0226575
+cgiter = 9
+||grad|| = 0.000845574
+Newton in 1 iters
+d/dt = -0.0151804
+Ih = 7.84493
+||grad|| = 0.0305049
+cgiter = 8
+||grad|| = 0.00264723
+cgiter = 7
+||grad|| = 0.000593462
+Newton in 2 iters
+d/dt = -0.0150035
+Ih = 7.84471
+||grad|| = 0.0262252
+cgiter = 9
+||grad|| = 0.0017394
+cgiter = 7
+||grad|| = 0.000391143
+Newton in 2 iters
+d/dt = -0.0148287
+Ih = 7.84449
+||grad|| = 0.0235231
+cgiter = 9
+||grad|| = 0.00116417
+cgiter = 7
+||grad|| = 0.000262397
+Newton in 2 iters
+d/dt = -0.0146564
+Ih = 7.84427
+||grad|| = 0.0217486
+cgiter = 9
+||grad|| = 0.000798181
+Newton in 1 iters
+d/dt = -0.0144865
+Ih = 7.84405
+||grad|| = 0.0293021
+cgiter = 8
+||grad|| = 0.00258941
+cgiter = 7
+||grad|| = 0.00059724
+Newton in 2 iters
+d/dt = -0.0143195
+Ih = 7.84383
+||grad|| = 0.0257678
+cgiter = 9
+||grad|| = 0.00181229
+cgiter = 7
+||grad|| = 0.000419736
+Newton in 2 iters
+d/dt = -0.0141545
+Ih = 7.84362
+||grad|| = 0.0233724
+cgiter = 9
+||grad|| = 0.00129772
+cgiter = 7
+||grad|| = 0.000301308
+Newton in 2 iters
+d/dt = -0.0139915
+Ih = 7.84341
+||grad|| = 0.0217202
+cgiter = 9
+||grad|| = 0.000944728
+Newton in 1 iters
+d/dt = -0.0138307
+Ih = 7.84321
+||grad|| = 0.0308901
+cgiter = 8
+||grad|| = 0.00315962
+cgiter = 7
+||grad|| = 0.000749806
+Newton in 2 iters
+d/dt = -0.0136719
+Ih = 7.843
+||grad|| = 0.0272875
+cgiter = 8
+||grad|| = 0.00236141
+cgiter = 7
+||grad|| = 0.000562709
+Newton in 2 iters
+d/dt = -0.0135148
+Ih = 7.8428
+||grad|| = 0.0247341
+cgiter = 9
+||grad|| = 0.0017883
+cgiter = 7
+||grad|| = 0.000428235
+Newton in 2 iters
+d/dt = -0.0133598
+Ih = 7.8426
+||grad|| = 0.022869
+cgiter = 9
+||grad|| = 0.00138166
+cgiter = 7
+||grad|| = 0.000331758
+Newton in 2 iters
+d/dt = -0.0132074
+Ih = 7.8424
+||grad|| = 0.0214916
+cgiter = 9
+||grad|| = 0.00108231
+cgiter = 7
+||grad|| = 0.000260514
+Newton in 2 iters
+d/dt = -0.0130572
+Ih = 7.8422
+||grad|| = 0.0204408
+cgiter = 9
+||grad|| = 0.000863289
+Newton in 1 iters
+d/dt = -0.0129089
+Ih = 7.84201
+||grad|| = 0.0290156
+cgiter = 8
+||grad|| = 0.00302141
+cgiter = 7
+||grad|| = 0.000743804
+Newton in 2 iters
+d/dt = -0.0127626
+Ih = 7.84182
+||grad|| = 0.0265375
+cgiter = 8
+||grad|| = 0.00245025
+cgiter = 7
+||grad|| = 0.000606279
+Newton in 2 iters
+d/dt = -0.0126178
+Ih = 7.84163
+||grad|| = 0.0246349
+cgiter = 9
+||grad|| = 0.0020259
+cgiter = 7
+||grad|| = 0.00050348
+Newton in 2 iters
+d/dt = -0.0124746
+Ih = 7.84144
+||grad|| = 0.0231615
+cgiter = 9
+||grad|| = 0.00169406
+cgiter = 7
+||grad|| = 0.000422884
+Newton in 2 iters
+d/dt = -0.0123335
+Ih = 7.84126
+||grad|| = 0.0219914
+cgiter = 9
+||grad|| = 0.0014411
+cgiter = 7
+||grad|| = 0.000360955
+Newton in 2 iters
+d/dt = -0.0121939
+Ih = 7.84107
+||grad|| = 0.0210588
+cgiter = 9
+||grad|| = 0.00123969
+cgiter = 7
+||grad|| = 0.000311638
+Newton in 2 iters
+d/dt = -0.012056
+Ih = 7.84089
+||grad|| = 0.0202952
+cgiter = 9
+||grad|| = 0.00108319
+cgiter = 7
+||grad|| = 0.000273059
+Newton in 2 iters
+d/dt = -0.01192
+Ih = 7.84071
+||grad|| = 0.0196715
+cgiter = 9
+||grad|| = 0.000956859
+Newton in 1 iters
+d/dt = -0.0117858
+Ih = 7.84054
+||grad|| = 0.0294847
+cgiter = 8
+||grad|| = 0.00352084
+cgiter = 7
+||grad|| = 0.000907364
+Newton in 2 iters
+d/dt = -0.0116531
+Ih = 7.84036
+||grad|| = 0.0279292
+cgiter = 8
+||grad|| = 0.0031791
+cgiter = 7
+||grad|| = 0.000822806
+Newton in 2 iters
+d/dt = -0.011522
+Ih = 7.84019
+||grad|| = 0.0266837
+cgiter = 8
+||grad|| = 0.00289363
+cgiter = 7
+||grad|| = 0.000753382
+Newton in 2 iters
+d/dt = -0.0113925
+Ih = 7.84002
+||grad|| = 0.0256664
+cgiter = 8
+||grad|| = 0.00267948
+cgiter = 7
+||grad|| = 0.000700636
+Newton in 2 iters
+d/dt = -0.0112645
+Ih = 7.83985
+||grad|| = 0.0248491
+cgiter = 8
+||grad|| = 0.0025013
+cgiter = 7
+||grad|| = 0.000657577
+Newton in 2 iters
+d/dt = -0.0111384
+Ih = 7.83968
+||grad|| = 0.0241836
+cgiter = 8
+||grad|| = 0.00237255
+cgiter = 7
+||grad|| = 0.000626341
+Newton in 2 iters
+d/dt = -0.0110141
+Ih = 7.83952
+||grad|| = 0.0236564
+cgiter = 8
+||grad|| = 0.00226822
+cgiter = 7
+||grad|| = 0.000601882
+Newton in 2 iters
+d/dt = -0.0108914
+Ih = 7.83935
+||grad|| = 0.0232392
+cgiter = 8
+||grad|| = 0.0022013
+cgiter = 7
+||grad|| = 0.000586552
+Newton in 2 iters
+d/dt = -0.0107702
+Ih = 7.83919
+||grad|| = 0.0229275
+cgiter = 8
+||grad|| = 0.00215272
+cgiter = 7
+||grad|| = 0.000576521
+Newton in 2 iters
+d/dt = -0.0106504
+Ih = 7.83903
+||grad|| = 0.0227045
+cgiter = 8
+||grad|| = 0.00213565
+cgiter = 7
+||grad|| = 0.000574347
+Newton in 2 iters
+d/dt = -0.0105319
+Ih = 7.83887
+||grad|| = 0.022572
+cgiter = 8
+||grad|| = 0.00213436
+cgiter = 7
+||grad|| = 0.000576921
+Newton in 2 iters
+d/dt = -0.010415
+Ih = 7.83872
+||grad|| = 0.0225209
+cgiter = 8
+||grad|| = 0.002163
+cgiter = 7
+||grad|| = 0.000587142
+Newton in 2 iters
+d/dt = -0.0102993
+Ih = 7.83856
+||grad|| = 0.022558
+cgiter = 8
+||grad|| = 0.00220744
+cgiter = 7
+||grad|| = 0.000602295
+Newton in 2 iters
+d/dt = -0.0101855
+Ih = 7.83841
+||grad|| = 0.0226806
+cgiter = 8
+||grad|| = 0.00228387
+cgiter = 7
+||grad|| = 0.000625802
+Newton in 2 iters
+d/dt = -0.0100733
+Ih = 7.83826
+||grad|| = 0.0229003
+cgiter = 8
+||grad|| = 0.00237854
+cgiter = 7
+||grad|| = 0.000655134
+Newton in 2 iters
+d/dt = -0.00996252
+Ih = 7.83811
+converged
+Took 146.48 seconds
+Took 105 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+Xp size = 205441, 2
+creating the solver
+finished creating the solver
+||grad|| = 9.86916
+building euler jac
+finsihed factorizing matrix
+cgiter = 7
+||grad|| = 0.0110696
+cgiter = 9
+||grad|| = 3.09316e-05
+Newton in 2 iters
+d/dt = -inf
+Ih = 7.86927
+||grad|| = 0.693618
+cgiter = 8
+||grad|| = 0.00181322
+cgiter = 9
+||grad|| = 1.267e-05
+Newton in 2 iters
+d/dt = -0.0367291
+Ih = 7.86871
+||grad|| = 0.0708507
+cgiter = 9
+||grad|| = 0.000362897
+Newton in 1 iters
+d/dt = -0.0360818
+Ih = 7.86817
+||grad|| = 0.0478921
+cgiter = 9
+||grad|| = 0.000169681
+Newton in 1 iters
+d/dt = -0.03548
+Ih = 7.86764
+||grad|| = 0.0443998
+cgiter = 9
+||grad|| = 0.000122111
+Newton in 1 iters
+d/dt = -0.0349069
+Ih = 7.86712
+||grad|| = 0.0420515
+cgiter = 8
+||grad|| = 9.87487e-05
+Newton in 1 iters
+d/dt = -0.0343582
+Ih = 7.8666
+||grad|| = 0.0403088
+cgiter = 8
+||grad|| = 8.38515e-05
+Newton in 1 iters
+d/dt = -0.0338307
+Ih = 7.86609
+||grad|| = 0.038927
+cgiter = 8
+||grad|| = 7.3624e-05
+Newton in 1 iters
+d/dt = -0.03332
+Ih = 7.86559
+||grad|| = 0.0377816
+cgiter = 8
+||grad|| = 6.63661e-05
+Newton in 1 iters
+d/dt = -0.0328241
+Ih = 7.8651
+||grad|| = 0.0368
+cgiter = 8
+||grad|| = 6.08405e-05
+Newton in 1 iters
+d/dt = -0.0323403
+Ih = 7.86462
+||grad|| = 0.0359389
+cgiter = 8
+||grad|| = 5.66238e-05
+Newton in 1 iters
+d/dt = -0.0318688
+Ih = 7.86414
+||grad|| = 0.0351696
+cgiter = 8
+||grad|| = 5.38412e-05
+Newton in 1 iters
+d/dt = -0.0314088
+Ih = 7.86367
+||grad|| = 0.0344721
+cgiter = 7
+||grad|| = 5.20667e-05
+Newton in 1 iters
+d/dt = -0.0309595
+Ih = 7.8632
+||grad|| = 0.0338324
+cgiter = 7
+||grad|| = 5.12511e-05
+Newton in 1 iters
+d/dt = -0.0305202
+Ih = 7.86275
+||grad|| = 0.0332409
+cgiter = 7
+||grad|| = 5.22328e-05
+Newton in 1 iters
+d/dt = -0.0300932
+Ih = 7.86229
+||grad|| = 0.032702
+cgiter = 7
+||grad|| = 5.50446e-05
+Newton in 1 iters
+d/dt = -0.0296744
+Ih = 7.86185
+||grad|| = 0.0322207
+cgiter = 7
+||grad|| = 5.98305e-05
+Newton in 1 iters
+d/dt = -0.0292632
+Ih = 7.86141
+||grad|| = 0.0317923
+cgiter = 8
+||grad|| = 6.73433e-05
+Newton in 1 iters
+d/dt = -0.0288596
+Ih = 7.86098
+||grad|| = 0.031421
+cgiter = 8
+||grad|| = 7.89702e-05
+Newton in 1 iters
+d/dt = -0.0284637
+Ih = 7.86055
+||grad|| = 0.0311241
+cgiter = 8
+||grad|| = 9.71017e-05
+Newton in 1 iters
+d/dt = -0.0280747
+Ih = 7.86013
+||grad|| = 0.0309379
+cgiter = 9
+||grad|| = 0.000125893
+Newton in 1 iters
+d/dt = -0.0276927
+Ih = 7.85971
+||grad|| = 0.0309182
+cgiter = 9
+||grad|| = 0.0001723
+Newton in 1 iters
+d/dt = -0.027318
+Ih = 7.8593
+||grad|| = 0.031149
+cgiter = 9
+||grad|| = 0.000248678
+Newton in 1 iters
+d/dt = -0.0269502
+Ih = 7.8589
+||grad|| = 0.0317977
+cgiter = 9
+||grad|| = 0.000377228
+Newton in 1 iters
+d/dt = -0.0265891
+Ih = 7.8585
+||grad|| = 0.0331649
+cgiter = 9
+||grad|| = 0.000598635
+Newton in 1 iters
+d/dt = -0.0262352
+Ih = 7.85811
+||grad|| = 0.0357935
+cgiter = 9
+||grad|| = 0.000988368
+Newton in 1 iters
+d/dt = -0.0258882
+Ih = 7.85772
+||grad|| = 0.040724
+cgiter = 9
+||grad|| = 0.0016909
+cgiter = 7
+||grad|| = 0.000216657
+Newton in 2 iters
+d/dt = -0.0255467
+Ih = 7.85734
+||grad|| = 0.0295541
+cgiter = 9
+||grad|| = 0.00028522
+Newton in 1 iters
+d/dt = -0.0252111
+Ih = 7.85696
+||grad|| = 0.0307332
+cgiter = 9
+||grad|| = 0.00049576
+Newton in 1 iters
+d/dt = -0.0248813
+Ih = 7.85658
+||grad|| = 0.0332738
+cgiter = 9
+||grad|| = 0.000901534
+Newton in 1 iters
+d/dt = -0.0245567
+Ih = 7.85622
+||grad|| = 0.0384848
+cgiter = 9
+||grad|| = 0.00169488
+cgiter = 7
+||grad|| = 0.000238762
+Newton in 2 iters
+d/dt = -0.0242377
+Ih = 7.85585
+||grad|| = 0.0287766
+cgiter = 9
+||grad|| = 0.000367393
+Newton in 1 iters
+d/dt = -0.0239236
+Ih = 7.85549
+||grad|| = 0.0307351
+cgiter = 9
+||grad|| = 0.000705186
+Newton in 1 iters
+d/dt = -0.0236146
+Ih = 7.85514
+||grad|| = 0.0350546
+cgiter = 9
+||grad|| = 0.00140968
+cgiter = 7
+||grad|| = 0.000209609
+Newton in 2 iters
+d/dt = -0.0233109
+Ih = 7.85479
+||grad|| = 0.027787
+cgiter = 9
+||grad|| = 0.000356176
+Newton in 1 iters
+d/dt = -0.0230117
+Ih = 7.85445
+||grad|| = 0.0298186
+cgiter = 9
+||grad|| = 0.000719414
+Newton in 1 iters
+d/dt = -0.0227175
+Ih = 7.8541
+||grad|| = 0.0345378
+cgiter = 9
+||grad|| = 0.00151368
+cgiter = 7
+||grad|| = 0.000237111
+Newton in 2 iters
+d/dt = -0.0224291
+Ih = 7.85377
+||grad|| = 0.0274022
+cgiter = 9
+||grad|| = 0.000433397
+Newton in 1 iters
+d/dt = -0.022145
+Ih = 7.85344
+||grad|| = 0.030162
+cgiter = 9
+||grad|| = 0.000931353
+Newton in 1 iters
+d/dt = -0.0218655
+Ih = 7.85311
+||grad|| = 0.0367685
+cgiter = 9
+||grad|| = 0.00207886
+cgiter = 7
+||grad|| = 0.000341938
+Newton in 2 iters
+d/dt = -0.0215903
+Ih = 7.85278
+||grad|| = 0.0278951
+cgiter = 9
+||grad|| = 0.000654242
+Newton in 1 iters
+d/dt = -0.0213189
+Ih = 7.85246
+||grad|| = 0.0325294
+cgiter = 9
+||grad|| = 0.00148804
+cgiter = 7
+||grad|| = 0.000250881
+Newton in 2 iters
+d/dt = -0.0210525
+Ih = 7.85215
+||grad|| = 0.0265141
+cgiter = 9
+||grad|| = 0.000510929
+Newton in 1 iters
+d/dt = -0.0207903
+Ih = 7.85184
+||grad|| = 0.0301396
+cgiter = 9
+||grad|| = 0.00119191
+cgiter = 7
+||grad|| = 0.000205535
+Newton in 2 iters
+d/dt = -0.0205322
+Ih = 7.85153
+||grad|| = 0.0256118
+cgiter = 9
+||grad|| = 0.000439001
+Newton in 1 iters
+d/dt = -0.0202776
+Ih = 7.85122
+||grad|| = 0.0287435
+cgiter = 9
+||grad|| = 0.00104362
+cgiter = 7
+||grad|| = 0.000184083
+Newton in 2 iters
+d/dt = -0.020027
+Ih = 7.85092
+||grad|| = 0.0249835
+cgiter = 9
+||grad|| = 0.000411492
+Newton in 1 iters
+d/dt = -0.0197799
+Ih = 7.85063
+||grad|| = 0.0279677
+cgiter = 9
+||grad|| = 0.00100408
+cgiter = 7
+||grad|| = 0.000181121
+Newton in 2 iters
+d/dt = -0.0195362
+Ih = 7.85033
+||grad|| = 0.0245664
+cgiter = 9
+||grad|| = 0.000417695
+Newton in 1 iters
+d/dt = -0.019296
+Ih = 7.85004
+||grad|| = 0.0276746
+cgiter = 9
+||grad|| = 0.00104311
+cgiter = 7
+||grad|| = 0.000192687
+Newton in 2 iters
+d/dt = -0.0190598
+Ih = 7.84976
+||grad|| = 0.0243333
+cgiter = 9
+||grad|| = 0.000457787
+Newton in 1 iters
+d/dt = -0.018827
+Ih = 7.84948
+||grad|| = 0.0278615
+cgiter = 9
+||grad|| = 0.00117858
+cgiter = 7
+||grad|| = 0.000222938
+Newton in 2 iters
+d/dt = -0.0185975
+Ih = 7.8492
+||grad|| = 0.02433
+cgiter = 9
+||grad|| = 0.000539744
+Newton in 1 iters
+d/dt = -0.0183715
+Ih = 7.84892
+||grad|| = 0.0286524
+cgiter = 9
+||grad|| = 0.00142704
+cgiter = 7
+||grad|| = 0.000276552
+Newton in 2 iters
+d/dt = -0.0181496
+Ih = 7.84865
+||grad|| = 0.0246248
+cgiter = 9
+||grad|| = 0.000684
+Newton in 1 iters
+d/dt = -0.0179311
+Ih = 7.84838
+||grad|| = 0.0303299
+cgiter = 9
+||grad|| = 0.00186831
+cgiter = 7
+||grad|| = 0.000370521
+Newton in 2 iters
+d/dt = -0.0177158
+Ih = 7.84811
+||grad|| = 0.0254259
+cgiter = 9
+||grad|| = 0.000929957
+Newton in 1 iters
+d/dt = -0.0175033
+Ih = 7.84785
+||grad|| = 0.0334541
+cgiter = 8
+||grad|| = 0.00260304
+cgiter = 7
+||grad|| = 0.000527912
+Newton in 2 iters
+d/dt = -0.0172937
+Ih = 7.84759
+||grad|| = 0.0270318
+cgiter = 9
+||grad|| = 0.0013533
+cgiter = 7
+||grad|| = 0.000274929
+Newton in 2 iters
+d/dt = -0.0170871
+Ih = 7.84734
+||grad|| = 0.0238001
+cgiter = 9
+||grad|| = 0.000725539
+Newton in 1 iters
+d/dt = -0.016884
+Ih = 7.84708
+||grad|| = 0.0301065
+cgiter = 9
+||grad|| = 0.00208432
+cgiter = 7
+||grad|| = 0.000433821
+Newton in 2 iters
+d/dt = -0.0166842
+Ih = 7.84683
+||grad|| = 0.0254416
+cgiter = 9
+||grad|| = 0.00115899
+cgiter = 7
+||grad|| = 0.000241146
+Newton in 2 iters
+d/dt = -0.0164873
+Ih = 7.84659
+||grad|| = 0.0229222
+cgiter = 9
+||grad|| = 0.000662829
+Newton in 1 iters
+d/dt = -0.0162929
+Ih = 7.84634
+||grad|| = 0.028766
+cgiter = 9
+||grad|| = 0.00195588
+cgiter = 7
+||grad|| = 0.000417357
+Newton in 2 iters
+d/dt = -0.0161015
+Ih = 7.8461
+||grad|| = 0.0248077
+cgiter = 9
+||grad|| = 0.00115514
+cgiter = 7
+||grad|| = 0.000246423
+Newton in 2 iters
+d/dt = -0.0159124
+Ih = 7.84586
+||grad|| = 0.0225383
+cgiter = 9
+||grad|| = 0.000699505
+Newton in 1 iters
+d/dt = -0.0157257
+Ih = 7.84563
+||grad|| = 0.028847
+cgiter = 9
+||grad|| = 0.00212451
+cgiter = 7
+||grad|| = 0.000464733
+Newton in 2 iters
+d/dt = -0.0155415
+Ih = 7.84539
+||grad|| = 0.0249871
+cgiter = 9
+||grad|| = 0.00132586
+cgiter = 7
+||grad|| = 0.000290363
+Newton in 2 iters
+d/dt = -0.0153598
+Ih = 7.84516
+||grad|| = 0.0226575
+cgiter = 9
+||grad|| = 0.000845574
+Newton in 1 iters
+d/dt = -0.0151804
+Ih = 7.84493
+||grad|| = 0.0305049
+cgiter = 8
+||grad|| = 0.00264723
+cgiter = 7
+||grad|| = 0.000593462
+Newton in 2 iters
+d/dt = -0.0150035
+Ih = 7.84471
+||grad|| = 0.0262252
+cgiter = 9
+||grad|| = 0.0017394
+cgiter = 7
+||grad|| = 0.000391143
+Newton in 2 iters
+d/dt = -0.0148287
+Ih = 7.84449
+||grad|| = 0.0235231
+cgiter = 9
+||grad|| = 0.00116417
+cgiter = 7
+||grad|| = 0.000262397
+Newton in 2 iters
+d/dt = -0.0146564
+Ih = 7.84427
+||grad|| = 0.0217486
+cgiter = 9
+||grad|| = 0.000798181
+Newton in 1 iters
+d/dt = -0.0144865
+Ih = 7.84405
+||grad|| = 0.0293021
+cgiter = 8
+||grad|| = 0.00258941
+cgiter = 7
+||grad|| = 0.00059724
+Newton in 2 iters
+d/dt = -0.0143195
+Ih = 7.84383
+||grad|| = 0.0257678
+cgiter = 9
+||grad|| = 0.00181229
+cgiter = 7
+||grad|| = 0.000419736
+Newton in 2 iters
+d/dt = -0.0141545
+Ih = 7.84362
+||grad|| = 0.0233724
+cgiter = 9
+||grad|| = 0.00129772
+cgiter = 7
+||grad|| = 0.000301308
+Newton in 2 iters
+d/dt = -0.0139915
+Ih = 7.84341
+||grad|| = 0.0217202
+cgiter = 9
+||grad|| = 0.000944728
+Newton in 1 iters
+d/dt = -0.0138307
+Ih = 7.84321
+||grad|| = 0.0308901
+cgiter = 8
+||grad|| = 0.00315962
+cgiter = 7
+||grad|| = 0.000749806
+Newton in 2 iters
+d/dt = -0.0136719
+Ih = 7.843
+||grad|| = 0.0272875
+cgiter = 8
+||grad|| = 0.00236141
+cgiter = 7
+||grad|| = 0.000562709
+Newton in 2 iters
+d/dt = -0.0135148
+Ih = 7.8428
+||grad|| = 0.0247341
+cgiter = 9
+||grad|| = 0.0017883
+cgiter = 7
+||grad|| = 0.000428235
+Newton in 2 iters
+d/dt = -0.0133598
+Ih = 7.8426
+||grad|| = 0.022869
+cgiter = 9
+||grad|| = 0.00138166
+cgiter = 7
+||grad|| = 0.000331758
+Newton in 2 iters
+d/dt = -0.0132074
+Ih = 7.8424
+||grad|| = 0.0214916
+cgiter = 9
+||grad|| = 0.00108231
+cgiter = 7
+||grad|| = 0.000260514
+Newton in 2 iters
+d/dt = -0.0130572
+Ih = 7.8422
+||grad|| = 0.0204408
+cgiter = 9
+||grad|| = 0.000863289
+Newton in 1 iters
+d/dt = -0.0129089
+Ih = 7.84201
+||grad|| = 0.0290156
+cgiter = 8
+||grad|| = 0.00302141
+cgiter = 7
+||grad|| = 0.000743804
+Newton in 2 iters
+d/dt = -0.0127626
+Ih = 7.84182
+||grad|| = 0.0265375
+cgiter = 8
+||grad|| = 0.00245025
+cgiter = 7
+||grad|| = 0.000606279
+Newton in 2 iters
+d/dt = -0.0126178
+Ih = 7.84163
+||grad|| = 0.0246349
+cgiter = 9
+||grad|| = 0.0020259
+cgiter = 7
+||grad|| = 0.00050348
+Newton in 2 iters
+d/dt = -0.0124746
+Ih = 7.84144
+||grad|| = 0.0231615
+cgiter = 9
+||grad|| = 0.00169406
+cgiter = 7
+||grad|| = 0.000422884
+Newton in 2 iters
+d/dt = -0.0123335
+Ih = 7.84126
+||grad|| = 0.0219914
+cgiter = 9
+||grad|| = 0.0014411
+cgiter = 7
+||grad|| = 0.000360955
+Newton in 2 iters
+d/dt = -0.0121939
+Ih = 7.84107
+||grad|| = 0.0210588
+cgiter = 9
+||grad|| = 0.00123969
+cgiter = 7
+||grad|| = 0.000311638
+Newton in 2 iters
+d/dt = -0.012056
+Ih = 7.84089
+||grad|| = 0.0202952
+cgiter = 9
+||grad|| = 0.00108319
+cgiter = 7
+||grad|| = 0.000273059
+Newton in 2 iters
+d/dt = -0.01192
+Ih = 7.84071
+||grad|| = 0.0196715
+cgiter = 9
+||grad|| = 0.000956859
+Newton in 1 iters
+d/dt = -0.0117858
+Ih = 7.84054
+||grad|| = 0.0294847
+cgiter = 8
+||grad|| = 0.00352084
+cgiter = 7
+||grad|| = 0.000907364
+Newton in 2 iters
+d/dt = -0.0116531
+Ih = 7.84036
+||grad|| = 0.0279292
+cgiter = 8
+||grad|| = 0.0031791
+cgiter = 7
+||grad|| = 0.000822806
+Newton in 2 iters
+d/dt = -0.011522
+Ih = 7.84019
+||grad|| = 0.0266837
+cgiter = 8
+||grad|| = 0.00289363
+cgiter = 7
+||grad|| = 0.000753382
+Newton in 2 iters
+d/dt = -0.0113925
+Ih = 7.84002
+||grad|| = 0.0256664
+cgiter = 8
+||grad|| = 0.00267948
+cgiter = 7
+||grad|| = 0.000700636
+Newton in 2 iters
+d/dt = -0.0112645
+Ih = 7.83985
+||grad|| = 0.0248491
+cgiter = 8
+||grad|| = 0.0025013
+cgiter = 7
+||grad|| = 0.000657577
+Newton in 2 iters
+d/dt = -0.0111384
+Ih = 7.83968
+||grad|| = 0.0241836
+cgiter = 8
+||grad|| = 0.00237255
+cgiter = 7
+||grad|| = 0.000626341
+Newton in 2 iters
+d/dt = -0.0110141
+Ih = 7.83952
+||grad|| = 0.0236564
+cgiter = 8
+||grad|| = 0.00226822
+cgiter = 7
+||grad|| = 0.000601882
+Newton in 2 iters
+d/dt = -0.0108914
+Ih = 7.83935
+||grad|| = 0.0232392
+cgiter = 8
+||grad|| = 0.0022013
+cgiter = 7
+||grad|| = 0.000586552
+Newton in 2 iters
+d/dt = -0.0107702
+Ih = 7.83919
+||grad|| = 0.0229275
+cgiter = 8
+||grad|| = 0.00215272
+cgiter = 7
+||grad|| = 0.000576521
+Newton in 2 iters
+d/dt = -0.0106504
+Ih = 7.83903
+||grad|| = 0.0227045
+cgiter = 8
+||grad|| = 0.00213565
+cgiter = 7
+||grad|| = 0.000574347
+Newton in 2 iters
+d/dt = -0.0105319
+Ih = 7.83887
+||grad|| = 0.022572
+cgiter = 8
+||grad|| = 0.00213436
+cgiter = 7
+||grad|| = 0.000576921
+Newton in 2 iters
+d/dt = -0.010415
+Ih = 7.83872
+||grad|| = 0.0225209
+cgiter = 8
+||grad|| = 0.002163
+cgiter = 7
+||grad|| = 0.000587142
+Newton in 2 iters
+d/dt = -0.0102993
+Ih = 7.83856
+||grad|| = 0.022558
+cgiter = 8
+||grad|| = 0.00220744
+cgiter = 7
+||grad|| = 0.000602295
+Newton in 2 iters
+d/dt = -0.0101855
+Ih = 7.83841
+||grad|| = 0.0226806
+cgiter = 8
+||grad|| = 0.00228387
+cgiter = 7
+||grad|| = 0.000625802
+Newton in 2 iters
+d/dt = -0.0100733
+Ih = 7.83826
+||grad|| = 0.0229003
+cgiter = 8
+||grad|| = 0.00237854
+cgiter = 7
+||grad|| = 0.000655134
+Newton in 2 iters
+d/dt = -0.00996252
+Ih = 7.83811
+converged
+Took 146.761 seconds
+Took 105 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+Xp size = 205441, 2
+creating the solver
+finished creating the solver
+||grad|| = 9.86916
+building euler jac
+finsihed factorizing matrix
+cgiter = 7
+||grad|| = 0.0110696
+cgiter = 9
+||grad|| = 3.09316e-05
+Newton in 2 iters
+d/dt = -inf
+Ih = 7.86927
+||grad|| = 0.693618
+cgiter = 8
+||grad|| = 0.00181322
+cgiter = 9
+||grad|| = 1.267e-05
+Newton in 2 iters
+d/dt = -0.0367291
+Ih = 7.86871
+||grad|| = 0.0708507
+cgiter = 9
+||grad|| = 0.000362897
+Newton in 1 iters
+d/dt = -0.0360818
+Ih = 7.86817
+||grad|| = 0.0478921
+cgiter = 9
+||grad|| = 0.000169681
+Newton in 1 iters
+d/dt = -0.03548
+Ih = 7.86764
+||grad|| = 0.0443998
+cgiter = 9
+||grad|| = 0.000122111
+Newton in 1 iters
+d/dt = -0.0349069
+Ih = 7.86712
+||grad|| = 0.0420515
+cgiter = 8
+||grad|| = 9.87487e-05
+Newton in 1 iters
+d/dt = -0.0343582
+Ih = 7.8666
+||grad|| = 0.0403088
+cgiter = 8
+||grad|| = 8.38515e-05
+Newton in 1 iters
+d/dt = -0.0338307
+Ih = 7.86609
+||grad|| = 0.038927
+cgiter = 8
+||grad|| = 7.3624e-05
+Newton in 1 iters
+d/dt = -0.03332
+Ih = 7.86559
+||grad|| = 0.0377816
+cgiter = 8
+||grad|| = 6.63661e-05
+Newton in 1 iters
+d/dt = -0.0328241
+Ih = 7.8651
+||grad|| = 0.0368
+cgiter = 8
+||grad|| = 6.08405e-05
+Newton in 1 iters
+d/dt = -0.0323403
+Ih = 7.86462
+||grad|| = 0.0359389
+cgiter = 8
+||grad|| = 5.66238e-05
+Newton in 1 iters
+d/dt = -0.0318688
+Ih = 7.86414
+||grad|| = 0.0351696
+cgiter = 8
+||grad|| = 5.38412e-05
+Newton in 1 iters
+d/dt = -0.0314088
+Ih = 7.86367
+||grad|| = 0.0344721
+cgiter = 7
+||grad|| = 5.20667e-05
+Newton in 1 iters
+d/dt = -0.0309595
+Ih = 7.8632
+||grad|| = 0.0338324
+cgiter = 7
+||grad|| = 5.12511e-05
+Newton in 1 iters
+d/dt = -0.0305202
+Ih = 7.86275
+||grad|| = 0.0332409
+cgiter = 7
+||grad|| = 5.22328e-05
+Newton in 1 iters
+d/dt = -0.0300932
+Ih = 7.86229
+||grad|| = 0.032702
+cgiter = 7
+||grad|| = 5.50446e-05
+Newton in 1 iters
+d/dt = -0.0296744
+Ih = 7.86185
+||grad|| = 0.0322207
+cgiter = 7
+||grad|| = 5.98305e-05
+Newton in 1 iters
+d/dt = -0.0292632
+Ih = 7.86141
+||grad|| = 0.0317923
+cgiter = 8
+||grad|| = 6.73433e-05
+Newton in 1 iters
+d/dt = -0.0288596
+Ih = 7.86098
+||grad|| = 0.031421
+cgiter = 8
+||grad|| = 7.89702e-05
+Newton in 1 iters
+d/dt = -0.0284637
+Ih = 7.86055
+||grad|| = 0.0311241
+cgiter = 8
+||grad|| = 9.71017e-05
+Newton in 1 iters
+d/dt = -0.0280747
+Ih = 7.86013
+||grad|| = 0.0309379
+cgiter = 9
+||grad|| = 0.000125893
+Newton in 1 iters
+d/dt = -0.0276927
+Ih = 7.85971
+||grad|| = 0.0309182
+cgiter = 9
+||grad|| = 0.0001723
+Newton in 1 iters
+d/dt = -0.027318
+Ih = 7.8593
+||grad|| = 0.031149
+cgiter = 9
+||grad|| = 0.000248678
+Newton in 1 iters
+d/dt = -0.0269502
+Ih = 7.8589
+||grad|| = 0.0317977
+cgiter = 9
+||grad|| = 0.000377228
+Newton in 1 iters
+d/dt = -0.0265891
+Ih = 7.8585
+||grad|| = 0.0331649
+cgiter = 9
+||grad|| = 0.000598635
+Newton in 1 iters
+d/dt = -0.0262352
+Ih = 7.85811
+||grad|| = 0.0357935
+cgiter = 9
+||grad|| = 0.000988368
+Newton in 1 iters
+d/dt = -0.0258882
+Ih = 7.85772
+||grad|| = 0.040724
+cgiter = 9
+||grad|| = 0.0016909
+cgiter = 7
+||grad|| = 0.000216657
+Newton in 2 iters
+d/dt = -0.0255467
+Ih = 7.85734
+||grad|| = 0.0295541
+cgiter = 9
+||grad|| = 0.00028522
+Newton in 1 iters
+d/dt = -0.0252111
+Ih = 7.85696
+||grad|| = 0.0307332
+cgiter = 9
+||grad|| = 0.00049576
+Newton in 1 iters
+d/dt = -0.0248813
+Ih = 7.85658
+||grad|| = 0.0332738
+cgiter = 9
+||grad|| = 0.000901534
+Newton in 1 iters
+d/dt = -0.0245567
+Ih = 7.85622
+||grad|| = 0.0384848
+cgiter = 9
+||grad|| = 0.00169488
+cgiter = 7
+||grad|| = 0.000238762
+Newton in 2 iters
+d/dt = -0.0242377
+Ih = 7.85585
+||grad|| = 0.0287766
+cgiter = 9
+||grad|| = 0.000367393
+Newton in 1 iters
+d/dt = -0.0239236
+Ih = 7.85549
+||grad|| = 0.0307351
+cgiter = 9
+||grad|| = 0.000705186
+Newton in 1 iters
+d/dt = -0.0236146
+Ih = 7.85514
+||grad|| = 0.0350546
+cgiter = 9
+||grad|| = 0.00140968
+cgiter = 7
+||grad|| = 0.000209609
+Newton in 2 iters
+d/dt = -0.0233109
+Ih = 7.85479
+||grad|| = 0.027787
+cgiter = 9
+||grad|| = 0.000356176
+Newton in 1 iters
+d/dt = -0.0230117
+Ih = 7.85445
+||grad|| = 0.0298186
+cgiter = 9
+||grad|| = 0.000719414
+Newton in 1 iters
+d/dt = -0.0227175
+Ih = 7.8541
+||grad|| = 0.0345378
+cgiter = 9
+||grad|| = 0.00151368
+cgiter = 7
+||grad|| = 0.000237111
+Newton in 2 iters
+d/dt = -0.0224291
+Ih = 7.85377
+||grad|| = 0.0274022
+cgiter = 9
+||grad|| = 0.000433397
+Newton in 1 iters
+d/dt = -0.022145
+Ih = 7.85344
+||grad|| = 0.030162
+cgiter = 9
+||grad|| = 0.000931353
+Newton in 1 iters
+d/dt = -0.0218655
+Ih = 7.85311
+||grad|| = 0.0367685
+cgiter = 9
+||grad|| = 0.00207886
+cgiter = 7
+||grad|| = 0.000341938
+Newton in 2 iters
+d/dt = -0.0215903
+Ih = 7.85278
+||grad|| = 0.0278951
+cgiter = 9
+||grad|| = 0.000654242
+Newton in 1 iters
+d/dt = -0.0213189
+Ih = 7.85246
+||grad|| = 0.0325294
+cgiter = 9
+||grad|| = 0.00148804
+cgiter = 7
+||grad|| = 0.000250881
+Newton in 2 iters
+d/dt = -0.0210525
+Ih = 7.85215
+||grad|| = 0.0265141
+cgiter = 9
+||grad|| = 0.000510929
+Newton in 1 iters
+d/dt = -0.0207903
+Ih = 7.85184
+||grad|| = 0.0301396
+cgiter = 9
+||grad|| = 0.00119191
+cgiter = 7
+||grad|| = 0.000205535
+Newton in 2 iters
+d/dt = -0.0205322
+Ih = 7.85153
+||grad|| = 0.0256118
+cgiter = 9
+||grad|| = 0.000439001
+Newton in 1 iters
+d/dt = -0.0202776
+Ih = 7.85122
+||grad|| = 0.0287435
+cgiter = 9
+||grad|| = 0.00104362
+cgiter = 7
+||grad|| = 0.000184083
+Newton in 2 iters
+d/dt = -0.020027
+Ih = 7.85092
+||grad|| = 0.0249835
+cgiter = 9
+||grad|| = 0.000411492
+Newton in 1 iters
+d/dt = -0.0197799
+Ih = 7.85063
+||grad|| = 0.0279677
+cgiter = 9
+||grad|| = 0.00100408
+cgiter = 7
+||grad|| = 0.000181121
+Newton in 2 iters
+d/dt = -0.0195362
+Ih = 7.85033
+||grad|| = 0.0245664
+cgiter = 9
+||grad|| = 0.000417695
+Newton in 1 iters
+d/dt = -0.019296
+Ih = 7.85004
+||grad|| = 0.0276746
+cgiter = 9
+||grad|| = 0.00104311
+cgiter = 7
+||grad|| = 0.000192687
+Newton in 2 iters
+d/dt = -0.0190598
+Ih = 7.84976
+||grad|| = 0.0243333
+cgiter = 9
+||grad|| = 0.000457787
+Newton in 1 iters
+d/dt = -0.018827
+Ih = 7.84948
+||grad|| = 0.0278615
+cgiter = 9
+||grad|| = 0.00117858
+cgiter = 7
+||grad|| = 0.000222938
+Newton in 2 iters
+d/dt = -0.0185975
+Ih = 7.8492
+||grad|| = 0.02433
+cgiter = 9
+||grad|| = 0.000539744
+Newton in 1 iters
+d/dt = -0.0183715
+Ih = 7.84892
+||grad|| = 0.0286524
+cgiter = 9
+||grad|| = 0.00142704
+cgiter = 7
+||grad|| = 0.000276552
+Newton in 2 iters
+d/dt = -0.0181496
+Ih = 7.84865
+||grad|| = 0.0246248
+cgiter = 9
+||grad|| = 0.000684
+Newton in 1 iters
+d/dt = -0.0179311
+Ih = 7.84838
+||grad|| = 0.0303299
+cgiter = 9
+||grad|| = 0.00186831
+cgiter = 7
+||grad|| = 0.000370521
+Newton in 2 iters
+d/dt = -0.0177158
+Ih = 7.84811
+||grad|| = 0.0254259
+cgiter = 9
+||grad|| = 0.000929957
+Newton in 1 iters
+d/dt = -0.0175033
+Ih = 7.84785
+||grad|| = 0.0334541
+cgiter = 8
+||grad|| = 0.00260304
+cgiter = 7
+||grad|| = 0.000527912
+Newton in 2 iters
+d/dt = -0.0172937
+Ih = 7.84759
+||grad|| = 0.0270318
+cgiter = 9
+||grad|| = 0.0013533
+cgiter = 7
+||grad|| = 0.000274929
+Newton in 2 iters
+d/dt = -0.0170871
+Ih = 7.84734
+||grad|| = 0.0238001
+cgiter = 9
+||grad|| = 0.000725539
+Newton in 1 iters
+d/dt = -0.016884
+Ih = 7.84708
+||grad|| = 0.0301065
+cgiter = 9
+||grad|| = 0.00208432
+cgiter = 7
+||grad|| = 0.000433821
+Newton in 2 iters
+d/dt = -0.0166842
+Ih = 7.84683
+||grad|| = 0.0254416
+cgiter = 9
+||grad|| = 0.00115899
+cgiter = 7
+||grad|| = 0.000241146
+Newton in 2 iters
+d/dt = -0.0164873
+Ih = 7.84659
+||grad|| = 0.0229222
+cgiter = 9
+||grad|| = 0.000662829
+Newton in 1 iters
+d/dt = -0.0162929
+Ih = 7.84634
+||grad|| = 0.028766
+cgiter = 9
+||grad|| = 0.00195588
+cgiter = 7
+||grad|| = 0.000417357
+Newton in 2 iters
+d/dt = -0.0161015
+Ih = 7.8461
+||grad|| = 0.0248077
+cgiter = 9
+||grad|| = 0.00115514
+cgiter = 7
+||grad|| = 0.000246423
+Newton in 2 iters
+d/dt = -0.0159124
+Ih = 7.84586
+||grad|| = 0.0225383
+cgiter = 9
+||grad|| = 0.000699505
+Newton in 1 iters
+d/dt = -0.0157257
+Ih = 7.84563
+||grad|| = 0.028847
+cgiter = 9
+||grad|| = 0.00212451
+cgiter = 7
+||grad|| = 0.000464733
+Newton in 2 iters
+d/dt = -0.0155415
+Ih = 7.84539
+||grad|| = 0.0249871
+cgiter = 9
+||grad|| = 0.00132586
+cgiter = 7
+||grad|| = 0.000290363
+Newton in 2 iters
+d/dt = -0.0153598
+Ih = 7.84516
+||grad|| = 0.0226575
+cgiter = 9
+||grad|| = 0.000845574
+Newton in 1 iters
+d/dt = -0.0151804
+Ih = 7.84493
+||grad|| = 0.0305049
+cgiter = 8
+||grad|| = 0.00264723
+cgiter = 7
+||grad|| = 0.000593462
+Newton in 2 iters
+d/dt = -0.0150035
+Ih = 7.84471
+||grad|| = 0.0262252
+cgiter = 9
+||grad|| = 0.0017394
+cgiter = 7
+||grad|| = 0.000391143
+Newton in 2 iters
+d/dt = -0.0148287
+Ih = 7.84449
+||grad|| = 0.0235231
+cgiter = 9
+||grad|| = 0.00116417
+cgiter = 7
+||grad|| = 0.000262397
+Newton in 2 iters
+d/dt = -0.0146564
+Ih = 7.84427
+||grad|| = 0.0217486
+cgiter = 9
+||grad|| = 0.000798181
+Newton in 1 iters
+d/dt = -0.0144865
+Ih = 7.84405
+||grad|| = 0.0293021
+cgiter = 8
+||grad|| = 0.00258941
+cgiter = 7
+||grad|| = 0.00059724
+Newton in 2 iters
+d/dt = -0.0143195
+Ih = 7.84383
+||grad|| = 0.0257678
+cgiter = 9
+||grad|| = 0.00181229
+cgiter = 7
+||grad|| = 0.000419736
+Newton in 2 iters
+d/dt = -0.0141545
+Ih = 7.84362
+||grad|| = 0.0233724
+cgiter = 9
+||grad|| = 0.00129772
+cgiter = 7
+||grad|| = 0.000301308
+Newton in 2 iters
+d/dt = -0.0139915
+Ih = 7.84341
+||grad|| = 0.0217202
+cgiter = 9
+||grad|| = 0.000944728
+Newton in 1 iters
+d/dt = -0.0138307
+Ih = 7.84321
+||grad|| = 0.0308901
+cgiter = 8
+||grad|| = 0.00315962
+cgiter = 7
+||grad|| = 0.000749806
+Newton in 2 iters
+d/dt = -0.0136719
+Ih = 7.843
+||grad|| = 0.0272875
+cgiter = 8
+||grad|| = 0.00236141
+cgiter = 7
+||grad|| = 0.000562709
+Newton in 2 iters
+d/dt = -0.0135148
+Ih = 7.8428
+||grad|| = 0.0247341
+cgiter = 9
+||grad|| = 0.0017883
+cgiter = 7
+||grad|| = 0.000428235
+Newton in 2 iters
+d/dt = -0.0133598
+Ih = 7.8426
+||grad|| = 0.022869
+cgiter = 9
+||grad|| = 0.00138166
+cgiter = 7
+||grad|| = 0.000331758
+Newton in 2 iters
+d/dt = -0.0132074
+Ih = 7.8424
+||grad|| = 0.0214916
+cgiter = 9
+||grad|| = 0.00108231
+cgiter = 7
+||grad|| = 0.000260514
+Newton in 2 iters
+d/dt = -0.0130572
+Ih = 7.8422
+||grad|| = 0.0204408
+cgiter = 9
+||grad|| = 0.000863289
+Newton in 1 iters
+d/dt = -0.0129089
+Ih = 7.84201
+||grad|| = 0.0290156
+cgiter = 8
+||grad|| = 0.00302141
+cgiter = 7
+||grad|| = 0.000743804
+Newton in 2 iters
+d/dt = -0.0127626
+Ih = 7.84182
+||grad|| = 0.0265375
+cgiter = 8
+||grad|| = 0.00245025
+cgiter = 7
+||grad|| = 0.000606279
+Newton in 2 iters
+d/dt = -0.0126178
+Ih = 7.84163
+||grad|| = 0.0246349
+cgiter = 9
+||grad|| = 0.0020259
+cgiter = 7
+||grad|| = 0.00050348
+Newton in 2 iters
+d/dt = -0.0124746
+Ih = 7.84144
+||grad|| = 0.0231615
+cgiter = 9
+||grad|| = 0.00169406
+cgiter = 7
+||grad|| = 0.000422884
+Newton in 2 iters
+d/dt = -0.0123335
+Ih = 7.84126
+||grad|| = 0.0219914
+cgiter = 9
+||grad|| = 0.0014411
+cgiter = 7
+||grad|| = 0.000360955
+Newton in 2 iters
+d/dt = -0.0121939
+Ih = 7.84107
+||grad|| = 0.0210588
+cgiter = 9
+||grad|| = 0.00123969
+cgiter = 7
+||grad|| = 0.000311638
+Newton in 2 iters
+d/dt = -0.012056
+Ih = 7.84089
+||grad|| = 0.0202952
+cgiter = 9
+||grad|| = 0.00108319
+cgiter = 7
+||grad|| = 0.000273059
+Newton in 2 iters
+d/dt = -0.01192
+Ih = 7.84071
+||grad|| = 0.0196715
+cgiter = 9
+||grad|| = 0.000956859
+Newton in 1 iters
+d/dt = -0.0117858
+Ih = 7.84054
+||grad|| = 0.0294847
+cgiter = 8
+||grad|| = 0.00352084
+cgiter = 7
+||grad|| = 0.000907364
+Newton in 2 iters
+d/dt = -0.0116531
+Ih = 7.84036
+||grad|| = 0.0279292
+cgiter = 8
+||grad|| = 0.0031791
+cgiter = 7
+||grad|| = 0.000822806
+Newton in 2 iters
+d/dt = -0.011522
+Ih = 7.84019
+||grad|| = 0.0266837
+cgiter = 8
+||grad|| = 0.00289363
+cgiter = 7
+||grad|| = 0.000753382
+Newton in 2 iters
+d/dt = -0.0113925
+Ih = 7.84002
+||grad|| = 0.0256664
+cgiter = 8
+||grad|| = 0.00267948
+cgiter = 7
+||grad|| = 0.000700636
+Newton in 2 iters
+d/dt = -0.0112645
+Ih = 7.83985
+||grad|| = 0.0248491
+cgiter = 8
+||grad|| = 0.0025013
+cgiter = 7
+||grad|| = 0.000657577
+Newton in 2 iters
+d/dt = -0.0111384
+Ih = 7.83968
+||grad|| = 0.0241836
+cgiter = 8
+||grad|| = 0.00237255
+cgiter = 7
+||grad|| = 0.000626341
+Newton in 2 iters
+d/dt = -0.0110141
+Ih = 7.83952
+||grad|| = 0.0236564
+cgiter = 8
+||grad|| = 0.00226822
+cgiter = 7
+||grad|| = 0.000601882
+Newton in 2 iters
+d/dt = -0.0108914
+Ih = 7.83935
+||grad|| = 0.0232392
+cgiter = 8
+||grad|| = 0.0022013
+cgiter = 7
+||grad|| = 0.000586552
+Newton in 2 iters
+d/dt = -0.0107702
+Ih = 7.83919
+||grad|| = 0.0229275
+cgiter = 8
+||grad|| = 0.00215272
+cgiter = 7
+||grad|| = 0.000576521
+Newton in 2 iters
+d/dt = -0.0106504
+Ih = 7.83903
+||grad|| = 0.0227045
+cgiter = 8
+||grad|| = 0.00213565
+cgiter = 7
+||grad|| = 0.000574347
+Newton in 2 iters
+d/dt = -0.0105319
+Ih = 7.83887
+||grad|| = 0.022572
+cgiter = 8
+||grad|| = 0.00213436
+cgiter = 7
+||grad|| = 0.000576921
+Newton in 2 iters
+d/dt = -0.010415
+Ih = 7.83872
+||grad|| = 0.0225209
+cgiter = 8
+||grad|| = 0.002163
+cgiter = 7
+||grad|| = 0.000587142
+Newton in 2 iters
+d/dt = -0.0102993
+Ih = 7.83856
+||grad|| = 0.022558
+cgiter = 8
+||grad|| = 0.00220744
+cgiter = 7
+||grad|| = 0.000602295
+Newton in 2 iters
+d/dt = -0.0101855
+Ih = 7.83841
+||grad|| = 0.0226806
+cgiter = 8
+||grad|| = 0.00228387
+cgiter = 7
+||grad|| = 0.000625802
+Newton in 2 iters
+d/dt = -0.0100733
+Ih = 7.83826
+||grad|| = 0.0229003
+cgiter = 8
+||grad|| = 0.00237854
+cgiter = 7
+||grad|| = 0.000655134
+Newton in 2 iters
+d/dt = -0.00996252
+Ih = 7.83811
+converged
+Took 148.436 seconds
+Took 105 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+Xp size = 205441, 2
+creating the solver
+finished creating the solver
+||grad|| = 9.86916
+building euler jac
+finsihed factorizing matrix
+cgiter = 7
+||grad|| = 0.0110696
+cgiter = 9
+||grad|| = 3.09316e-05
+Newton in 2 iters
+d/dt = -inf
+Ih = 7.86927
+||grad|| = 0.693618
+cgiter = 8
+||grad|| = 0.00181322
+cgiter = 9
+||grad|| = 1.267e-05
+Newton in 2 iters
+d/dt = -0.0367291
+Ih = 7.86871
+||grad|| = 0.0708507
+cgiter = 9
+||grad|| = 0.000362897
+Newton in 1 iters
+d/dt = -0.0360818
+Ih = 7.86817
+||grad|| = 0.0478921
+cgiter = 9
+||grad|| = 0.000169681
+Newton in 1 iters
+d/dt = -0.03548
+Ih = 7.86764
+||grad|| = 0.0443998
+cgiter = 9
+||grad|| = 0.000122111
+Newton in 1 iters
+d/dt = -0.0349069
+Ih = 7.86712
+||grad|| = 0.0420515
+cgiter = 8
+||grad|| = 9.87487e-05
+Newton in 1 iters
+d/dt = -0.0343582
+Ih = 7.8666
+||grad|| = 0.0403088
+cgiter = 8
+||grad|| = 8.38515e-05
+Newton in 1 iters
+d/dt = -0.0338307
+Ih = 7.86609
+||grad|| = 0.038927
+cgiter = 8
+||grad|| = 7.3624e-05
+Newton in 1 iters
+d/dt = -0.03332
+Ih = 7.86559
+||grad|| = 0.0377816
+cgiter = 8
+||grad|| = 6.63661e-05
+Newton in 1 iters
+d/dt = -0.0328241
+Ih = 7.8651
+||grad|| = 0.0368
+cgiter = 8
+||grad|| = 6.08405e-05
+Newton in 1 iters
+d/dt = -0.0323403
+Ih = 7.86462
+||grad|| = 0.0359389
+cgiter = 8
+||grad|| = 5.66238e-05
+Newton in 1 iters
+d/dt = -0.0318688
+Ih = 7.86414
+||grad|| = 0.0351696
+cgiter = 8
+||grad|| = 5.38412e-05
+Newton in 1 iters
+d/dt = -0.0314088
+Ih = 7.86367
+||grad|| = 0.0344721
+cgiter = 7
+||grad|| = 5.20667e-05
+Newton in 1 iters
+d/dt = -0.0309595
+Ih = 7.8632
+||grad|| = 0.0338324
+cgiter = 7
+||grad|| = 5.12511e-05
+Newton in 1 iters
+d/dt = -0.0305202
+Ih = 7.86275
+||grad|| = 0.0332409
+cgiter = 7
+||grad|| = 5.22328e-05
+Newton in 1 iters
+d/dt = -0.0300932
+Ih = 7.86229
+||grad|| = 0.032702
+cgiter = 7
+||grad|| = 5.50446e-05
+Newton in 1 iters
+d/dt = -0.0296744
+Ih = 7.86185
+||grad|| = 0.0322207
+cgiter = 7
+||grad|| = 5.98305e-05
+Newton in 1 iters
+d/dt = -0.0292632
+Ih = 7.86141
+||grad|| = 0.0317923
+cgiter = 8
+||grad|| = 6.73433e-05
+Newton in 1 iters
+d/dt = -0.0288596
+Ih = 7.86098
+||grad|| = 0.031421
+cgiter = 8
+||grad|| = 7.89702e-05
+Newton in 1 iters
+d/dt = -0.0284637
+Ih = 7.86055
+||grad|| = 0.0311241
+cgiter = 8
+||grad|| = 9.71017e-05
+Newton in 1 iters
+d/dt = -0.0280747
+Ih = 7.86013
+||grad|| = 0.0309379
+cgiter = 9
+||grad|| = 0.000125893
+Newton in 1 iters
+d/dt = -0.0276927
+Ih = 7.85971
+||grad|| = 0.0309182
+cgiter = 9
+||grad|| = 0.0001723
+Newton in 1 iters
+d/dt = -0.027318
+Ih = 7.8593
+||grad|| = 0.031149
+cgiter = 9
+||grad|| = 0.000248678
+Newton in 1 iters
+d/dt = -0.0269502
+Ih = 7.8589
+||grad|| = 0.0317977
+cgiter = 9
+||grad|| = 0.000377228
+Newton in 1 iters
+d/dt = -0.0265891
+Ih = 7.8585
+||grad|| = 0.0331649
+cgiter = 9
+||grad|| = 0.000598635
+Newton in 1 iters
+d/dt = -0.0262352
+Ih = 7.85811
+||grad|| = 0.0357935
+cgiter = 9
+||grad|| = 0.000988368
+Newton in 1 iters
+d/dt = -0.0258882
+Ih = 7.85772
+||grad|| = 0.040724
+cgiter = 9
+||grad|| = 0.0016909
+cgiter = 7
+||grad|| = 0.000216657
+Newton in 2 iters
+d/dt = -0.0255467
+Ih = 7.85734
+||grad|| = 0.0295541
+cgiter = 9
+||grad|| = 0.00028522
+Newton in 1 iters
+d/dt = -0.0252111
+Ih = 7.85696
+||grad|| = 0.0307332
+cgiter = 9
+||grad|| = 0.00049576
+Newton in 1 iters
+d/dt = -0.0248813
+Ih = 7.85658
+||grad|| = 0.0332738
+cgiter = 9
+||grad|| = 0.000901534
+Newton in 1 iters
+d/dt = -0.0245567
+Ih = 7.85622
+||grad|| = 0.0384848
+cgiter = 9
+||grad|| = 0.00169488
+cgiter = 7
+||grad|| = 0.000238762
+Newton in 2 iters
+d/dt = -0.0242377
+Ih = 7.85585
+||grad|| = 0.0287766
+cgiter = 9
+||grad|| = 0.000367393
+Newton in 1 iters
+d/dt = -0.0239236
+Ih = 7.85549
+||grad|| = 0.0307351
+cgiter = 9
+||grad|| = 0.000705186
+Newton in 1 iters
+d/dt = -0.0236146
+Ih = 7.85514
+||grad|| = 0.0350546
+cgiter = 9
+||grad|| = 0.00140968
+cgiter = 7
+||grad|| = 0.000209609
+Newton in 2 iters
+d/dt = -0.0233109
+Ih = 7.85479
+||grad|| = 0.027787
+cgiter = 9
+||grad|| = 0.000356176
+Newton in 1 iters
+d/dt = -0.0230117
+Ih = 7.85445
+||grad|| = 0.0298186
+cgiter = 9
+||grad|| = 0.000719414
+Newton in 1 iters
+d/dt = -0.0227175
+Ih = 7.8541
+||grad|| = 0.0345378
+cgiter = 9
+||grad|| = 0.00151368
+cgiter = 7
+||grad|| = 0.000237111
+Newton in 2 iters
+d/dt = -0.0224291
+Ih = 7.85377
+||grad|| = 0.0274022
+cgiter = 9
+||grad|| = 0.000433397
+Newton in 1 iters
+d/dt = -0.022145
+Ih = 7.85344
+||grad|| = 0.030162
+cgiter = 9
+||grad|| = 0.000931353
+Newton in 1 iters
+d/dt = -0.0218655
+Ih = 7.85311
+||grad|| = 0.0367685
+cgiter = 9
+||grad|| = 0.00207886
+cgiter = 7
+||grad|| = 0.000341938
+Newton in 2 iters
+d/dt = -0.0215903
+Ih = 7.85278
+||grad|| = 0.0278951
+cgiter = 9
+||grad|| = 0.000654242
+Newton in 1 iters
+d/dt = -0.0213189
+Ih = 7.85246
+||grad|| = 0.0325294
+cgiter = 9
+||grad|| = 0.00148804
+cgiter = 7
+||grad|| = 0.000250881
+Newton in 2 iters
+d/dt = -0.0210525
+Ih = 7.85215
+||grad|| = 0.0265141
+cgiter = 9
+||grad|| = 0.000510929
+Newton in 1 iters
+d/dt = -0.0207903
+Ih = 7.85184
+||grad|| = 0.0301396
+cgiter = 9
+||grad|| = 0.00119191
+cgiter = 7
+||grad|| = 0.000205535
+Newton in 2 iters
+d/dt = -0.0205322
+Ih = 7.85153
+||grad|| = 0.0256118
+cgiter = 9
+||grad|| = 0.000439001
+Newton in 1 iters
+d/dt = -0.0202776
+Ih = 7.85122
+||grad|| = 0.0287435
+cgiter = 9
+||grad|| = 0.00104362
+cgiter = 7
+||grad|| = 0.000184083
+Newton in 2 iters
+d/dt = -0.020027
+Ih = 7.85092
+||grad|| = 0.0249835
+cgiter = 9
+||grad|| = 0.000411492
+Newton in 1 iters
+d/dt = -0.0197799
+Ih = 7.85063
+||grad|| = 0.0279677
+cgiter = 9
+||grad|| = 0.00100408
+cgiter = 7
+||grad|| = 0.000181121
+Newton in 2 iters
+d/dt = -0.0195362
+Ih = 7.85033
+||grad|| = 0.0245664
+cgiter = 9
+||grad|| = 0.000417695
+Newton in 1 iters
+d/dt = -0.019296
+Ih = 7.85004
+||grad|| = 0.0276746
+cgiter = 9
+||grad|| = 0.00104311
+cgiter = 7
+||grad|| = 0.000192687
+Newton in 2 iters
+d/dt = -0.0190598
+Ih = 7.84976
+||grad|| = 0.0243333
+cgiter = 9
+||grad|| = 0.000457787
+Newton in 1 iters
+d/dt = -0.018827
+Ih = 7.84948
+||grad|| = 0.0278615
+cgiter = 9
+||grad|| = 0.00117858
+cgiter = 7
+||grad|| = 0.000222938
+Newton in 2 iters
+d/dt = -0.0185975
+Ih = 7.8492
+||grad|| = 0.02433
+cgiter = 9
+||grad|| = 0.000539744
+Newton in 1 iters
+d/dt = -0.0183715
+Ih = 7.84892
+||grad|| = 0.0286524
+cgiter = 9
+||grad|| = 0.00142704
+cgiter = 7
+||grad|| = 0.000276552
+Newton in 2 iters
+d/dt = -0.0181496
+Ih = 7.84865
+||grad|| = 0.0246248
+cgiter = 9
+||grad|| = 0.000684
+Newton in 1 iters
+d/dt = -0.0179311
+Ih = 7.84838
+||grad|| = 0.0303299
+cgiter = 9
+||grad|| = 0.00186831
+cgiter = 7
+||grad|| = 0.000370521
+Newton in 2 iters
+d/dt = -0.0177158
+Ih = 7.84811
+||grad|| = 0.0254259
+cgiter = 9
+||grad|| = 0.000929957
+Newton in 1 iters
+d/dt = -0.0175033
+Ih = 7.84785
+||grad|| = 0.0334541
+cgiter = 8
+||grad|| = 0.00260304
+cgiter = 7
+||grad|| = 0.000527912
+Newton in 2 iters
+d/dt = -0.0172937
+Ih = 7.84759
+||grad|| = 0.0270318
+cgiter = 9
+||grad|| = 0.0013533
+cgiter = 7
+||grad|| = 0.000274929
+Newton in 2 iters
+d/dt = -0.0170871
+Ih = 7.84734
+||grad|| = 0.0238001
+cgiter = 9
+||grad|| = 0.000725539
+Newton in 1 iters
+d/dt = -0.016884
+Ih = 7.84708
+||grad|| = 0.0301065
+cgiter = 9
+||grad|| = 0.00208432
+cgiter = 7
+||grad|| = 0.000433821
+Newton in 2 iters
+d/dt = -0.0166842
+Ih = 7.84683
+||grad|| = 0.0254416
+cgiter = 9
+||grad|| = 0.00115899
+cgiter = 7
+||grad|| = 0.000241146
+Newton in 2 iters
+d/dt = -0.0164873
+Ih = 7.84659
+||grad|| = 0.0229222
+cgiter = 9
+||grad|| = 0.000662829
+Newton in 1 iters
+d/dt = -0.0162929
+Ih = 7.84634
+||grad|| = 0.028766
+cgiter = 9
+||grad|| = 0.00195588
+cgiter = 7
+||grad|| = 0.000417357
+Newton in 2 iters
+d/dt = -0.0161015
+Ih = 7.8461
+||grad|| = 0.0248077
+cgiter = 9
+||grad|| = 0.00115514
+cgiter = 7
+||grad|| = 0.000246423
+Newton in 2 iters
+d/dt = -0.0159124
+Ih = 7.84586
+||grad|| = 0.0225383
+cgiter = 9
+||grad|| = 0.000699505
+Newton in 1 iters
+d/dt = -0.0157257
+Ih = 7.84563
+||grad|| = 0.028847
+cgiter = 9
+||grad|| = 0.00212451
+cgiter = 7
+||grad|| = 0.000464733
+Newton in 2 iters
+d/dt = -0.0155415
+Ih = 7.84539
+||grad|| = 0.0249871
+cgiter = 9
+||grad|| = 0.00132586
+cgiter = 7
+||grad|| = 0.000290363
+Newton in 2 iters
+d/dt = -0.0153598
+Ih = 7.84516
+||grad|| = 0.0226575
+cgiter = 9
+||grad|| = 0.000845574
+Newton in 1 iters
+d/dt = -0.0151804
+Ih = 7.84493
+||grad|| = 0.0305049
+cgiter = 8
+||grad|| = 0.00264723
+cgiter = 7
+||grad|| = 0.000593462
+Newton in 2 iters
+d/dt = -0.0150035
+Ih = 7.84471
+||grad|| = 0.0262252
+cgiter = 9
+||grad|| = 0.0017394
+cgiter = 7
+||grad|| = 0.000391143
+Newton in 2 iters
+d/dt = -0.0148287
+Ih = 7.84449
+||grad|| = 0.0235231
+cgiter = 9
+||grad|| = 0.00116417
+cgiter = 7
+||grad|| = 0.000262397
+Newton in 2 iters
+d/dt = -0.0146564
+Ih = 7.84427
+||grad|| = 0.0217486
+cgiter = 9
+||grad|| = 0.000798181
+Newton in 1 iters
+d/dt = -0.0144865
+Ih = 7.84405
+||grad|| = 0.0293021
+cgiter = 8
+||grad|| = 0.00258941
+cgiter = 7
+||grad|| = 0.00059724
+Newton in 2 iters
+d/dt = -0.0143195
+Ih = 7.84383
+||grad|| = 0.0257678
+cgiter = 9
+||grad|| = 0.00181229
+cgiter = 7
+||grad|| = 0.000419736
+Newton in 2 iters
+d/dt = -0.0141545
+Ih = 7.84362
+||grad|| = 0.0233724
+cgiter = 9
+||grad|| = 0.00129772
+cgiter = 7
+||grad|| = 0.000301308
+Newton in 2 iters
+d/dt = -0.0139915
+Ih = 7.84341
+||grad|| = 0.0217202
+cgiter = 9
+||grad|| = 0.000944728
+Newton in 1 iters
+d/dt = -0.0138307
+Ih = 7.84321
+||grad|| = 0.0308901
+cgiter = 8
+||grad|| = 0.00315962
+cgiter = 7
+||grad|| = 0.000749806
+Newton in 2 iters
+d/dt = -0.0136719
+Ih = 7.843
+||grad|| = 0.0272875
+cgiter = 8
+||grad|| = 0.00236141
+cgiter = 7
+||grad|| = 0.000562709
+Newton in 2 iters
+d/dt = -0.0135148
+Ih = 7.8428
+||grad|| = 0.0247341
+cgiter = 9
+||grad|| = 0.0017883
+cgiter = 7
+||grad|| = 0.000428235
+Newton in 2 iters
+d/dt = -0.0133598
+Ih = 7.8426
+||grad|| = 0.022869
+cgiter = 9
+||grad|| = 0.00138166
+cgiter = 7
+||grad|| = 0.000331758
+Newton in 2 iters
+d/dt = -0.0132074
+Ih = 7.8424
+||grad|| = 0.0214916
+cgiter = 9
+||grad|| = 0.00108231
+cgiter = 7
+||grad|| = 0.000260514
+Newton in 2 iters
+d/dt = -0.0130572
+Ih = 7.8422
+||grad|| = 0.0204408
+cgiter = 9
+||grad|| = 0.000863289
+Newton in 1 iters
+d/dt = -0.0129089
+Ih = 7.84201
+||grad|| = 0.0290156
+cgiter = 8
+||grad|| = 0.00302141
+cgiter = 7
+||grad|| = 0.000743804
+Newton in 2 iters
+d/dt = -0.0127626
+Ih = 7.84182
+||grad|| = 0.0265375
+cgiter = 8
+||grad|| = 0.00245025
+cgiter = 7
+||grad|| = 0.000606279
+Newton in 2 iters
+d/dt = -0.0126178
+Ih = 7.84163
+||grad|| = 0.0246349
+cgiter = 9
+||grad|| = 0.0020259
+cgiter = 7
+||grad|| = 0.00050348
+Newton in 2 iters
+d/dt = -0.0124746
+Ih = 7.84144
+||grad|| = 0.0231615
+cgiter = 9
+||grad|| = 0.00169406
+cgiter = 7
+||grad|| = 0.000422884
+Newton in 2 iters
+d/dt = -0.0123335
+Ih = 7.84126
+||grad|| = 0.0219914
+cgiter = 9
+||grad|| = 0.0014411
+cgiter = 7
+||grad|| = 0.000360955
+Newton in 2 iters
+d/dt = -0.0121939
+Ih = 7.84107
+||grad|| = 0.0210588
+cgiter = 9
+||grad|| = 0.00123969
+cgiter = 7
+||grad|| = 0.000311638
+Newton in 2 iters
+d/dt = -0.012056
+Ih = 7.84089
+||grad|| = 0.0202952
+cgiter = 9
+||grad|| = 0.00108319
+cgiter = 7
+||grad|| = 0.000273059
+Newton in 2 iters
+d/dt = -0.01192
+Ih = 7.84071
+||grad|| = 0.0196715
+cgiter = 9
+||grad|| = 0.000956859
+Newton in 1 iters
+d/dt = -0.0117858
+Ih = 7.84054
+||grad|| = 0.0294847
+cgiter = 8
+||grad|| = 0.00352084
+cgiter = 7
+||grad|| = 0.000907364
+Newton in 2 iters
+d/dt = -0.0116531
+Ih = 7.84036
+||grad|| = 0.0279292
+cgiter = 8
+||grad|| = 0.0031791
+cgiter = 7
+||grad|| = 0.000822806
+Newton in 2 iters
+d/dt = -0.011522
+Ih = 7.84019
+||grad|| = 0.0266837
+cgiter = 8
+||grad|| = 0.00289363
+cgiter = 7
+||grad|| = 0.000753382
+Newton in 2 iters
+d/dt = -0.0113925
+Ih = 7.84002
+||grad|| = 0.0256664
+cgiter = 8
+||grad|| = 0.00267948
+cgiter = 7
+||grad|| = 0.000700636
+Newton in 2 iters
+d/dt = -0.0112645
+Ih = 7.83985
+||grad|| = 0.0248491
+cgiter = 8
+||grad|| = 0.0025013
+cgiter = 7
+||grad|| = 0.000657577
+Newton in 2 iters
+d/dt = -0.0111384
+Ih = 7.83968
+||grad|| = 0.0241836
+cgiter = 8
+||grad|| = 0.00237255
+cgiter = 7
+||grad|| = 0.000626341
+Newton in 2 iters
+d/dt = -0.0110141
+Ih = 7.83952
+||grad|| = 0.0236564
+cgiter = 8
+||grad|| = 0.00226822
+cgiter = 7
+||grad|| = 0.000601882
+Newton in 2 iters
+d/dt = -0.0108914
+Ih = 7.83935
+||grad|| = 0.0232392
+cgiter = 8
+||grad|| = 0.0022013
+cgiter = 7
+||grad|| = 0.000586552
+Newton in 2 iters
+d/dt = -0.0107702
+Ih = 7.83919
+||grad|| = 0.0229275
+cgiter = 8
+||grad|| = 0.00215272
+cgiter = 7
+||grad|| = 0.000576521
+Newton in 2 iters
+d/dt = -0.0106504
+Ih = 7.83903
+||grad|| = 0.0227045
+cgiter = 8
+||grad|| = 0.00213565
+cgiter = 7
+||grad|| = 0.000574347
+Newton in 2 iters
+d/dt = -0.0105319
+Ih = 7.83887
+||grad|| = 0.022572
+cgiter = 8
+||grad|| = 0.00213436
+cgiter = 7
+||grad|| = 0.000576921
+Newton in 2 iters
+d/dt = -0.010415
+Ih = 7.83872
+||grad|| = 0.0225209
+cgiter = 8
+||grad|| = 0.002163
+cgiter = 7
+||grad|| = 0.000587142
+Newton in 2 iters
+d/dt = -0.0102993
+Ih = 7.83856
+||grad|| = 0.022558
+cgiter = 8
+||grad|| = 0.00220744
+cgiter = 7
+||grad|| = 0.000602295
+Newton in 2 iters
+d/dt = -0.0101855
+Ih = 7.83841
+||grad|| = 0.0226806
+cgiter = 8
+||grad|| = 0.00228387
+cgiter = 7
+||grad|| = 0.000625802
+Newton in 2 iters
+d/dt = -0.0100733
+Ih = 7.83826
+||grad|| = 0.0229003
+cgiter = 8
+||grad|| = 0.00237854
+cgiter = 7
+||grad|| = 0.000655134
+Newton in 2 iters
+d/dt = -0.00996252
+Ih = 7.83811
+converged
+Took 149.116 seconds
+Took 105 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+Xp size = 205441, 2
+creating the solver
+finished creating the solver
+||grad|| = 9.86916
+building euler jac
+finsihed factorizing matrix
+cgiter = 7
+||grad|| = 0.0110696
+cgiter = 9
+||grad|| = 3.09316e-05
+Newton in 2 iters
+d/dt = -inf
+Ih = 7.86927
+||grad|| = 0.693618
+cgiter = 8
+||grad|| = 0.00181322
+cgiter = 9
+||grad|| = 1.267e-05
+Newton in 2 iters
+d/dt = -0.0367291
+Ih = 7.86871
+||grad|| = 0.0708507
+cgiter = 9
+||grad|| = 0.000362897
+Newton in 1 iters
+d/dt = -0.0360818
+Ih = 7.86817
+||grad|| = 0.0478921
+cgiter = 9
+||grad|| = 0.000169681
+Newton in 1 iters
+d/dt = -0.03548
+Ih = 7.86764
+||grad|| = 0.0443998
+cgiter = 9
+||grad|| = 0.000122111
+Newton in 1 iters
+d/dt = -0.0349069
+Ih = 7.86712
+||grad|| = 0.0420515
+cgiter = 8
+||grad|| = 9.87487e-05
+Newton in 1 iters
+d/dt = -0.0343582
+Ih = 7.8666
+||grad|| = 0.0403088
+cgiter = 8
+||grad|| = 8.38515e-05
+Newton in 1 iters
+d/dt = -0.0338307
+Ih = 7.86609
+||grad|| = 0.038927
+cgiter = 8
+||grad|| = 7.3624e-05
+Newton in 1 iters
+d/dt = -0.03332
+Ih = 7.86559
+||grad|| = 0.0377816
+cgiter = 8
+||grad|| = 6.63661e-05
+Newton in 1 iters
+d/dt = -0.0328241
+Ih = 7.8651
+||grad|| = 0.0368
+cgiter = 8
+||grad|| = 6.08405e-05
+Newton in 1 iters
+d/dt = -0.0323403
+Ih = 7.86462
+||grad|| = 0.0359389
+cgiter = 8
+||grad|| = 5.66238e-05
+Newton in 1 iters
+d/dt = -0.0318688
+Ih = 7.86414
+||grad|| = 0.0351696
+cgiter = 8
+||grad|| = 5.38412e-05
+Newton in 1 iters
+d/dt = -0.0314088
+Ih = 7.86367
+||grad|| = 0.0344721
+cgiter = 7
+||grad|| = 5.20667e-05
+Newton in 1 iters
+d/dt = -0.0309595
+Ih = 7.8632
+||grad|| = 0.0338324
+cgiter = 7
+||grad|| = 5.12511e-05
+Newton in 1 iters
+d/dt = -0.0305202
+Ih = 7.86275
+||grad|| = 0.0332409
+cgiter = 7
+||grad|| = 5.22328e-05
+Newton in 1 iters
+d/dt = -0.0300932
+Ih = 7.86229
+||grad|| = 0.032702
+cgiter = 7
+||grad|| = 5.50446e-05
+Newton in 1 iters
+d/dt = -0.0296744
+Ih = 7.86185
+||grad|| = 0.0322207
+cgiter = 7
+||grad|| = 5.98305e-05
+Newton in 1 iters
+d/dt = -0.0292632
+Ih = 7.86141
+||grad|| = 0.0317923
+cgiter = 8
+||grad|| = 6.73433e-05
+Newton in 1 iters
+d/dt = -0.0288596
+Ih = 7.86098
+||grad|| = 0.031421
+cgiter = 8
+||grad|| = 7.89702e-05
+Newton in 1 iters
+d/dt = -0.0284637
+Ih = 7.86055
+||grad|| = 0.0311241
+cgiter = 8
+||grad|| = 9.71017e-05
+Newton in 1 iters
+d/dt = -0.0280747
+Ih = 7.86013
+||grad|| = 0.0309379
+cgiter = 9
+||grad|| = 0.000125893
+Newton in 1 iters
+d/dt = -0.0276927
+Ih = 7.85971
+||grad|| = 0.0309182
+cgiter = 9
+||grad|| = 0.0001723
+Newton in 1 iters
+d/dt = -0.027318
+Ih = 7.8593
+||grad|| = 0.031149
+cgiter = 9
+||grad|| = 0.000248678
+Newton in 1 iters
+d/dt = -0.0269502
+Ih = 7.8589
+||grad|| = 0.0317977
+cgiter = 9
+||grad|| = 0.000377228
+Newton in 1 iters
+d/dt = -0.0265891
+Ih = 7.8585
+||grad|| = 0.0331649
+cgiter = 9
+||grad|| = 0.000598635
+Newton in 1 iters
+d/dt = -0.0262352
+Ih = 7.85811
+||grad|| = 0.0357935
+cgiter = 9
+||grad|| = 0.000988368
+Newton in 1 iters
+d/dt = -0.0258882
+Ih = 7.85772
+||grad|| = 0.040724
+cgiter = 9
+||grad|| = 0.0016909
+cgiter = 7
+||grad|| = 0.000216657
+Newton in 2 iters
+d/dt = -0.0255467
+Ih = 7.85734
+||grad|| = 0.0295541
+cgiter = 9
+||grad|| = 0.00028522
+Newton in 1 iters
+d/dt = -0.0252111
+Ih = 7.85696
+||grad|| = 0.0307332
+cgiter = 9
+||grad|| = 0.00049576
+Newton in 1 iters
+d/dt = -0.0248813
+Ih = 7.85658
+||grad|| = 0.0332738
+cgiter = 9
+||grad|| = 0.000901534
+Newton in 1 iters
+d/dt = -0.0245567
+Ih = 7.85622
+||grad|| = 0.0384848
+cgiter = 9
+||grad|| = 0.00169488
+cgiter = 7
+||grad|| = 0.000238762
+Newton in 2 iters
+d/dt = -0.0242377
+Ih = 7.85585
+||grad|| = 0.0287766
+cgiter = 9
+||grad|| = 0.000367393
+Newton in 1 iters
+d/dt = -0.0239236
+Ih = 7.85549
+||grad|| = 0.0307351
+cgiter = 9
+||grad|| = 0.000705186
+Newton in 1 iters
+d/dt = -0.0236146
+Ih = 7.85514
+||grad|| = 0.0350546
+cgiter = 9
+||grad|| = 0.00140968
+cgiter = 7
+||grad|| = 0.000209609
+Newton in 2 iters
+d/dt = -0.0233109
+Ih = 7.85479
+||grad|| = 0.027787
+cgiter = 9
+||grad|| = 0.000356176
+Newton in 1 iters
+d/dt = -0.0230117
+Ih = 7.85445
+||grad|| = 0.0298186
+cgiter = 9
+||grad|| = 0.000719414
+Newton in 1 iters
+d/dt = -0.0227175
+Ih = 7.8541
+||grad|| = 0.0345378
+cgiter = 9
+||grad|| = 0.00151368
+cgiter = 7
+||grad|| = 0.000237111
+Newton in 2 iters
+d/dt = -0.0224291
+Ih = 7.85377
+||grad|| = 0.0274022
+cgiter = 9
+||grad|| = 0.000433397
+Newton in 1 iters
+d/dt = -0.022145
+Ih = 7.85344
+||grad|| = 0.030162
+cgiter = 9
+||grad|| = 0.000931353
+Newton in 1 iters
+d/dt = -0.0218655
+Ih = 7.85311
+||grad|| = 0.0367685
+cgiter = 9
+||grad|| = 0.00207886
+cgiter = 7
+||grad|| = 0.000341938
+Newton in 2 iters
+d/dt = -0.0215903
+Ih = 7.85278
+||grad|| = 0.0278951
+cgiter = 9
+||grad|| = 0.000654242
+Newton in 1 iters
+d/dt = -0.0213189
+Ih = 7.85246
+||grad|| = 0.0325294
+cgiter = 9
+||grad|| = 0.00148804
+cgiter = 7
+||grad|| = 0.000250881
+Newton in 2 iters
+d/dt = -0.0210525
+Ih = 7.85215
+||grad|| = 0.0265141
+cgiter = 9
+||grad|| = 0.000510929
+Newton in 1 iters
+d/dt = -0.0207903
+Ih = 7.85184
+||grad|| = 0.0301396
+cgiter = 9
+||grad|| = 0.00119191
+cgiter = 7
+||grad|| = 0.000205535
+Newton in 2 iters
+d/dt = -0.0205322
+Ih = 7.85153
+||grad|| = 0.0256118
+cgiter = 9
+||grad|| = 0.000439001
+Newton in 1 iters
+d/dt = -0.0202776
+Ih = 7.85122
+||grad|| = 0.0287435
+cgiter = 9
+||grad|| = 0.00104362
+cgiter = 7
+||grad|| = 0.000184083
+Newton in 2 iters
+d/dt = -0.020027
+Ih = 7.85092
+||grad|| = 0.0249835
+cgiter = 9
+||grad|| = 0.000411492
+Newton in 1 iters
+d/dt = -0.0197799
+Ih = 7.85063
+||grad|| = 0.0279677
+cgiter = 9
+||grad|| = 0.00100408
+cgiter = 7
+||grad|| = 0.000181121
+Newton in 2 iters
+d/dt = -0.0195362
+Ih = 7.85033
+||grad|| = 0.0245664
+cgiter = 9
+||grad|| = 0.000417695
+Newton in 1 iters
+d/dt = -0.019296
+Ih = 7.85004
+||grad|| = 0.0276746
+cgiter = 9
+||grad|| = 0.00104311
+cgiter = 7
+||grad|| = 0.000192687
+Newton in 2 iters
+d/dt = -0.0190598
+Ih = 7.84976
+||grad|| = 0.0243333
+cgiter = 9
+||grad|| = 0.000457787
+Newton in 1 iters
+d/dt = -0.018827
+Ih = 7.84948
+||grad|| = 0.0278615
+cgiter = 9
+||grad|| = 0.00117858
+cgiter = 7
+||grad|| = 0.000222938
+Newton in 2 iters
+d/dt = -0.0185975
+Ih = 7.8492
+||grad|| = 0.02433
+cgiter = 9
+||grad|| = 0.000539744
+Newton in 1 iters
+d/dt = -0.0183715
+Ih = 7.84892
+||grad|| = 0.0286524
+cgiter = 9
+||grad|| = 0.00142704
+cgiter = 7
+||grad|| = 0.000276552
+Newton in 2 iters
+d/dt = -0.0181496
+Ih = 7.84865
+||grad|| = 0.0246248
+cgiter = 9
+||grad|| = 0.000684
+Newton in 1 iters
+d/dt = -0.0179311
+Ih = 7.84838
+||grad|| = 0.0303299
+cgiter = 9
+||grad|| = 0.00186831
+cgiter = 7
+||grad|| = 0.000370521
+Newton in 2 iters
+d/dt = -0.0177158
+Ih = 7.84811
+||grad|| = 0.0254259
+cgiter = 9
+||grad|| = 0.000929957
+Newton in 1 iters
+d/dt = -0.0175033
+Ih = 7.84785
+||grad|| = 0.0334541
+cgiter = 8
+||grad|| = 0.00260304
+cgiter = 7
+||grad|| = 0.000527912
+Newton in 2 iters
+d/dt = -0.0172937
+Ih = 7.84759
+||grad|| = 0.0270318
+cgiter = 9
+||grad|| = 0.0013533
+cgiter = 7
+||grad|| = 0.000274929
+Newton in 2 iters
+d/dt = -0.0170871
+Ih = 7.84734
+||grad|| = 0.0238001
+cgiter = 9
+||grad|| = 0.000725539
+Newton in 1 iters
+d/dt = -0.016884
+Ih = 7.84708
+||grad|| = 0.0301065
+cgiter = 9
+||grad|| = 0.00208432
+cgiter = 7
+||grad|| = 0.000433821
+Newton in 2 iters
+d/dt = -0.0166842
+Ih = 7.84683
+||grad|| = 0.0254416
+cgiter = 9
+||grad|| = 0.00115899
+cgiter = 7
+||grad|| = 0.000241146
+Newton in 2 iters
+d/dt = -0.0164873
+Ih = 7.84659
+||grad|| = 0.0229222
+cgiter = 9
+||grad|| = 0.000662829
+Newton in 1 iters
+d/dt = -0.0162929
+Ih = 7.84634
+||grad|| = 0.028766
+cgiter = 9
+||grad|| = 0.00195588
+cgiter = 7
+||grad|| = 0.000417357
+Newton in 2 iters
+d/dt = -0.0161015
+Ih = 7.8461
+||grad|| = 0.0248077
+cgiter = 9
+||grad|| = 0.00115514
+cgiter = 7
+||grad|| = 0.000246423
+Newton in 2 iters
+d/dt = -0.0159124
+Ih = 7.84586
+||grad|| = 0.0225383
+cgiter = 9
+||grad|| = 0.000699505
+Newton in 1 iters
+d/dt = -0.0157257
+Ih = 7.84563
+||grad|| = 0.028847
+cgiter = 9
+||grad|| = 0.00212451
+cgiter = 7
+||grad|| = 0.000464733
+Newton in 2 iters
+d/dt = -0.0155415
+Ih = 7.84539
+||grad|| = 0.0249871
+cgiter = 9
+||grad|| = 0.00132586
+cgiter = 7
+||grad|| = 0.000290363
+Newton in 2 iters
+d/dt = -0.0153598
+Ih = 7.84516
+||grad|| = 0.0226575
+cgiter = 9
+||grad|| = 0.000845574
+Newton in 1 iters
+d/dt = -0.0151804
+Ih = 7.84493
+||grad|| = 0.0305049
+cgiter = 8
+||grad|| = 0.00264723
+cgiter = 7
+||grad|| = 0.000593462
+Newton in 2 iters
+d/dt = -0.0150035
+Ih = 7.84471
+||grad|| = 0.0262252
+cgiter = 9
+||grad|| = 0.0017394
+cgiter = 7
+||grad|| = 0.000391143
+Newton in 2 iters
+d/dt = -0.0148287
+Ih = 7.84449
+||grad|| = 0.0235231
+cgiter = 9
+||grad|| = 0.00116417
+cgiter = 7
+||grad|| = 0.000262397
+Newton in 2 iters
+d/dt = -0.0146564
+Ih = 7.84427
+||grad|| = 0.0217486
+cgiter = 9
+||grad|| = 0.000798181
+Newton in 1 iters
+d/dt = -0.0144865
+Ih = 7.84405
+||grad|| = 0.0293021
+cgiter = 8
+||grad|| = 0.00258941
+cgiter = 7
+||grad|| = 0.00059724
+Newton in 2 iters
+d/dt = -0.0143195
+Ih = 7.84383
+||grad|| = 0.0257678
+cgiter = 9
+||grad|| = 0.00181229
+cgiter = 7
+||grad|| = 0.000419736
+Newton in 2 iters
+d/dt = -0.0141545
+Ih = 7.84362
+||grad|| = 0.0233724
+cgiter = 9
+||grad|| = 0.00129772
+cgiter = 7
+||grad|| = 0.000301308
+Newton in 2 iters
+d/dt = -0.0139915
+Ih = 7.84341
+||grad|| = 0.0217202
+cgiter = 9
+||grad|| = 0.000944728
+Newton in 1 iters
+d/dt = -0.0138307
+Ih = 7.84321
+||grad|| = 0.0308901
+cgiter = 8
+||grad|| = 0.00315962
+cgiter = 7
+||grad|| = 0.000749806
+Newton in 2 iters
+d/dt = -0.0136719
+Ih = 7.843
+||grad|| = 0.0272875
+cgiter = 8
+||grad|| = 0.00236141
+cgiter = 7
+||grad|| = 0.000562709
+Newton in 2 iters
+d/dt = -0.0135148
+Ih = 7.8428
+||grad|| = 0.0247341
+cgiter = 9
+||grad|| = 0.0017883
+cgiter = 7
+||grad|| = 0.000428235
+Newton in 2 iters
+d/dt = -0.0133598
+Ih = 7.8426
+||grad|| = 0.022869
+cgiter = 9
+||grad|| = 0.00138166
+cgiter = 7
+||grad|| = 0.000331758
+Newton in 2 iters
+d/dt = -0.0132074
+Ih = 7.8424
+||grad|| = 0.0214916
+cgiter = 9
+||grad|| = 0.00108231
+cgiter = 7
+||grad|| = 0.000260514
+Newton in 2 iters
+d/dt = -0.0130572
+Ih = 7.8422
+||grad|| = 0.0204408
+cgiter = 9
+||grad|| = 0.000863289
+Newton in 1 iters
+d/dt = -0.0129089
+Ih = 7.84201
+||grad|| = 0.0290156
+cgiter = 8
+||grad|| = 0.00302141
+cgiter = 7
+||grad|| = 0.000743804
+Newton in 2 iters
+d/dt = -0.0127626
+Ih = 7.84182
+||grad|| = 0.0265375
+cgiter = 8
+||grad|| = 0.00245025
+cgiter = 7
+||grad|| = 0.000606279
+Newton in 2 iters
+d/dt = -0.0126178
+Ih = 7.84163
+||grad|| = 0.0246349
+cgiter = 9
+||grad|| = 0.0020259
+cgiter = 7
+||grad|| = 0.00050348
+Newton in 2 iters
+d/dt = -0.0124746
+Ih = 7.84144
+||grad|| = 0.0231615
+cgiter = 9
+||grad|| = 0.00169406
+cgiter = 7
+||grad|| = 0.000422884
+Newton in 2 iters
+d/dt = -0.0123335
+Ih = 7.84126
+||grad|| = 0.0219914
+cgiter = 9
+||grad|| = 0.0014411
+cgiter = 7
+||grad|| = 0.000360955
+Newton in 2 iters
+d/dt = -0.0121939
+Ih = 7.84107
+||grad|| = 0.0210588
+cgiter = 9
+||grad|| = 0.00123969
+cgiter = 7
+||grad|| = 0.000311638
+Newton in 2 iters
+d/dt = -0.012056
+Ih = 7.84089
+||grad|| = 0.0202952
+cgiter = 9
+||grad|| = 0.00108319
+cgiter = 7
+||grad|| = 0.000273059
+Newton in 2 iters
+d/dt = -0.01192
+Ih = 7.84071
+||grad|| = 0.0196715
+cgiter = 9
+||grad|| = 0.000956859
+Newton in 1 iters
+d/dt = -0.0117858
+Ih = 7.84054
+||grad|| = 0.0294847
+cgiter = 8
+||grad|| = 0.00352084
+cgiter = 7
+||grad|| = 0.000907364
+Newton in 2 iters
+d/dt = -0.0116531
+Ih = 7.84036
+||grad|| = 0.0279292
+cgiter = 8
+||grad|| = 0.0031791
+cgiter = 7
+||grad|| = 0.000822806
+Newton in 2 iters
+d/dt = -0.011522
+Ih = 7.84019
+||grad|| = 0.0266837
+cgiter = 8
+||grad|| = 0.00289363
+cgiter = 7
+||grad|| = 0.000753382
+Newton in 2 iters
+d/dt = -0.0113925
+Ih = 7.84002
+||grad|| = 0.0256664
+cgiter = 8
+||grad|| = 0.00267948
+cgiter = 7
+||grad|| = 0.000700636
+Newton in 2 iters
+d/dt = -0.0112645
+Ih = 7.83985
+||grad|| = 0.0248491
+cgiter = 8
+||grad|| = 0.0025013
+cgiter = 7
+||grad|| = 0.000657577
+Newton in 2 iters
+d/dt = -0.0111384
+Ih = 7.83968
+||grad|| = 0.0241836
+cgiter = 8
+||grad|| = 0.00237255
+cgiter = 7
+||grad|| = 0.000626341
+Newton in 2 iters
+d/dt = -0.0110141
+Ih = 7.83952
+||grad|| = 0.0236564
+cgiter = 8
+||grad|| = 0.00226822
+cgiter = 7
+||grad|| = 0.000601882
+Newton in 2 iters
+d/dt = -0.0108914
+Ih = 7.83935
+||grad|| = 0.0232392
+cgiter = 8
+||grad|| = 0.0022013
+cgiter = 7
+||grad|| = 0.000586552
+Newton in 2 iters
+d/dt = -0.0107702
+Ih = 7.83919
+||grad|| = 0.0229275
+cgiter = 8
+||grad|| = 0.00215272
+cgiter = 7
+||grad|| = 0.000576521
+Newton in 2 iters
+d/dt = -0.0106504
+Ih = 7.83903
+||grad|| = 0.0227045
+cgiter = 8
+||grad|| = 0.00213565
+cgiter = 7
+||grad|| = 0.000574347
+Newton in 2 iters
+d/dt = -0.0105319
+Ih = 7.83887
+||grad|| = 0.022572
+cgiter = 8
+||grad|| = 0.00213436
+cgiter = 7
+||grad|| = 0.000576921
+Newton in 2 iters
+d/dt = -0.010415
+Ih = 7.83872
+||grad|| = 0.0225209
+cgiter = 8
+||grad|| = 0.002163
+cgiter = 7
+||grad|| = 0.000587142
+Newton in 2 iters
+d/dt = -0.0102993
+Ih = 7.83856
+||grad|| = 0.022558
+cgiter = 8
+||grad|| = 0.00220744
+cgiter = 7
+||grad|| = 0.000602295
+Newton in 2 iters
+d/dt = -0.0101855
+Ih = 7.83841
+||grad|| = 0.0226806
+cgiter = 8
+||grad|| = 0.00228387
+cgiter = 7
+||grad|| = 0.000625802
+Newton in 2 iters
+d/dt = -0.0100733
+Ih = 7.83826
+||grad|| = 0.0229003
+cgiter = 8
+||grad|| = 0.00237854
+cgiter = 7
+||grad|| = 0.000655134
+Newton in 2 iters
+d/dt = -0.00996252
+Ih = 7.83811
+converged
+Took 148.051 seconds
+Took 105 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+Xp size = 205441, 2
+creating the solver
+finished creating the solver
+||grad|| = 9.86916
+building euler jac
+finsihed factorizing matrix
+cgiter = 7
+||grad|| = 0.0110696
+cgiter = 9
+||grad|| = 3.09316e-05
+Newton in 2 iters
+d/dt = -inf
+Ih = 7.86927
+||grad|| = 0.693618
+cgiter = 8
+||grad|| = 0.00181322
+cgiter = 9
+||grad|| = 1.267e-05
+Newton in 2 iters
+d/dt = -0.0367291
+Ih = 7.86871
+||grad|| = 0.0708507
+cgiter = 9
+||grad|| = 0.000362897
+Newton in 1 iters
+d/dt = -0.0360818
+Ih = 7.86817
+||grad|| = 0.0478921
+cgiter = 9
+||grad|| = 0.000169681
+Newton in 1 iters
+d/dt = -0.03548
+Ih = 7.86764
+||grad|| = 0.0443998
+cgiter = 9
+||grad|| = 0.000122111
+Newton in 1 iters
+d/dt = -0.0349069
+Ih = 7.86712
+||grad|| = 0.0420515
+cgiter = 8
+||grad|| = 9.87487e-05
+Newton in 1 iters
+d/dt = -0.0343582
+Ih = 7.8666
+||grad|| = 0.0403088
+cgiter = 8
+||grad|| = 8.38515e-05
+Newton in 1 iters
+d/dt = -0.0338307
+Ih = 7.86609
+||grad|| = 0.038927
+cgiter = 8
+||grad|| = 7.3624e-05
+Newton in 1 iters
+d/dt = -0.03332
+Ih = 7.86559
+||grad|| = 0.0377816
+cgiter = 8
+||grad|| = 6.63661e-05
+Newton in 1 iters
+d/dt = -0.0328241
+Ih = 7.8651
+||grad|| = 0.0368
+cgiter = 8
+||grad|| = 6.08405e-05
+Newton in 1 iters
+d/dt = -0.0323403
+Ih = 7.86462
+||grad|| = 0.0359389
+cgiter = 8
+||grad|| = 5.66238e-05
+Newton in 1 iters
+d/dt = -0.0318688
+Ih = 7.86414
+||grad|| = 0.0351696
+cgiter = 8
+||grad|| = 5.38412e-05
+Newton in 1 iters
+d/dt = -0.0314088
+Ih = 7.86367
+||grad|| = 0.0344721
+cgiter = 7
+||grad|| = 5.20667e-05
+Newton in 1 iters
+d/dt = -0.0309595
+Ih = 7.8632
+||grad|| = 0.0338324
+cgiter = 7
+||grad|| = 5.12511e-05
+Newton in 1 iters
+d/dt = -0.0305202
+Ih = 7.86275
+||grad|| = 0.0332409
+cgiter = 7
+||grad|| = 5.22328e-05
+Newton in 1 iters
+d/dt = -0.0300932
+Ih = 7.86229
+||grad|| = 0.032702
+cgiter = 7
+||grad|| = 5.50446e-05
+Newton in 1 iters
+d/dt = -0.0296744
+Ih = 7.86185
+||grad|| = 0.0322207
+cgiter = 7
+||grad|| = 5.98305e-05
+Newton in 1 iters
+d/dt = -0.0292632
+Ih = 7.86141
+||grad|| = 0.0317923
+cgiter = 8
+||grad|| = 6.73433e-05
+Newton in 1 iters
+d/dt = -0.0288596
+Ih = 7.86098
+||grad|| = 0.031421
+cgiter = 8
+||grad|| = 7.89702e-05
+Newton in 1 iters
+d/dt = -0.0284637
+Ih = 7.86055
+||grad|| = 0.0311241
+cgiter = 8
+||grad|| = 9.71017e-05
+Newton in 1 iters
+d/dt = -0.0280747
+Ih = 7.86013
+||grad|| = 0.0309379
+cgiter = 9
+||grad|| = 0.000125893
+Newton in 1 iters
+d/dt = -0.0276927
+Ih = 7.85971
+||grad|| = 0.0309182
+cgiter = 9
+||grad|| = 0.0001723
+Newton in 1 iters
+d/dt = -0.027318
+Ih = 7.8593
+||grad|| = 0.031149
+cgiter = 9
+||grad|| = 0.000248678
+Newton in 1 iters
+d/dt = -0.0269502
+Ih = 7.8589
+||grad|| = 0.0317977
+cgiter = 9
+||grad|| = 0.000377228
+Newton in 1 iters
+d/dt = -0.0265891
+Ih = 7.8585
+||grad|| = 0.0331649
+cgiter = 9
+||grad|| = 0.000598635
+Newton in 1 iters
+d/dt = -0.0262352
+Ih = 7.85811
+||grad|| = 0.0357935
+cgiter = 9
+||grad|| = 0.000988368
+Newton in 1 iters
+d/dt = -0.0258882
+Ih = 7.85772
+||grad|| = 0.040724
+cgiter = 9
+||grad|| = 0.0016909
+cgiter = 7
+||grad|| = 0.000216657
+Newton in 2 iters
+d/dt = -0.0255467
+Ih = 7.85734
+||grad|| = 0.0295541
+cgiter = 9
+||grad|| = 0.00028522
+Newton in 1 iters
+d/dt = -0.0252111
+Ih = 7.85696
+||grad|| = 0.0307332
+cgiter = 9
+||grad|| = 0.00049576
+Newton in 1 iters
+d/dt = -0.0248813
+Ih = 7.85658
+||grad|| = 0.0332738
+cgiter = 9
+||grad|| = 0.000901534
+Newton in 1 iters
+d/dt = -0.0245567
+Ih = 7.85622
+||grad|| = 0.0384848
+cgiter = 9
+||grad|| = 0.00169488
+cgiter = 7
+||grad|| = 0.000238762
+Newton in 2 iters
+d/dt = -0.0242377
+Ih = 7.85585
+||grad|| = 0.0287766
+cgiter = 9
+||grad|| = 0.000367393
+Newton in 1 iters
+d/dt = -0.0239236
+Ih = 7.85549
+||grad|| = 0.0307351
+cgiter = 9
+||grad|| = 0.000705186
+Newton in 1 iters
+d/dt = -0.0236146
+Ih = 7.85514
+||grad|| = 0.0350546
+cgiter = 9
+||grad|| = 0.00140968
+cgiter = 7
+||grad|| = 0.000209609
+Newton in 2 iters
+d/dt = -0.0233109
+Ih = 7.85479
+||grad|| = 0.027787
+cgiter = 9
+||grad|| = 0.000356176
+Newton in 1 iters
+d/dt = -0.0230117
+Ih = 7.85445
+||grad|| = 0.0298186
+cgiter = 9
+||grad|| = 0.000719414
+Newton in 1 iters
+d/dt = -0.0227175
+Ih = 7.8541
+||grad|| = 0.0345378
+cgiter = 9
+||grad|| = 0.00151368
+cgiter = 7
+||grad|| = 0.000237111
+Newton in 2 iters
+d/dt = -0.0224291
+Ih = 7.85377
+||grad|| = 0.0274022
+cgiter = 9
+||grad|| = 0.000433397
+Newton in 1 iters
+d/dt = -0.022145
+Ih = 7.85344
+||grad|| = 0.030162
+cgiter = 9
+||grad|| = 0.000931353
+Newton in 1 iters
+d/dt = -0.0218655
+Ih = 7.85311
+||grad|| = 0.0367685
+cgiter = 9
+||grad|| = 0.00207886
+cgiter = 7
+||grad|| = 0.000341938
+Newton in 2 iters
+d/dt = -0.0215903
+Ih = 7.85278
+||grad|| = 0.0278951
+cgiter = 9
+||grad|| = 0.000654242
+Newton in 1 iters
+d/dt = -0.0213189
+Ih = 7.85246
+||grad|| = 0.0325294
+cgiter = 9
+||grad|| = 0.00148804
+cgiter = 7
+||grad|| = 0.000250881
+Newton in 2 iters
+d/dt = -0.0210525
+Ih = 7.85215
+||grad|| = 0.0265141
+cgiter = 9
+||grad|| = 0.000510929
+Newton in 1 iters
+d/dt = -0.0207903
+Ih = 7.85184
+||grad|| = 0.0301396
+cgiter = 9
+||grad|| = 0.00119191
+cgiter = 7
+||grad|| = 0.000205535
+Newton in 2 iters
+d/dt = -0.0205322
+Ih = 7.85153
+||grad|| = 0.0256118
+cgiter = 9
+||grad|| = 0.000439001
+Newton in 1 iters
+d/dt = -0.0202776
+Ih = 7.85122
+||grad|| = 0.0287435
+cgiter = 9
+||grad|| = 0.00104362
+cgiter = 7
+||grad|| = 0.000184083
+Newton in 2 iters
+d/dt = -0.020027
+Ih = 7.85092
+||grad|| = 0.0249835
+cgiter = 9
+||grad|| = 0.000411492
+Newton in 1 iters
+d/dt = -0.0197799
+Ih = 7.85063
+||grad|| = 0.0279677
+cgiter = 9
+||grad|| = 0.00100408
+cgiter = 7
+||grad|| = 0.000181121
+Newton in 2 iters
+d/dt = -0.0195362
+Ih = 7.85033
+||grad|| = 0.0245664
+cgiter = 9
+||grad|| = 0.000417695
+Newton in 1 iters
+d/dt = -0.019296
+Ih = 7.85004
+||grad|| = 0.0276746
+cgiter = 9
+||grad|| = 0.00104311
+cgiter = 7
+||grad|| = 0.000192687
+Newton in 2 iters
+d/dt = -0.0190598
+Ih = 7.84976
+||grad|| = 0.0243333
+cgiter = 9
+||grad|| = 0.000457787
+Newton in 1 iters
+d/dt = -0.018827
+Ih = 7.84948
+||grad|| = 0.0278615
+cgiter = 9
+||grad|| = 0.00117858
+cgiter = 7
+||grad|| = 0.000222938
+Newton in 2 iters
+d/dt = -0.0185975
+Ih = 7.8492
+||grad|| = 0.02433
+cgiter = 9
+||grad|| = 0.000539744
+Newton in 1 iters
+d/dt = -0.0183715
+Ih = 7.84892
+||grad|| = 0.0286524
+cgiter = 9
+||grad|| = 0.00142704
+cgiter = 7
+||grad|| = 0.000276552
+Newton in 2 iters
+d/dt = -0.0181496
+Ih = 7.84865
+||grad|| = 0.0246248
+cgiter = 9
+||grad|| = 0.000684
+Newton in 1 iters
+d/dt = -0.0179311
+Ih = 7.84838
+||grad|| = 0.0303299
+cgiter = 9
+||grad|| = 0.00186831
+cgiter = 7
+||grad|| = 0.000370521
+Newton in 2 iters
+d/dt = -0.0177158
+Ih = 7.84811
+||grad|| = 0.0254259
+cgiter = 9
+||grad|| = 0.000929957
+Newton in 1 iters
+d/dt = -0.0175033
+Ih = 7.84785
+||grad|| = 0.0334541
+cgiter = 8
+||grad|| = 0.00260304
+cgiter = 7
+||grad|| = 0.000527912
+Newton in 2 iters
+d/dt = -0.0172937
+Ih = 7.84759
+||grad|| = 0.0270318
+cgiter = 9
+||grad|| = 0.0013533
+cgiter = 7
+||grad|| = 0.000274929
+Newton in 2 iters
+d/dt = -0.0170871
+Ih = 7.84734
+||grad|| = 0.0238001
+cgiter = 9
+||grad|| = 0.000725539
+Newton in 1 iters
+d/dt = -0.016884
+Ih = 7.84708
+||grad|| = 0.0301065
+cgiter = 9
+||grad|| = 0.00208432
+cgiter = 7
+||grad|| = 0.000433821
+Newton in 2 iters
+d/dt = -0.0166842
+Ih = 7.84683
+||grad|| = 0.0254416
+cgiter = 9
+||grad|| = 0.00115899
+cgiter = 7
+||grad|| = 0.000241146
+Newton in 2 iters
+d/dt = -0.0164873
+Ih = 7.84659
+||grad|| = 0.0229222
+cgiter = 9
+||grad|| = 0.000662829
+Newton in 1 iters
+d/dt = -0.0162929
+Ih = 7.84634
+||grad|| = 0.028766
+cgiter = 9
+||grad|| = 0.00195588
+cgiter = 7
+||grad|| = 0.000417357
+Newton in 2 iters
+d/dt = -0.0161015
+Ih = 7.8461
+||grad|| = 0.0248077
+cgiter = 9
+||grad|| = 0.00115514
+cgiter = 7
+||grad|| = 0.000246423
+Newton in 2 iters
+d/dt = -0.0159124
+Ih = 7.84586
+||grad|| = 0.0225383
+cgiter = 9
+||grad|| = 0.000699505
+Newton in 1 iters
+d/dt = -0.0157257
+Ih = 7.84563
+||grad|| = 0.028847
+cgiter = 9
+||grad|| = 0.00212451
+cgiter = 7
+||grad|| = 0.000464733
+Newton in 2 iters
+d/dt = -0.0155415
+Ih = 7.84539
+||grad|| = 0.0249871
+cgiter = 9
+||grad|| = 0.00132586
+cgiter = 7
+||grad|| = 0.000290363
+Newton in 2 iters
+d/dt = -0.0153598
+Ih = 7.84516
+||grad|| = 0.0226575
+cgiter = 9
+||grad|| = 0.000845574
+Newton in 1 iters
+d/dt = -0.0151804
+Ih = 7.84493
+||grad|| = 0.0305049
+cgiter = 8
+||grad|| = 0.00264723
+cgiter = 7
+||grad|| = 0.000593462
+Newton in 2 iters
+d/dt = -0.0150035
+Ih = 7.84471
+||grad|| = 0.0262252
+cgiter = 9
+||grad|| = 0.0017394
+cgiter = 7
+||grad|| = 0.000391143
+Newton in 2 iters
+d/dt = -0.0148287
+Ih = 7.84449
+||grad|| = 0.0235231
+cgiter = 9
+||grad|| = 0.00116417
+cgiter = 7
+||grad|| = 0.000262397
+Newton in 2 iters
+d/dt = -0.0146564
+Ih = 7.84427
+||grad|| = 0.0217486
+cgiter = 9
+||grad|| = 0.000798181
+Newton in 1 iters
+d/dt = -0.0144865
+Ih = 7.84405
+||grad|| = 0.0293021
+cgiter = 8
+||grad|| = 0.00258941
+cgiter = 7
+||grad|| = 0.00059724
+Newton in 2 iters
+d/dt = -0.0143195
+Ih = 7.84383
+||grad|| = 0.0257678
+cgiter = 9
+||grad|| = 0.00181229
+cgiter = 7
+||grad|| = 0.000419736
+Newton in 2 iters
+d/dt = -0.0141545
+Ih = 7.84362
+||grad|| = 0.0233724
+cgiter = 9
+||grad|| = 0.00129772
+cgiter = 7
+||grad|| = 0.000301308
+Newton in 2 iters
+d/dt = -0.0139915
+Ih = 7.84341
+||grad|| = 0.0217202
+cgiter = 9
+||grad|| = 0.000944728
+Newton in 1 iters
+d/dt = -0.0138307
+Ih = 7.84321
+||grad|| = 0.0308901
+cgiter = 8
+||grad|| = 0.00315962
+cgiter = 7
+||grad|| = 0.000749806
+Newton in 2 iters
+d/dt = -0.0136719
+Ih = 7.843
+||grad|| = 0.0272875
+cgiter = 8
+||grad|| = 0.00236141
+cgiter = 7
+||grad|| = 0.000562709
+Newton in 2 iters
+d/dt = -0.0135148
+Ih = 7.8428
+||grad|| = 0.0247341
+cgiter = 9
+||grad|| = 0.0017883
+cgiter = 7
+||grad|| = 0.000428235
+Newton in 2 iters
+d/dt = -0.0133598
+Ih = 7.8426
+||grad|| = 0.022869
+cgiter = 9
+||grad|| = 0.00138166
+cgiter = 7
+||grad|| = 0.000331758
+Newton in 2 iters
+d/dt = -0.0132074
+Ih = 7.8424
+||grad|| = 0.0214916
+cgiter = 9
+||grad|| = 0.00108231
+cgiter = 7
+||grad|| = 0.000260514
+Newton in 2 iters
+d/dt = -0.0130572
+Ih = 7.8422
+||grad|| = 0.0204408
+cgiter = 9
+||grad|| = 0.000863289
+Newton in 1 iters
+d/dt = -0.0129089
+Ih = 7.84201
+||grad|| = 0.0290156
+cgiter = 8
+||grad|| = 0.00302141
+cgiter = 7
+||grad|| = 0.000743804
+Newton in 2 iters
+d/dt = -0.0127626
+Ih = 7.84182
+||grad|| = 0.0265375
+cgiter = 8
+||grad|| = 0.00245025
+cgiter = 7
+||grad|| = 0.000606279
+Newton in 2 iters
+d/dt = -0.0126178
+Ih = 7.84163
+||grad|| = 0.0246349
+cgiter = 9
+||grad|| = 0.0020259
+cgiter = 7
+||grad|| = 0.00050348
+Newton in 2 iters
+d/dt = -0.0124746
+Ih = 7.84144
+||grad|| = 0.0231615
+cgiter = 9
+||grad|| = 0.00169406
+cgiter = 7
+||grad|| = 0.000422884
+Newton in 2 iters
+d/dt = -0.0123335
+Ih = 7.84126
+||grad|| = 0.0219914
+cgiter = 9
+||grad|| = 0.0014411
+cgiter = 7
+||grad|| = 0.000360955
+Newton in 2 iters
+d/dt = -0.0121939
+Ih = 7.84107
+||grad|| = 0.0210588
+cgiter = 9
+||grad|| = 0.00123969
+cgiter = 7
+||grad|| = 0.000311638
+Newton in 2 iters
+d/dt = -0.012056
+Ih = 7.84089
+||grad|| = 0.0202952
+cgiter = 9
+||grad|| = 0.00108319
+cgiter = 7
+||grad|| = 0.000273059
+Newton in 2 iters
+d/dt = -0.01192
+Ih = 7.84071
+||grad|| = 0.0196715
+cgiter = 9
+||grad|| = 0.000956859
+Newton in 1 iters
+d/dt = -0.0117858
+Ih = 7.84054
+||grad|| = 0.0294847
+cgiter = 8
+||grad|| = 0.00352084
+cgiter = 7
+||grad|| = 0.000907364
+Newton in 2 iters
+d/dt = -0.0116531
+Ih = 7.84036
+||grad|| = 0.0279292
+cgiter = 8
+||grad|| = 0.0031791
+cgiter = 7
+||grad|| = 0.000822806
+Newton in 2 iters
+d/dt = -0.011522
+Ih = 7.84019
+||grad|| = 0.0266837
+cgiter = 8
+||grad|| = 0.00289363
+cgiter = 7
+||grad|| = 0.000753382
+Newton in 2 iters
+d/dt = -0.0113925
+Ih = 7.84002
+||grad|| = 0.0256664
+cgiter = 8
+||grad|| = 0.00267948
+cgiter = 7
+||grad|| = 0.000700636
+Newton in 2 iters
+d/dt = -0.0112645
+Ih = 7.83985
+||grad|| = 0.0248491
+cgiter = 8
+||grad|| = 0.0025013
+cgiter = 7
+||grad|| = 0.000657577
+Newton in 2 iters
+d/dt = -0.0111384
+Ih = 7.83968
+||grad|| = 0.0241836
+cgiter = 8
+||grad|| = 0.00237255
+cgiter = 7
+||grad|| = 0.000626341
+Newton in 2 iters
+d/dt = -0.0110141
+Ih = 7.83952
+||grad|| = 0.0236564
+cgiter = 8
+||grad|| = 0.00226822
+cgiter = 7
+||grad|| = 0.000601882
+Newton in 2 iters
+d/dt = -0.0108914
+Ih = 7.83935
+||grad|| = 0.0232392
+cgiter = 8
+||grad|| = 0.0022013
+cgiter = 7
+||grad|| = 0.000586552
+Newton in 2 iters
+d/dt = -0.0107702
+Ih = 7.83919
+||grad|| = 0.0229275
+cgiter = 8
+||grad|| = 0.00215272
+cgiter = 7
+||grad|| = 0.000576521
+Newton in 2 iters
+d/dt = -0.0106504
+Ih = 7.83903
+||grad|| = 0.0227045
+cgiter = 8
+||grad|| = 0.00213565
+cgiter = 7
+||grad|| = 0.000574347
+Newton in 2 iters
+d/dt = -0.0105319
+Ih = 7.83887
+||grad|| = 0.022572
+cgiter = 8
+||grad|| = 0.00213436
+cgiter = 7
+||grad|| = 0.000576921
+Newton in 2 iters
+d/dt = -0.010415
+Ih = 7.83872
+||grad|| = 0.0225209
+cgiter = 8
+||grad|| = 0.002163
+cgiter = 7
+||grad|| = 0.000587142
+Newton in 2 iters
+d/dt = -0.0102993
+Ih = 7.83856
+||grad|| = 0.022558
+cgiter = 8
+||grad|| = 0.00220744
+cgiter = 7
+||grad|| = 0.000602295
+Newton in 2 iters
+d/dt = -0.0101855
+Ih = 7.83841
+||grad|| = 0.0226806
+cgiter = 8
+||grad|| = 0.00228387
+cgiter = 7
+||grad|| = 0.000625802
+Newton in 2 iters
+d/dt = -0.0100733
+Ih = 7.83826
+||grad|| = 0.0229003
+cgiter = 8
+||grad|| = 0.00237854
+cgiter = 7
+||grad|| = 0.000655134
+Newton in 2 iters
+d/dt = -0.00996252
+Ih = 7.83811
+converged
+Took 146.026 seconds
+Took 105 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+Xp size = 205441, 2
+creating the solver
+finished creating the solver
+||grad|| = 9.86916
+building euler jac
+finsihed factorizing matrix
+cgiter = 7
+||grad|| = 0.0110696
+cgiter = 9
+||grad|| = 3.09316e-05
+Newton in 2 iters
+d/dt = -inf
+Ih = 7.86927
+||grad|| = 0.693618
+cgiter = 8
+||grad|| = 0.00181322
+cgiter = 9
+||grad|| = 1.267e-05
+Newton in 2 iters
+d/dt = -0.0367291
+Ih = 7.86871
+||grad|| = 0.0708507
+cgiter = 9
+||grad|| = 0.000362897
+Newton in 1 iters
+d/dt = -0.0360818
+Ih = 7.86817
+||grad|| = 0.0478921
+cgiter = 9
+||grad|| = 0.000169681
+Newton in 1 iters
+d/dt = -0.03548
+Ih = 7.86764
+||grad|| = 0.0443998
+cgiter = 9
+||grad|| = 0.000122111
+Newton in 1 iters
+d/dt = -0.0349069
+Ih = 7.86712
+||grad|| = 0.0420515
+cgiter = 8
+||grad|| = 9.87487e-05
+Newton in 1 iters
+d/dt = -0.0343582
+Ih = 7.8666
+||grad|| = 0.0403088
+cgiter = 8
+||grad|| = 8.38515e-05
+Newton in 1 iters
+d/dt = -0.0338307
+Ih = 7.86609
+||grad|| = 0.038927
+cgiter = 8
+||grad|| = 7.3624e-05
+Newton in 1 iters
+d/dt = -0.03332
+Ih = 7.86559
+||grad|| = 0.0377816
+cgiter = 8
+||grad|| = 6.63661e-05
+Newton in 1 iters
+d/dt = -0.0328241
+Ih = 7.8651
+||grad|| = 0.0368
+cgiter = 8
+||grad|| = 6.08405e-05
+Newton in 1 iters
+d/dt = -0.0323403
+Ih = 7.86462
+||grad|| = 0.0359389
+cgiter = 8
+||grad|| = 5.66238e-05
+Newton in 1 iters
+d/dt = -0.0318688
+Ih = 7.86414
+||grad|| = 0.0351696
+cgiter = 8
+||grad|| = 5.38412e-05
+Newton in 1 iters
+d/dt = -0.0314088
+Ih = 7.86367
+||grad|| = 0.0344721
+cgiter = 7
+||grad|| = 5.20667e-05
+Newton in 1 iters
+d/dt = -0.0309595
+Ih = 7.8632
+||grad|| = 0.0338324
+cgiter = 7
+||grad|| = 5.12511e-05
+Newton in 1 iters
+d/dt = -0.0305202
+Ih = 7.86275
+||grad|| = 0.0332409
+cgiter = 7
+||grad|| = 5.22328e-05
+Newton in 1 iters
+d/dt = -0.0300932
+Ih = 7.86229
+||grad|| = 0.032702
+cgiter = 7
+||grad|| = 5.50446e-05
+Newton in 1 iters
+d/dt = -0.0296744
+Ih = 7.86185
+||grad|| = 0.0322207
+cgiter = 7
+||grad|| = 5.98305e-05
+Newton in 1 iters
+d/dt = -0.0292632
+Ih = 7.86141
+||grad|| = 0.0317923
+cgiter = 8
+||grad|| = 6.73433e-05
+Newton in 1 iters
+d/dt = -0.0288596
+Ih = 7.86098
+||grad|| = 0.031421
+cgiter = 8
+||grad|| = 7.89702e-05
+Newton in 1 iters
+d/dt = -0.0284637
+Ih = 7.86055
+||grad|| = 0.0311241
+cgiter = 8
+||grad|| = 9.71017e-05
+Newton in 1 iters
+d/dt = -0.0280747
+Ih = 7.86013
+||grad|| = 0.0309379
+cgiter = 9
+||grad|| = 0.000125893
+Newton in 1 iters
+d/dt = -0.0276927
+Ih = 7.85971
+||grad|| = 0.0309182
+cgiter = 9
+||grad|| = 0.0001723
+Newton in 1 iters
+d/dt = -0.027318
+Ih = 7.8593
+||grad|| = 0.031149
+cgiter = 9
+||grad|| = 0.000248678
+Newton in 1 iters
+d/dt = -0.0269502
+Ih = 7.8589
+||grad|| = 0.0317977
+cgiter = 9
+||grad|| = 0.000377228
+Newton in 1 iters
+d/dt = -0.0265891
+Ih = 7.8585
+||grad|| = 0.0331649
+cgiter = 9
+||grad|| = 0.000598635
+Newton in 1 iters
+d/dt = -0.0262352
+Ih = 7.85811
+||grad|| = 0.0357935
+cgiter = 9
+||grad|| = 0.000988368
+Newton in 1 iters
+d/dt = -0.0258882
+Ih = 7.85772
+||grad|| = 0.040724
+cgiter = 9
+||grad|| = 0.0016909
+cgiter = 7
+||grad|| = 0.000216657
+Newton in 2 iters
+d/dt = -0.0255467
+Ih = 7.85734
+||grad|| = 0.0295541
+cgiter = 9
+||grad|| = 0.00028522
+Newton in 1 iters
+d/dt = -0.0252111
+Ih = 7.85696
+||grad|| = 0.0307332
+cgiter = 9
+||grad|| = 0.00049576
+Newton in 1 iters
+d/dt = -0.0248813
+Ih = 7.85658
+||grad|| = 0.0332738
+cgiter = 9
+||grad|| = 0.000901534
+Newton in 1 iters
+d/dt = -0.0245567
+Ih = 7.85622
+||grad|| = 0.0384848
+cgiter = 9
+||grad|| = 0.00169488
+cgiter = 7
+||grad|| = 0.000238762
+Newton in 2 iters
+d/dt = -0.0242377
+Ih = 7.85585
+||grad|| = 0.0287766
+cgiter = 9
+||grad|| = 0.000367393
+Newton in 1 iters
+d/dt = -0.0239236
+Ih = 7.85549
+||grad|| = 0.0307351
+cgiter = 9
+||grad|| = 0.000705186
+Newton in 1 iters
+d/dt = -0.0236146
+Ih = 7.85514
+||grad|| = 0.0350546
+cgiter = 9
+||grad|| = 0.00140968
+cgiter = 7
+||grad|| = 0.000209609
+Newton in 2 iters
+d/dt = -0.0233109
+Ih = 7.85479
+||grad|| = 0.027787
+cgiter = 9
+||grad|| = 0.000356176
+Newton in 1 iters
+d/dt = -0.0230117
+Ih = 7.85445
+||grad|| = 0.0298186
+cgiter = 9
+||grad|| = 0.000719414
+Newton in 1 iters
+d/dt = -0.0227175
+Ih = 7.8541
+||grad|| = 0.0345378
+cgiter = 9
+||grad|| = 0.00151368
+cgiter = 7
+||grad|| = 0.000237111
+Newton in 2 iters
+d/dt = -0.0224291
+Ih = 7.85377
+||grad|| = 0.0274022
+cgiter = 9
+||grad|| = 0.000433397
+Newton in 1 iters
+d/dt = -0.022145
+Ih = 7.85344
+||grad|| = 0.030162
+cgiter = 9
+||grad|| = 0.000931353
+Newton in 1 iters
+d/dt = -0.0218655
+Ih = 7.85311
+||grad|| = 0.0367685
+cgiter = 9
+||grad|| = 0.00207886
+cgiter = 7
+||grad|| = 0.000341938
+Newton in 2 iters
+d/dt = -0.0215903
+Ih = 7.85278
+||grad|| = 0.0278951
+cgiter = 9
+||grad|| = 0.000654242
+Newton in 1 iters
+d/dt = -0.0213189
+Ih = 7.85246
+||grad|| = 0.0325294
+cgiter = 9
+||grad|| = 0.00148804
+cgiter = 7
+||grad|| = 0.000250881
+Newton in 2 iters
+d/dt = -0.0210525
+Ih = 7.85215
+||grad|| = 0.0265141
+cgiter = 9
+||grad|| = 0.000510929
+Newton in 1 iters
+d/dt = -0.0207903
+Ih = 7.85184
+||grad|| = 0.0301396
+cgiter = 9
+||grad|| = 0.00119191
+cgiter = 7
+||grad|| = 0.000205535
+Newton in 2 iters
+d/dt = -0.0205322
+Ih = 7.85153
+||grad|| = 0.0256118
+cgiter = 9
+||grad|| = 0.000439001
+Newton in 1 iters
+d/dt = -0.0202776
+Ih = 7.85122
+||grad|| = 0.0287435
+cgiter = 9
+||grad|| = 0.00104362
+cgiter = 7
+||grad|| = 0.000184083
+Newton in 2 iters
+d/dt = -0.020027
+Ih = 7.85092
+||grad|| = 0.0249835
+cgiter = 9
+||grad|| = 0.000411492
+Newton in 1 iters
+d/dt = -0.0197799
+Ih = 7.85063
+||grad|| = 0.0279677
+cgiter = 9
+||grad|| = 0.00100408
+cgiter = 7
+||grad|| = 0.000181121
+Newton in 2 iters
+d/dt = -0.0195362
+Ih = 7.85033
+||grad|| = 0.0245664
+cgiter = 9
+||grad|| = 0.000417695
+Newton in 1 iters
+d/dt = -0.019296
+Ih = 7.85004
+||grad|| = 0.0276746
+cgiter = 9
+||grad|| = 0.00104311
+cgiter = 7
+||grad|| = 0.000192687
+Newton in 2 iters
+d/dt = -0.0190598
+Ih = 7.84976
+||grad|| = 0.0243333
+cgiter = 9
+||grad|| = 0.000457787
+Newton in 1 iters
+d/dt = -0.018827
+Ih = 7.84948
+||grad|| = 0.0278615
+cgiter = 9
+||grad|| = 0.00117858
+cgiter = 7
+||grad|| = 0.000222938
+Newton in 2 iters
+d/dt = -0.0185975
+Ih = 7.8492
+||grad|| = 0.02433
+cgiter = 9
+||grad|| = 0.000539744
+Newton in 1 iters
+d/dt = -0.0183715
+Ih = 7.84892
+||grad|| = 0.0286524
+cgiter = 9
+||grad|| = 0.00142704
+cgiter = 7
+||grad|| = 0.000276552
+Newton in 2 iters
+d/dt = -0.0181496
+Ih = 7.84865
+||grad|| = 0.0246248
+cgiter = 9
+||grad|| = 0.000684
+Newton in 1 iters
+d/dt = -0.0179311
+Ih = 7.84838
+||grad|| = 0.0303299
+cgiter = 9
+||grad|| = 0.00186831
+cgiter = 7
+||grad|| = 0.000370521
+Newton in 2 iters
+d/dt = -0.0177158
+Ih = 7.84811
+||grad|| = 0.0254259
+cgiter = 9
+||grad|| = 0.000929957
+Newton in 1 iters
+d/dt = -0.0175033
+Ih = 7.84785
+||grad|| = 0.0334541
+cgiter = 8
+||grad|| = 0.00260304
+cgiter = 7
+||grad|| = 0.000527912
+Newton in 2 iters
+d/dt = -0.0172937
+Ih = 7.84759
+||grad|| = 0.0270318
+cgiter = 9
+||grad|| = 0.0013533
+cgiter = 7
+||grad|| = 0.000274929
+Newton in 2 iters
+d/dt = -0.0170871
+Ih = 7.84734
+||grad|| = 0.0238001
+cgiter = 9
+||grad|| = 0.000725539
+Newton in 1 iters
+d/dt = -0.016884
+Ih = 7.84708
+||grad|| = 0.0301065
+cgiter = 9
+||grad|| = 0.00208432
+cgiter = 7
+||grad|| = 0.000433821
+Newton in 2 iters
+d/dt = -0.0166842
+Ih = 7.84683
+||grad|| = 0.0254416
+cgiter = 9
+||grad|| = 0.00115899
+cgiter = 7
+||grad|| = 0.000241146
+Newton in 2 iters
+d/dt = -0.0164873
+Ih = 7.84659
+||grad|| = 0.0229222
+cgiter = 9
+||grad|| = 0.000662829
+Newton in 1 iters
+d/dt = -0.0162929
+Ih = 7.84634
+||grad|| = 0.028766
+cgiter = 9
+||grad|| = 0.00195588
+cgiter = 7
+||grad|| = 0.000417357
+Newton in 2 iters
+d/dt = -0.0161015
+Ih = 7.8461
+||grad|| = 0.0248077
+cgiter = 9
+||grad|| = 0.00115514
+cgiter = 7
+||grad|| = 0.000246423
+Newton in 2 iters
+d/dt = -0.0159124
+Ih = 7.84586
+||grad|| = 0.0225383
+cgiter = 9
+||grad|| = 0.000699505
+Newton in 1 iters
+d/dt = -0.0157257
+Ih = 7.84563
+||grad|| = 0.028847
+cgiter = 9
+||grad|| = 0.00212451
+cgiter = 7
+||grad|| = 0.000464733
+Newton in 2 iters
+d/dt = -0.0155415
+Ih = 7.84539
+||grad|| = 0.0249871
+cgiter = 9
+||grad|| = 0.00132586
+cgiter = 7
+||grad|| = 0.000290363
+Newton in 2 iters
+d/dt = -0.0153598
+Ih = 7.84516
+||grad|| = 0.0226575
+cgiter = 9
+||grad|| = 0.000845574
+Newton in 1 iters
+d/dt = -0.0151804
+Ih = 7.84493
+||grad|| = 0.0305049
+cgiter = 8
+||grad|| = 0.00264723
+cgiter = 7
+||grad|| = 0.000593462
+Newton in 2 iters
+d/dt = -0.0150035
+Ih = 7.84471
+||grad|| = 0.0262252
+cgiter = 9
+||grad|| = 0.0017394
+cgiter = 7
+||grad|| = 0.000391143
+Newton in 2 iters
+d/dt = -0.0148287
+Ih = 7.84449
+||grad|| = 0.0235231
+cgiter = 9
+||grad|| = 0.00116417
+cgiter = 7
+||grad|| = 0.000262397
+Newton in 2 iters
+d/dt = -0.0146564
+Ih = 7.84427
+||grad|| = 0.0217486
+cgiter = 9
+||grad|| = 0.000798181
+Newton in 1 iters
+d/dt = -0.0144865
+Ih = 7.84405
+||grad|| = 0.0293021
+cgiter = 8
+||grad|| = 0.00258941
+cgiter = 7
+||grad|| = 0.00059724
+Newton in 2 iters
+d/dt = -0.0143195
+Ih = 7.84383
+||grad|| = 0.0257678
+cgiter = 9
+||grad|| = 0.00181229
+cgiter = 7
+||grad|| = 0.000419736
+Newton in 2 iters
+d/dt = -0.0141545
+Ih = 7.84362
+||grad|| = 0.0233724
+cgiter = 9
+||grad|| = 0.00129772
+cgiter = 7
+||grad|| = 0.000301308
+Newton in 2 iters
+d/dt = -0.0139915
+Ih = 7.84341
+||grad|| = 0.0217202
+cgiter = 9
+||grad|| = 0.000944728
+Newton in 1 iters
+d/dt = -0.0138307
+Ih = 7.84321
+||grad|| = 0.0308901
+cgiter = 8
+||grad|| = 0.00315962
+cgiter = 7
+||grad|| = 0.000749806
+Newton in 2 iters
+d/dt = -0.0136719
+Ih = 7.843
+||grad|| = 0.0272875
+cgiter = 8
+||grad|| = 0.00236141
+cgiter = 7
+||grad|| = 0.000562709
+Newton in 2 iters
+d/dt = -0.0135148
+Ih = 7.8428
+||grad|| = 0.0247341
+cgiter = 9
+||grad|| = 0.0017883
+cgiter = 7
+||grad|| = 0.000428235
+Newton in 2 iters
+d/dt = -0.0133598
+Ih = 7.8426
+||grad|| = 0.022869
+cgiter = 9
+||grad|| = 0.00138166
+cgiter = 7
+||grad|| = 0.000331758
+Newton in 2 iters
+d/dt = -0.0132074
+Ih = 7.8424
+||grad|| = 0.0214916
+cgiter = 9
+||grad|| = 0.00108231
+cgiter = 7
+||grad|| = 0.000260514
+Newton in 2 iters
+d/dt = -0.0130572
+Ih = 7.8422
+||grad|| = 0.0204408
+cgiter = 9
+||grad|| = 0.000863289
+Newton in 1 iters
+d/dt = -0.0129089
+Ih = 7.84201
+||grad|| = 0.0290156
+cgiter = 8
+||grad|| = 0.00302141
+cgiter = 7
+||grad|| = 0.000743804
+Newton in 2 iters
+d/dt = -0.0127626
+Ih = 7.84182
+||grad|| = 0.0265375
+cgiter = 8
+||grad|| = 0.00245025
+cgiter = 7
+||grad|| = 0.000606279
+Newton in 2 iters
+d/dt = -0.0126178
+Ih = 7.84163
+||grad|| = 0.0246349
+cgiter = 9
+||grad|| = 0.0020259
+cgiter = 7
+||grad|| = 0.00050348
+Newton in 2 iters
+d/dt = -0.0124746
+Ih = 7.84144
+||grad|| = 0.0231615
+cgiter = 9
+||grad|| = 0.00169406
+cgiter = 7
+||grad|| = 0.000422884
+Newton in 2 iters
+d/dt = -0.0123335
+Ih = 7.84126
+||grad|| = 0.0219914
+cgiter = 9
+||grad|| = 0.0014411
+cgiter = 7
+||grad|| = 0.000360955
+Newton in 2 iters
+d/dt = -0.0121939
+Ih = 7.84107
+||grad|| = 0.0210588
+cgiter = 9
+||grad|| = 0.00123969
+cgiter = 7
+||grad|| = 0.000311638
+Newton in 2 iters
+d/dt = -0.012056
+Ih = 7.84089
+||grad|| = 0.0202952
+cgiter = 9
+||grad|| = 0.00108319
+cgiter = 7
+||grad|| = 0.000273059
+Newton in 2 iters
+d/dt = -0.01192
+Ih = 7.84071
+||grad|| = 0.0196715
+cgiter = 9
+||grad|| = 0.000956859
+Newton in 1 iters
+d/dt = -0.0117858
+Ih = 7.84054
+||grad|| = 0.0294847
+cgiter = 8
+||grad|| = 0.00352084
+cgiter = 7
+||grad|| = 0.000907364
+Newton in 2 iters
+d/dt = -0.0116531
+Ih = 7.84036
+||grad|| = 0.0279292
+cgiter = 8
+||grad|| = 0.0031791
+cgiter = 7
+||grad|| = 0.000822806
+Newton in 2 iters
+d/dt = -0.011522
+Ih = 7.84019
+||grad|| = 0.0266837
+cgiter = 8
+||grad|| = 0.00289363
+cgiter = 7
+||grad|| = 0.000753382
+Newton in 2 iters
+d/dt = -0.0113925
+Ih = 7.84002
+||grad|| = 0.0256664
+cgiter = 8
+||grad|| = 0.00267948
+cgiter = 7
+||grad|| = 0.000700636
+Newton in 2 iters
+d/dt = -0.0112645
+Ih = 7.83985
+||grad|| = 0.0248491
+cgiter = 8
+||grad|| = 0.0025013
+cgiter = 7
+||grad|| = 0.000657577
+Newton in 2 iters
+d/dt = -0.0111384
+Ih = 7.83968
+||grad|| = 0.0241836
+cgiter = 8
+||grad|| = 0.00237255
+cgiter = 7
+||grad|| = 0.000626341
+Newton in 2 iters
+d/dt = -0.0110141
+Ih = 7.83952
+||grad|| = 0.0236564
+cgiter = 8
+||grad|| = 0.00226822
+cgiter = 7
+||grad|| = 0.000601882
+Newton in 2 iters
+d/dt = -0.0108914
+Ih = 7.83935
+||grad|| = 0.0232392
+cgiter = 8
+||grad|| = 0.0022013
+cgiter = 7
+||grad|| = 0.000586552
+Newton in 2 iters
+d/dt = -0.0107702
+Ih = 7.83919
+||grad|| = 0.0229275
+cgiter = 8
+||grad|| = 0.00215272
+cgiter = 7
+||grad|| = 0.000576521
+Newton in 2 iters
+d/dt = -0.0106504
+Ih = 7.83903
+||grad|| = 0.0227045
+cgiter = 8
+||grad|| = 0.00213565
+cgiter = 7
+||grad|| = 0.000574347
+Newton in 2 iters
+d/dt = -0.0105319
+Ih = 7.83887
+||grad|| = 0.022572
+cgiter = 8
+||grad|| = 0.00213436
+cgiter = 7
+||grad|| = 0.000576921
+Newton in 2 iters
+d/dt = -0.010415
+Ih = 7.83872
+||grad|| = 0.0225209
+cgiter = 8
+||grad|| = 0.002163
+cgiter = 7
+||grad|| = 0.000587142
+Newton in 2 iters
+d/dt = -0.0102993
+Ih = 7.83856
+||grad|| = 0.022558
+cgiter = 8
+||grad|| = 0.00220744
+cgiter = 7
+||grad|| = 0.000602295
+Newton in 2 iters
+d/dt = -0.0101855
+Ih = 7.83841
+||grad|| = 0.0226806
+cgiter = 8
+||grad|| = 0.00228387
+cgiter = 7
+||grad|| = 0.000625802
+Newton in 2 iters
+d/dt = -0.0100733
+Ih = 7.83826
+||grad|| = 0.0229003
+cgiter = 8
+||grad|| = 0.00237854
+cgiter = 7
+||grad|| = 0.000655134
+Newton in 2 iters
+d/dt = -0.00996252
+Ih = 7.83811
+converged
+Took 146.565 seconds
+Took 105 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+Monitor2320
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+{"AdmmIter":10,"BoundaryType":1,"CompMesh":false,"Dim":2,"DtTol":0.01,"GradUse":false,"Method":2,"MonType":3,"TestType":"SquareGrid","dt":0.015,"nSteps":1000,"nx":320,"ny":320,"rho":100,"tau":0.1,"w":3.53553390593,"xa":0,"xb":1,"ya":0,"yb":1}
+Dim = 2
+genrerating the uniform rect mesh
+finsihed genrerating the uniform rect mesh
+running the algorithm
+nsteps = 1000
+size of Vp 205441, 2
+size of F 409600, 3
+size of mask 205441
+Xp size = 205441, 2
+creating the solver
+finished creating the solver
+||grad|| = 9.86916
+building euler jac
+finsihed factorizing matrix
+cgiter = 7
+||grad|| = 0.0110696
+cgiter = 9
+||grad|| = 3.09316e-05
+Newton in 2 iters
+d/dt = -inf
+Ih = 7.86927
+||grad|| = 0.693618
+cgiter = 8
+||grad|| = 0.00181322
+cgiter = 9
+||grad|| = 1.267e-05
+Newton in 2 iters
+d/dt = -0.0367291
+Ih = 7.86871
+||grad|| = 0.0708507
+cgiter = 9
+||grad|| = 0.000362897
+Newton in 1 iters
+d/dt = -0.0360818
+Ih = 7.86817
+||grad|| = 0.0478921
+cgiter = 9
+||grad|| = 0.000169681
+Newton in 1 iters
+d/dt = -0.03548
+Ih = 7.86764
+||grad|| = 0.0443998
+cgiter = 9
+||grad|| = 0.000122111
+Newton in 1 iters
+d/dt = -0.0349069
+Ih = 7.86712
+||grad|| = 0.0420515
+cgiter = 8
+||grad|| = 9.87487e-05
+Newton in 1 iters
+d/dt = -0.0343582
+Ih = 7.8666
+||grad|| = 0.0403088
+cgiter = 8
+||grad|| = 8.38515e-05
+Newton in 1 iters
+d/dt = -0.0338307
+Ih = 7.86609
+||grad|| = 0.038927
+cgiter = 8
+||grad|| = 7.3624e-05
+Newton in 1 iters
+d/dt = -0.03332
+Ih = 7.86559
+||grad|| = 0.0377816
+cgiter = 8
+||grad|| = 6.63661e-05
+Newton in 1 iters
+d/dt = -0.0328241
+Ih = 7.8651
+||grad|| = 0.0368
+cgiter = 8
+||grad|| = 6.08405e-05
+Newton in 1 iters
+d/dt = -0.0323403
+Ih = 7.86462
+||grad|| = 0.0359389
+cgiter = 8
+||grad|| = 5.66238e-05
+Newton in 1 iters
+d/dt = -0.0318688
+Ih = 7.86414
+||grad|| = 0.0351696
+cgiter = 8
+||grad|| = 5.38412e-05
+Newton in 1 iters
+d/dt = -0.0314088
+Ih = 7.86367
+||grad|| = 0.0344721
+cgiter = 7
+||grad|| = 5.20667e-05
+Newton in 1 iters
+d/dt = -0.0309595
+Ih = 7.8632
+||grad|| = 0.0338324
+cgiter = 7
+||grad|| = 5.12511e-05
+Newton in 1 iters
+d/dt = -0.0305202
+Ih = 7.86275
+||grad|| = 0.0332409
+cgiter = 7
+||grad|| = 5.22328e-05
+Newton in 1 iters
+d/dt = -0.0300932
+Ih = 7.86229
+||grad|| = 0.032702
+cgiter = 7
+||grad|| = 5.50446e-05
+Newton in 1 iters
+d/dt = -0.0296744
+Ih = 7.86185
+||grad|| = 0.0322207
+cgiter = 7
+||grad|| = 5.98305e-05
+Newton in 1 iters
+d/dt = -0.0292632
+Ih = 7.86141
+||grad|| = 0.0317923
+cgiter = 8
+||grad|| = 6.73433e-05
+Newton in 1 iters
+d/dt = -0.0288596
+Ih = 7.86098
+||grad|| = 0.031421
+cgiter = 8
+||grad|| = 7.89702e-05
+Newton in 1 iters
+d/dt = -0.0284637
+Ih = 7.86055
+||grad|| = 0.0311241
+cgiter = 8
+||grad|| = 9.71017e-05
+Newton in 1 iters
+d/dt = -0.0280747
+Ih = 7.86013
+||grad|| = 0.0309379
+cgiter = 9
+||grad|| = 0.000125893
+Newton in 1 iters
+d/dt = -0.0276927
+Ih = 7.85971
+||grad|| = 0.0309182
+cgiter = 9
+||grad|| = 0.0001723
+Newton in 1 iters
+d/dt = -0.027318
+Ih = 7.8593
+||grad|| = 0.031149
+cgiter = 9
+||grad|| = 0.000248678
+Newton in 1 iters
+d/dt = -0.0269502
+Ih = 7.8589
+||grad|| = 0.0317977
+cgiter = 9
+||grad|| = 0.000377228
+Newton in 1 iters
+d/dt = -0.0265891
+Ih = 7.8585
+||grad|| = 0.0331649
+cgiter = 9
+||grad|| = 0.000598635
+Newton in 1 iters
+d/dt = -0.0262352
+Ih = 7.85811
+||grad|| = 0.0357935
+cgiter = 9
+||grad|| = 0.000988368
+Newton in 1 iters
+d/dt = -0.0258882
+Ih = 7.85772
+||grad|| = 0.040724
+cgiter = 9
+||grad|| = 0.0016909
+cgiter = 7
+||grad|| = 0.000216657
+Newton in 2 iters
+d/dt = -0.0255467
+Ih = 7.85734
+||grad|| = 0.0295541
+cgiter = 9
+||grad|| = 0.00028522
+Newton in 1 iters
+d/dt = -0.0252111
+Ih = 7.85696
+||grad|| = 0.0307332
+cgiter = 9
+||grad|| = 0.00049576
+Newton in 1 iters
+d/dt = -0.0248813
+Ih = 7.85658
+||grad|| = 0.0332738
+cgiter = 9
+||grad|| = 0.000901534
+Newton in 1 iters
+d/dt = -0.0245567
+Ih = 7.85622
+||grad|| = 0.0384848
+cgiter = 9
+||grad|| = 0.00169488
+cgiter = 7
+||grad|| = 0.000238762
+Newton in 2 iters
+d/dt = -0.0242377
+Ih = 7.85585
+||grad|| = 0.0287766
+cgiter = 9
+||grad|| = 0.000367393
+Newton in 1 iters
+d/dt = -0.0239236
+Ih = 7.85549
+||grad|| = 0.0307351
+cgiter = 9
+||grad|| = 0.000705186
+Newton in 1 iters
+d/dt = -0.0236146
+Ih = 7.85514
+||grad|| = 0.0350546
+cgiter = 9
+||grad|| = 0.00140968
+cgiter = 7
+||grad|| = 0.000209609
+Newton in 2 iters
+d/dt = -0.0233109
+Ih = 7.85479
+||grad|| = 0.027787
+cgiter = 9
+||grad|| = 0.000356176
+Newton in 1 iters
+d/dt = -0.0230117
+Ih = 7.85445
+||grad|| = 0.0298186
+cgiter = 9
+||grad|| = 0.000719414
+Newton in 1 iters
+d/dt = -0.0227175
+Ih = 7.8541
+||grad|| = 0.0345378
+cgiter = 9
+||grad|| = 0.00151368
+cgiter = 7
+||grad|| = 0.000237111
+Newton in 2 iters
+d/dt = -0.0224291
+Ih = 7.85377
+||grad|| = 0.0274022
+cgiter = 9
+||grad|| = 0.000433397
+Newton in 1 iters
+d/dt = -0.022145
+Ih = 7.85344
+||grad|| = 0.030162
+cgiter = 9
+||grad|| = 0.000931353
+Newton in 1 iters
+d/dt = -0.0218655
+Ih = 7.85311
+||grad|| = 0.0367685
+cgiter = 9
+||grad|| = 0.00207886
+cgiter = 7
+||grad|| = 0.000341938
+Newton in 2 iters
+d/dt = -0.0215903
+Ih = 7.85278
+||grad|| = 0.0278951
+cgiter = 9
+||grad|| = 0.000654242
+Newton in 1 iters
+d/dt = -0.0213189
+Ih = 7.85246
+||grad|| = 0.0325294
+cgiter = 9
+||grad|| = 0.00148804
+cgiter = 7
+||grad|| = 0.000250881
+Newton in 2 iters
+d/dt = -0.0210525
+Ih = 7.85215
+||grad|| = 0.0265141
+cgiter = 9
+||grad|| = 0.000510929
+Newton in 1 iters
+d/dt = -0.0207903
+Ih = 7.85184
+||grad|| = 0.0301396
+cgiter = 9
+||grad|| = 0.00119191
+cgiter = 7
+||grad|| = 0.000205535
+Newton in 2 iters
+d/dt = -0.0205322
+Ih = 7.85153
+||grad|| = 0.0256118
+cgiter = 9
+||grad|| = 0.000439001
+Newton in 1 iters
+d/dt = -0.0202776
+Ih = 7.85122
+||grad|| = 0.0287435
+cgiter = 9
+||grad|| = 0.00104362
+cgiter = 7
+||grad|| = 0.000184083
+Newton in 2 iters
+d/dt = -0.020027
+Ih = 7.85092
+||grad|| = 0.0249835
+cgiter = 9
+||grad|| = 0.000411492
+Newton in 1 iters
+d/dt = -0.0197799
+Ih = 7.85063
+||grad|| = 0.0279677
+cgiter = 9
+||grad|| = 0.00100408
+cgiter = 7
+||grad|| = 0.000181121
+Newton in 2 iters
+d/dt = -0.0195362
+Ih = 7.85033
+||grad|| = 0.0245664
+cgiter = 9
+||grad|| = 0.000417695
+Newton in 1 iters
+d/dt = -0.019296
+Ih = 7.85004
+||grad|| = 0.0276746
+cgiter = 9
+||grad|| = 0.00104311
+cgiter = 7
+||grad|| = 0.000192687
+Newton in 2 iters
+d/dt = -0.0190598
+Ih = 7.84976
+||grad|| = 0.0243333
+cgiter = 9
+||grad|| = 0.000457787
+Newton in 1 iters
+d/dt = -0.018827
+Ih = 7.84948
+||grad|| = 0.0278615
+cgiter = 9
+||grad|| = 0.00117858
+cgiter = 7
+||grad|| = 0.000222938
+Newton in 2 iters
+d/dt = -0.0185975
+Ih = 7.8492
+||grad|| = 0.02433
+cgiter = 9
+||grad|| = 0.000539744
+Newton in 1 iters
+d/dt = -0.0183715
+Ih = 7.84892
+||grad|| = 0.0286524
+cgiter = 9
+||grad|| = 0.00142704
+cgiter = 7
+||grad|| = 0.000276552
+Newton in 2 iters
+d/dt = -0.0181496
+Ih = 7.84865
+||grad|| = 0.0246248
+cgiter = 9
+||grad|| = 0.000684
+Newton in 1 iters
+d/dt = -0.0179311
+Ih = 7.84838
+||grad|| = 0.0303299
+cgiter = 9
+||grad|| = 0.00186831
+cgiter = 7
+||grad|| = 0.000370521
+Newton in 2 iters
+d/dt = -0.0177158
+Ih = 7.84811
+||grad|| = 0.0254259
+cgiter = 9
+||grad|| = 0.000929957
+Newton in 1 iters
+d/dt = -0.0175033
+Ih = 7.84785
+||grad|| = 0.0334541
+cgiter = 8
+||grad|| = 0.00260304
+cgiter = 7
+||grad|| = 0.000527912
+Newton in 2 iters
+d/dt = -0.0172937
+Ih = 7.84759
+||grad|| = 0.0270318
+cgiter = 9
+||grad|| = 0.0013533
+cgiter = 7
+||grad|| = 0.000274929
+Newton in 2 iters
+d/dt = -0.0170871
+Ih = 7.84734
+||grad|| = 0.0238001
+cgiter = 9
+||grad|| = 0.000725539
+Newton in 1 iters
+d/dt = -0.016884
+Ih = 7.84708
+||grad|| = 0.0301065
+cgiter = 9
+||grad|| = 0.00208432
+cgiter = 7
+||grad|| = 0.000433821
+Newton in 2 iters
+d/dt = -0.0166842
+Ih = 7.84683
+||grad|| = 0.0254416
+cgiter = 9
+||grad|| = 0.00115899
+cgiter = 7
+||grad|| = 0.000241146
+Newton in 2 iters
+d/dt = -0.0164873
+Ih = 7.84659
+||grad|| = 0.0229222
+cgiter = 9
+||grad|| = 0.000662829
+Newton in 1 iters
+d/dt = -0.0162929
+Ih = 7.84634
+||grad|| = 0.028766
+cgiter = 9
+||grad|| = 0.00195588
+cgiter = 7
+||grad|| = 0.000417357
+Newton in 2 iters
+d/dt = -0.0161015
+Ih = 7.8461
+||grad|| = 0.0248077
+cgiter = 9
+||grad|| = 0.00115514
+cgiter = 7
+||grad|| = 0.000246423
+Newton in 2 iters
+d/dt = -0.0159124
+Ih = 7.84586
+||grad|| = 0.0225383
+cgiter = 9
+||grad|| = 0.000699505
+Newton in 1 iters
+d/dt = -0.0157257
+Ih = 7.84563
+||grad|| = 0.028847
+cgiter = 9
+||grad|| = 0.00212451
+cgiter = 7
+||grad|| = 0.000464733
+Newton in 2 iters
+d/dt = -0.0155415
+Ih = 7.84539
+||grad|| = 0.0249871
+cgiter = 9
+||grad|| = 0.00132586
+cgiter = 7
+||grad|| = 0.000290363
+Newton in 2 iters
+d/dt = -0.0153598
+Ih = 7.84516
+||grad|| = 0.0226575
+cgiter = 9
+||grad|| = 0.000845574
+Newton in 1 iters
+d/dt = -0.0151804
+Ih = 7.84493
+||grad|| = 0.0305049
+cgiter = 8
+||grad|| = 0.00264723
+cgiter = 7
+||grad|| = 0.000593462
+Newton in 2 iters
+d/dt = -0.0150035
+Ih = 7.84471
+||grad|| = 0.0262252
+cgiter = 9
+||grad|| = 0.0017394
+cgiter = 7
+||grad|| = 0.000391143
+Newton in 2 iters
+d/dt = -0.0148287
+Ih = 7.84449
+||grad|| = 0.0235231
+cgiter = 9
+||grad|| = 0.00116417
+cgiter = 7
+||grad|| = 0.000262397
+Newton in 2 iters
+d/dt = -0.0146564
+Ih = 7.84427
+||grad|| = 0.0217486
+cgiter = 9
+||grad|| = 0.000798181
+Newton in 1 iters
+d/dt = -0.0144865
+Ih = 7.84405
+||grad|| = 0.0293021
+cgiter = 8
+||grad|| = 0.00258941
+cgiter = 7
+||grad|| = 0.00059724
+Newton in 2 iters
+d/dt = -0.0143195
+Ih = 7.84383
+||grad|| = 0.0257678
+cgiter = 9
+||grad|| = 0.00181229
+cgiter = 7
+||grad|| = 0.000419736
+Newton in 2 iters
+d/dt = -0.0141545
+Ih = 7.84362
+||grad|| = 0.0233724
+cgiter = 9
+||grad|| = 0.00129772
+cgiter = 7
+||grad|| = 0.000301308
+Newton in 2 iters
+d/dt = -0.0139915
+Ih = 7.84341
+||grad|| = 0.0217202
+cgiter = 9
+||grad|| = 0.000944728
+Newton in 1 iters
+d/dt = -0.0138307
+Ih = 7.84321
+||grad|| = 0.0308901
+cgiter = 8
+||grad|| = 0.00315962
+cgiter = 7
+||grad|| = 0.000749806
+Newton in 2 iters
+d/dt = -0.0136719
+Ih = 7.843
+||grad|| = 0.0272875
+cgiter = 8
+||grad|| = 0.00236141
+cgiter = 7
+||grad|| = 0.000562709
+Newton in 2 iters
+d/dt = -0.0135148
+Ih = 7.8428
+||grad|| = 0.0247341
+cgiter = 9
+||grad|| = 0.0017883
+cgiter = 7
+||grad|| = 0.000428235
+Newton in 2 iters
+d/dt = -0.0133598
+Ih = 7.8426
+||grad|| = 0.022869
+cgiter = 9
+||grad|| = 0.00138166
+cgiter = 7
+||grad|| = 0.000331758
+Newton in 2 iters
+d/dt = -0.0132074
+Ih = 7.8424
+||grad|| = 0.0214916
+cgiter = 9
+||grad|| = 0.00108231
+cgiter = 7
+||grad|| = 0.000260514
+Newton in 2 iters
+d/dt = -0.0130572
+Ih = 7.8422
+||grad|| = 0.0204408
+cgiter = 9
+||grad|| = 0.000863289
+Newton in 1 iters
+d/dt = -0.0129089
+Ih = 7.84201
+||grad|| = 0.0290156
+cgiter = 8
+||grad|| = 0.00302141
+cgiter = 7
+||grad|| = 0.000743804
+Newton in 2 iters
+d/dt = -0.0127626
+Ih = 7.84182
+||grad|| = 0.0265375
+cgiter = 8
+||grad|| = 0.00245025
+cgiter = 7
+||grad|| = 0.000606279
+Newton in 2 iters
+d/dt = -0.0126178
+Ih = 7.84163
+||grad|| = 0.0246349
+cgiter = 9
+||grad|| = 0.0020259
+cgiter = 7
+||grad|| = 0.00050348
+Newton in 2 iters
+d/dt = -0.0124746
+Ih = 7.84144
+||grad|| = 0.0231615
+cgiter = 9
+||grad|| = 0.00169406
+cgiter = 7
+||grad|| = 0.000422884
+Newton in 2 iters
+d/dt = -0.0123335
+Ih = 7.84126
+||grad|| = 0.0219914
+cgiter = 9
+||grad|| = 0.0014411
+cgiter = 7
+||grad|| = 0.000360955
+Newton in 2 iters
+d/dt = -0.0121939
+Ih = 7.84107
+||grad|| = 0.0210588
+cgiter = 9
+||grad|| = 0.00123969
+cgiter = 7
+||grad|| = 0.000311638
+Newton in 2 iters
+d/dt = -0.012056
+Ih = 7.84089
+||grad|| = 0.0202952
+cgiter = 9
+||grad|| = 0.00108319
+cgiter = 7
+||grad|| = 0.000273059
+Newton in 2 iters
+d/dt = -0.01192
+Ih = 7.84071
+||grad|| = 0.0196715
+cgiter = 9
+||grad|| = 0.000956859
+Newton in 1 iters
+d/dt = -0.0117858
+Ih = 7.84054
+||grad|| = 0.0294847
+cgiter = 8
+||grad|| = 0.00352084
+cgiter = 7
+||grad|| = 0.000907364
+Newton in 2 iters
+d/dt = -0.0116531
+Ih = 7.84036
+||grad|| = 0.0279292
+cgiter = 8
+||grad|| = 0.0031791
+cgiter = 7
+||grad|| = 0.000822806
+Newton in 2 iters
+d/dt = -0.011522
+Ih = 7.84019
+||grad|| = 0.0266837
+cgiter = 8
+||grad|| = 0.00289363
+cgiter = 7
+||grad|| = 0.000753382
+Newton in 2 iters
+d/dt = -0.0113925
+Ih = 7.84002
+||grad|| = 0.0256664
+cgiter = 8
+||grad|| = 0.00267948
+cgiter = 7
+||grad|| = 0.000700636
+Newton in 2 iters
+d/dt = -0.0112645
+Ih = 7.83985
+||grad|| = 0.0248491
+cgiter = 8
+||grad|| = 0.0025013
+cgiter = 7
+||grad|| = 0.000657577
+Newton in 2 iters
+d/dt = -0.0111384
+Ih = 7.83968
+||grad|| = 0.0241836
+cgiter = 8
+||grad|| = 0.00237255
+cgiter = 7
+||grad|| = 0.000626341
+Newton in 2 iters
+d/dt = -0.0110141
+Ih = 7.83952
+||grad|| = 0.0236564
+cgiter = 8
+||grad|| = 0.00226822
+cgiter = 7
+||grad|| = 0.000601882
+Newton in 2 iters
+d/dt = -0.0108914
+Ih = 7.83935
+||grad|| = 0.0232392
+cgiter = 8
+||grad|| = 0.0022013
+cgiter = 7
+||grad|| = 0.000586552
+Newton in 2 iters
+d/dt = -0.0107702
+Ih = 7.83919
+||grad|| = 0.0229275
+cgiter = 8
+||grad|| = 0.00215272
+cgiter = 7
+||grad|| = 0.000576521
+Newton in 2 iters
+d/dt = -0.0106504
+Ih = 7.83903
+||grad|| = 0.0227045
+cgiter = 8
+||grad|| = 0.00213565
+cgiter = 7
+||grad|| = 0.000574347
+Newton in 2 iters
+d/dt = -0.0105319
+Ih = 7.83887
+||grad|| = 0.022572
+cgiter = 8
+||grad|| = 0.00213436
+cgiter = 7
+||grad|| = 0.000576921
+Newton in 2 iters
+d/dt = -0.010415
+Ih = 7.83872
+||grad|| = 0.0225209
+cgiter = 8
+||grad|| = 0.002163
+cgiter = 7
+||grad|| = 0.000587142
+Newton in 2 iters
+d/dt = -0.0102993
+Ih = 7.83856
+||grad|| = 0.022558
+cgiter = 8
+||grad|| = 0.00220744
+cgiter = 7
+||grad|| = 0.000602295
+Newton in 2 iters
+d/dt = -0.0101855
+Ih = 7.83841
+||grad|| = 0.0226806
+cgiter = 8
+||grad|| = 0.00228387
+cgiter = 7
+||grad|| = 0.000625802
+Newton in 2 iters
+d/dt = -0.0100733
+Ih = 7.83826
+||grad|| = 0.0229003
+cgiter = 8
+||grad|| = 0.00237854
+cgiter = 7
+||grad|| = 0.000655134
+Newton in 2 iters
+d/dt = -0.00996252
+Ih = 7.83811
+converged
+Took 146.969 seconds
+Took 105 iters
+Number of simplices = 409600
+Number of points = 205441
+finished running the algorithm
+['Monitor210.json', 'Monitor2320.json', 'Monitor240.json', 'Monitor220.json', 'Monitor2160.json', 'Monitor280.json']
+[10, 320, 40, 20, 160, 80]
+[0 3 2 5 4 1]
+[0 3 2 5 4 1]
+['Monitor210', 'Monitor220', 'Monitor240', 'Monitor280', 'Monitor2160', 'Monitor2320']
+====================================
+Functions available:
+
+create_input()
+grid_scale_test_2d()
+grid_scale_test_3d()
+output_grid_scale_test_2d()
+run_parallel_experiment()
+run_scale_experiment()
+create_parallel_plot()
+plot_single_thread_increase()
+plot_energy_decrease()
+exit()
+
+====================================
+call function() = 
