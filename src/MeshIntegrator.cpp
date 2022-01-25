@@ -64,7 +64,6 @@ double MeshIntegrator<D>::backwardsEulerStep(double dt, double tol) {
     grad.setZero();
     double Ih = a->backwardsEulerStep(dt, *x, grad, tol);
 
-    // cout << "IN BACKWARDS EULER STEP ENERGY FIN = " << a->computeEnergy(*x) << endl;
     return Ih;
 }
 
@@ -155,8 +154,8 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
 
         IhPrev = IhCur;
     }
-    // cout << "ADMM in " << i << " iters" << endl;
-    // cout << "primal res = " << ((*a->Dmat) * *this->x - *z).norm() << endl;
+    cout << "ADMM in " << i << " iters" << endl;
+    cout << "primal res = " << ((*a->Dmat) * *this->x - *z).norm() << endl;
 
     // Update the assembly using the new locations
     a->updateAfterStep(dt, *xPrev, *x);
