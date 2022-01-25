@@ -571,7 +571,7 @@ void setUpShoulderExperiment(string testName,
                     cond6 || cond7);
         boundaryMask->at((*F)(i, 3)) = c3 ? NodeType::BOUNDARY_FIXED : type;
 
-        assert(c0 + c1 + c2 + c3 <= 1);
+        // assert(c0 + c1 + c2 + c3 <= 1);
       }
     }
   }
