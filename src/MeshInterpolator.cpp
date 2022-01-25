@@ -199,10 +199,13 @@ template <int D>
 void MeshInterpolator<D>::interpolateMonitor(MonitorFunction<D> &Mon) {
     this->Mon = &Mon;
     // Set up relevant information
-    const int NUM_SMOOTH = 10; // TODO: allow this to be set as a input param
-    Mon.evaluateAtVertices(*X, *F, *monVals);;
-    nearestNeighGridMap();
-    smoothMonitorGrid(NUM_SMOOTH);
+    const int NUM_SMOOTH = 5; // TODO: allow this to be set as a input param
+    cout << "evalling at vertices" << endl;
+    // Mon.evaluateAtVertices(*X, *F, *monVals);;
+    cout << "FINISHED evalling at vertices" << endl;
+    // nearestNeighGridMap();
+    cout << "finished nearestNeigh" << endl;
+    // smoothMonitorGrid(NUM_SMOOTH);
 }
 
 template <int D>
@@ -217,58 +220,61 @@ void MeshInterpolator<D>::biLinearInterpolation(double x, double y, double xMesh
 
 template <int D>
 inline void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &pnt, Eigen::Matrix<double, D, D> &mVal) {
-    int xInd = utils::findLimInfMeshPoint(pnt(0), *this->x);
-    int yInd = utils::findLimInfMeshPoint(pnt(1), *this->y);
+    // int xInd = utils::findLimInfMeshPoint(pnt(0), *this->x);
+    // int yInd = utils::findLimInfMeshPoint(pnt(1), *this->y);
     Eigen::Vector<double, D*D> mTemp;
     Eigen::Vector<double, D*D> mFlat;
 
     if (D == 2) {
-        double xMesh[2] = {this->x->at(xInd), this->x->at(xInd+1)};
-        double yMesh[2] = {this->y->at(yInd), this->y->at(yInd+1)};
-        double x = pnt(0);
-        double y = pnt(1);
-        double norm = (1/((xMesh[1]-xMesh[0])*(yMesh[1] - yMesh[0])));
-        double coefs[4] = {norm * (xMesh[1] - x)*(yMesh[1] - y), 
-                           norm * (x - xMesh[0])*(yMesh[1] - y),
-                           norm * (xMesh[1] - x)*(y - yMesh[0]),
-                           norm * (x - xMesh[0])*(y - yMesh[0])};
-        // utils::biLinearInterpolation(x(0), x(1), xMesh, yMesh, coefs);
-        // biLinearInterpolation(x(0), x(1), xMesh, yMesh, coefs);
+        // double xMesh[2] = {this->x->at(xInd), this->x->at(xInd+1)};
+        // double yMesh[2] = {this->y->at(yInd), this->y->at(yInd+1)};
+        // double x = pnt(0);
+        // double y = pnt(1);
+        // double norm = (1/((xMesh[1]-xMesh[0])*(yMesh[1] - yMesh[0])));
+        // double coefs[4] = {norm * (xMesh[1] - x)*(yMesh[1] - y), 
+        //                    norm * (x - xMesh[0])*(yMesh[1] - y),
+        //                    norm * (xMesh[1] - x)*(y - yMesh[0]),
+        //                    norm * (x - xMesh[0])*(y - yMesh[0])};
+        // // utils::biLinearInterpolation(x(0), x(1), xMesh, yMesh, coefs);
+        // // biLinearInterpolation(x(0), x(1), xMesh, yMesh, coefs);
 
-        for (int n = 0; n < D*D; n++) {
-            mVal(n / D, n % D) = coefs[0]*(*monGridVals)(yInd*(nx+1)+xInd, n)
-                                + coefs[1]*(*monGridVals)(yInd*(nx+1)+xInd+1, n)
-                                + coefs[2]*(*monGridVals)((yInd+1)*(nx+1)+xInd, n)
-                                + coefs[3]*(*monGridVals)((yInd+1)*(nx+1)+xInd+1, n);
-        }
-    } else {
-        int zInd = utils::findLimInfMeshPoint(pnt(2), *this->z);
-        double coefs[8] = {0.0};
-        double xMesh[2] = {x->at(xInd), x->at(xInd+1)};
-        double yMesh[2] = {y->at(yInd), y->at(yInd+1)};
-        double zMesh[2] = {z->at(zInd), z->at(zInd+1)};
-        utils::triLinearInterpolation(pnt(0), pnt(1), pnt(2), xMesh, yMesh, zMesh, coefs);
-
-        // cout << "Printing coefs" << endl;
-        // for (int i = 0; i < 8; i++) {
-        //     cout << coefs[i] << ", ";
+        // for (int n = 0; n < D*D; n++) {
+        //     mVal(n / D, n % D) = coefs[0]*(*monGridVals)(yInd*(nx+1)+xInd, n)
+        //                         + coefs[1]*(*monGridVals)(yInd*(nx+1)+xInd+1, n)
+        //                         + coefs[2]*(*monGridVals)((yInd+1)*(nx+1)+xInd, n)
+        //                         + coefs[3]*(*monGridVals)((yInd+1)*(nx+1)+xInd+1, n);
         // }
-        // cout << endl;
+        (*Mon)(pnt, mVal);
+    } else {
 
-        Eigen::Vector<double, D*D> mFlat(Eigen::Vector<double, D*D>::Zero());
+        // int zInd = utils::findLimInfMeshPoint(pnt(2), *this->z);
+        // double coefs[8] = {0.0};
+        // double xMesh[2] = {x->at(xInd), x->at(xInd+1)};
+        // double yMesh[2] = {y->at(yInd), y->at(yInd+1)};
+        // double zMesh[2] = {z->at(zInd), z->at(zInd+1)};
+        // utils::triLinearInterpolation(pnt(0), pnt(1), pnt(2), xMesh, yMesh, zMesh, coefs);
 
-        mFlat += coefs[0]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
-        mFlat += coefs[1]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
-        mFlat += coefs[2]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
-        mFlat += coefs[3]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
-        mFlat += coefs[4]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
-        mFlat += coefs[5]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
-        mFlat += coefs[6]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
-        mFlat += coefs[7]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
+        // // cout << "Printing coefs" << endl;
+        // // for (int i = 0; i < 8; i++) {
+        // //     cout << coefs[i] << ", ";
+        // // }
+        // // cout << endl;
 
-        for (int n = 0; n < D*D; n++) {
-            mVal(n / D, n % D) = mFlat(n);
-        }
+        // Eigen::Vector<double, D*D> mFlat(Eigen::Vector<double, D*D>::Zero());
+
+        // mFlat += coefs[0]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
+        // mFlat += coefs[1]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
+        // mFlat += coefs[2]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
+        // mFlat += coefs[3]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
+        // mFlat += coefs[4]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
+        // mFlat += coefs[5]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
+        // mFlat += coefs[6]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
+        // mFlat += coefs[7]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
+
+        // for (int n = 0; n < D*D; n++) {
+        //     mVal(n / D, n % D) = mFlat(n);
+        // }
+        (*Mon)(pnt, mVal);
     }
 }
 
