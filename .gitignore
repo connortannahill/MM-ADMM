@@ -3,6 +3,5 @@
 *.exe
 *.m
 *.vscode
-*.out
 lib/json/
 

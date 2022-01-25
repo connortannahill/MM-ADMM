@@ -163,6 +163,7 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
         }
         j++;
     }
+    // cout << "Ehatdet = " << Ehat.determinant() << endl;
     
     // The element volume
     double Edet = E.determinant();
@@ -177,12 +178,13 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
             Ehat(0, 1) = 1.0/2.0;
             Ehat(1, 1) = sqrt(3)/2.0;
         } else if (D == 3) {
-            Ehat(0, 0) = 0.0;
-            Ehat(1, 0) = -2.0;
+
+            Ehat(0, 0) = -2.0;
+            Ehat(1, 0) = 0.0;
             Ehat(2, 0) = -2.0;
 
-            Ehat(0, 1) = -2.0;
-            Ehat(1, 1) = 0.0;
+            Ehat(0, 1) = 0.0;
+            Ehat(1, 1) = -2.0;
             Ehat(2, 1) = -2.0;
 
             Ehat(0, 2) = -2.0;
