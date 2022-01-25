@@ -79,6 +79,8 @@ double MeshIntegrator<D>::getEnergy() {
 template <int D>
 double MeshIntegrator<D>::eulerStep(double tol) {
     Eigen::VectorXd grad(x->size());
+    cout << "dt = " << dt << endl;
+    cout << "tau = " << a->tau << endl;
     double Ih = a->eulerStepMod(*x, grad);
     *x -= (dt / a->tau) * grad;
 
