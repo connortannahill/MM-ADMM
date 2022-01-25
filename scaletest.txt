@@ -1,4 +1,4 @@
 run_scale_experiment()
 Monitor1
-1
+2
 exit()
