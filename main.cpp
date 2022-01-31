@@ -774,7 +774,11 @@ int main(int argc, char *argv[]) {
     numThreads = atoi(argv[3]);
   }
 
-  ifstream inputFile(("Experiments/InputFiles/" + inFileName) + ".json");
+  string fname = "Experiments/InputFiles/" + inFileName;
+  fname += ".json";
+
+  cout << "reading from file " << fname << endl;
+  ifstream inputFile(fname);
   json experimentSpecs;
   inputFile >> experimentSpecs;
 

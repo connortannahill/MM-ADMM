@@ -246,7 +246,7 @@ void Mesh<D>::reOrientElements(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F) {
     // Compute the edge matrix
     for (int i = 0; i < F.rows(); i++) {
         for (int j = 0; j < D; j++) {
-            E.col(j)    = Xp(F(i, j+1), Eigen::all)  - Xp(F(i, 0), Eigen::all);
+            E.col(j) = Xp(F(i, j+1), Eigen::all)  - Xp(F(i, 0), Eigen::all);
         }
 
         if (E.determinant() < 0) {
