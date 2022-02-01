@@ -5,12 +5,12 @@
 #include "../../src/MonitorFunction.h"
 
 template <int D>
-class MEx5 : public MonitorFunction<D> {
+class MEx53D : public MonitorFunction<D> {
 public:
     double u(double x, double y, double z) {
         double r = sqrt(pow(x - 0.7, 2.0) + pow(y - 0.5, 2.0) + pow(z - 0.5, 2));
         double theta = atan((y - 0.5) / (x - 0.7));
-        double psi = atan((z - 0.5) / (x - 0.7))
+        double psi = atan((z - 0.5) / (x - 0.7));
 
         return 1.0 + 9.0/(1.0 + 100.0*r*r*pow(cos(theta + psi - 20.0*r*r), 2.0));
     }
@@ -27,7 +27,7 @@ public:
     }
 };
 
-template class MEx5<2>;
-template class MEx5<3>;
+template class MEx53D<2>;
+template class MEx53D<3>;
 
 #endif
