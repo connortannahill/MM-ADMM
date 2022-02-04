@@ -1,4 +1,0 @@
-run_scale_experiment()
-Monitor1
-2
-exit()

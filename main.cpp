@@ -12,6 +12,7 @@
 #include "Experiments/TestMonitors/MEx13D.h"
 #include "Experiments/TestMonitors/MEx23D.h"
 #include "Experiments/TestMonitors/MEx33D.h"
+#include "Experiments/TestMonitors/MEx53D.h"
 #include <string>
 #include "./src/Mesh.h"
 #include "./src/MonitorFunction.h"
@@ -712,6 +713,7 @@ void setUpBoxExperiment(string testName, int numThreads, MonitorFunction<D> *mon
 template <int D>
 void setUpFileExperiment(string testName, int numThreads, MonitorFunction<D> *mon,
     json &experimentSpecs, string &triFile, string &pntsFile, string &maskFile) {
+  cout << "in fun call" << endl;
   int methodType = experimentSpecs["Method"];
   int nSteps;
   double dt, tau, rho, w;
@@ -774,11 +776,14 @@ int main(int argc, char *argv[]) {
     numThreads = atoi(argv[3]);
   }
 
-  ifstream inputFile(("Experiments/InputFiles/" + inFileName) + ".json");
+  string fname = "Experiments/InputFiles/" + inFileName;
+  fname += ".json";
+
+  cout << "reading from file " << fname << endl;
+  ifstream inputFile(fname);
   json experimentSpecs;
   inputFile >> experimentSpecs;
 
-  cout << experimentSpecs << endl;
   experimentSpecs["Method"] = methodType;
   cout << experimentSpecs << endl;
 
@@ -816,6 +821,7 @@ int main(int argc, char *argv[]) {
   auto *M13D = new MEx13D<3>();
   auto *M23D = new MEx23D<3>();
   auto *M33D = new MEx33D<3>();
+  auto *M53D = new MEx53D<3>();
 
   vector<MonitorFunction<2>*> Mvals;
   vector<MonitorFunction<3>*> Mvals3D;
@@ -826,10 +832,14 @@ int main(int argc, char *argv[]) {
   Mvals.push_back(M4);
   Mvals.push_back(M5);
 
+  cout << "pushing" << endl;
   Mvals3D.push_back(M03D);
   Mvals3D.push_back(M13D);
   Mvals3D.push_back(M23D);
   Mvals3D.push_back(M33D);
+  Mvals3D.push_back(M03D);
+  Mvals3D.push_back(M53D);
+  cout << "done pushing" << endl;
 
   // Get monitor id
   int monType = experimentSpecs["MonType"];
@@ -858,6 +868,7 @@ int main(int argc, char *argv[]) {
       setUpShoulderExperiment<3>(inFileName, numThreads, Mvals3D.at(monType), experimentSpecs);
     }
   } else if (testType.compare("FromFile") == 0) {
+    cout << "in case" << endl;
     if (D == 2) {
       setUpFileExperiment<2>(inFileName, numThreads, Mvals.at(monType), experimentSpecs,
         triFile, pntsFile, maskFile);
@@ -865,6 +876,7 @@ int main(int argc, char *argv[]) {
       setUpFileExperiment<3>(inFileName, numThreads, Mvals3D.at(monType), experimentSpecs,
         triFile, pntsFile, maskFile);
     }
+    cout << "out case" << endl;
   } else {
     assert(false);
   }

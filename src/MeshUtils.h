@@ -706,7 +706,7 @@ namespace utils {
         while (fin) {
             int tmp;
             fin >> tmp;
-            cout << tmp << endl;
+            // cout << tmp << endl;
             boundaryMask.push_back((NodeType)tmp);
         }
         fin.close();

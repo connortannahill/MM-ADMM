@@ -1,4 +1,3 @@
-run_scale_experiment()
+run_parallel_experiment()
 Monitor3
-2
 exit()

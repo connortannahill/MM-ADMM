@@ -22,6 +22,7 @@ grid_scale_test_3d()
 output_grid_scale_test_2d()
 run_parallel_experiment()
 run_scale_experiment()
+run_simultaneous_experiment()
 create_parallel_plot()
 plot_single_thread_increase()
 plot_energy_decrease()
@@ -162,14 +163,15 @@ def plot_energy_decrease():
                 methodName = 'Backwards Euler'
 
             out =  np.genfromtxt('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodType), delimiter=',')
-            tVals = out[:,0]
-            Ih = out[:,1]
+            assert(out.size > 0)
+            tVals = out[:,0][1:][:10]
+            Ih = out[:,1][1:][:10]
             # with open('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodType)) as f:
                 # vals = np.array([float(i) for i in f.read().split()])
-            if (timePlot):
-                plt.plot(tVals, Ih, marker='o', ms=0.5, label='Method Type {}'.format(methodName))
+            if timePlot:
+                plt.plot(tVals, Ih, marker='o', ms=2, label='Method Type {}'.format(methodName))
             else:
-                plt.plot(np.arange(len(vals))+1, Ih, marker='o', ms=0.5, label='Method Type {}'.format(methodType))
+                plt.plot(np.arange(len(vals))+1, Ih, marker='o', ms=2, label='Method Type {}'.format(methodType))
     else:
         out =  np.genfromtxt('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodNum), delimiter=',')
         tVals = out[:,0]
@@ -198,7 +200,7 @@ def plot_energy_decrease():
     plt.title('{}'.format(testName))
     plt.legend()
     plt.savefig('./Experiments/Results/{0}/IhPlot.png'.format(testName))
-    plt.show()
+    # plt.show()
 
 def create_parallel_plot():
     testName = input('test name = ')
@@ -270,35 +272,74 @@ def create_parallel_plot():
         plt.savefig('{0}ParTest{1}.png'.format(pName, testName))
     
 def run_parallel_experiment():
+    HIGHEST_POW = 5
 
     testName = input('test name = ')
 
     # Get all input file names
     inputFiles = [file[file.rfind('/')+1:] for file in glob.glob('./Experiments/InputFiles/{0}*'.format(testName))]
-    num_list = np.argsort([int(file[len(testName):]) for file in inputFiles])
-    inputFiles = list(np.array(inputFiles)[num_list])
+    num_literal = [int(file[len(testName):file.rfind('.')]) for file in inputFiles]
+    num_list = np.argsort(num_literal)
+    num_literal = np.sort(num_literal)
+    inputFiles = [s[:s.rfind('.')] for s in list(np.array(inputFiles)[num_list])]
 
     subprocess.run('make')
+
+    pows = [2**i for i in range(HIGHEST_POW+1)]
 
     for i, inputFile in enumerate(inputFiles):
         times = {}
         num_runs = 10
-        times[pow] = []
-        for run in range(num_runs):
-            start = time.time()
-            subprocess.run('./mesh.exe {0} 1'.format(inputFile).split())
-            times[pow].append(time.time() - start)
+
+        for pow in pows:
+            times[pow] = []
+            for run in range(num_runs):
+                start = time.time()
+                subprocess.run('./mesh.exe {0} 0 {1}'.format(inputFile, pow).split())
+                times[pow].append(time.time() - start)
         
         # Dump the data file
         Path("Experiments/Data/{0}/".format(testName)).mkdir(parents=True, exist_ok=True)
 
-        with open('Experiments/Data/{0}/{1}.json'.format(testName, inputFile), 'w+') as f:
+        with open('Experiments/Data/{0}/Para{1}.json'.format(testName, inputFile), 'w+') as f:
+            f.write(json.dumps(times))
+
+def run_simultaneous_experiment():
+
+    HIGHEST_POW = 5
+
+    testName = input('test name = ')
+
+    # Get all input file names
+    inputFiles = [file[file.rfind('/')+1:] for file in glob.glob('./Experiments/InputFiles/{0}*'.format(testName))]
+    num_literal = [int(file[len(testName):file.rfind('.')]) for file in inputFiles]
+    num_list = np.argsort(num_literal)
+    num_literal = np.sort(num_literal)
+    inputFiles = [s[:s.rfind('.')] for s in list(np.array(inputFiles)[num_list])]
+
+    subprocess.run('make')
+
+    pows = [2**i for i in range(HIGHEST_POW+1)]
+
+    for i, inputFile in enumerate(inputFiles):
+        times = {}
+        num_runs = 10
+
+        times['({0}, {1})'.format(num_list[i], pows[i])] = []
+        for run in range(num_runs):
+            start = time.time()
+            subprocess.run('./mesh.exe {0} 0 {1}'.format(inputFile, pows[i]).split())
+            times['({0}, {1})'.format(num_list[i], pows[i])].append(time.time() - start)
+        
+        # Dump the data file
+        Path("Experiments/Data/{0}/".format(testName)).mkdir(parents=True, exist_ok=True)
+
+        with open('Experiments/Data/{0}/Simul{1}.json'.format(testName, inputFile), 'w+') as f:
             f.write(json.dumps(times))
 
 def run_scale_experiment():
 
     testName = input('test name = ')
-    dim = int(input('dimension = '))
 
     # Get all input file names
     inputFiles = [file[file.rfind('/')+1:] for file in glob.glob('./Experiments/InputFiles/{0}*'.format(testName))]
@@ -333,7 +374,7 @@ def run_scale_experiment():
         # Dump the data file
         Path("Experiments/Data/{0}/".format(testName)).mkdir(parents=True, exist_ok=True)
 
-        with open('Experiments/Data/{0}/{1}.json'.format(testName, inputFile), 'w+') as f:
+        with open('Experiments/Data/{0}/Single{1}.json'.format(testName, inputFile), 'w+') as f:
             f.write(json.dumps(times))
         
 def plot_single_thread_increase():

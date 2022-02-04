@@ -9,7 +9,7 @@
     "BoundaryType": 1,
     "GradUse": false,
     "nSteps": 10000,
-    "AdmmIter": 50,
+    "AdmmIter": 5,
     "DtTol": 1e-2,
     "dt": 0.05,
     "tau": 1e-1,
