@@ -4,4 +4,6 @@
 *.m
 *.vscode
 lib/json/
+*slurm*
+*.txt
 

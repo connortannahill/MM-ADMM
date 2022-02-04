@@ -128,9 +128,9 @@ void Mesh<D>::projection2D(int nodeId, Eigen::Vector<double, D> &nodeIn) {
     set<int> faceIds(faceConnects->at(nodeId));
 
     for (auto faceId = faceIds.begin(); faceId != faceIds.end(); ++faceId) {
-        Eigen::Vector<int, D> pntIds((*faceList)(*faceId, Eigen::all));
-        Eigen::Vector2d x1((*Vp)(pntIds(0), Eigen::all));
-        Eigen::Vector2d x2((*Vp)(pntIds(1), Eigen::all));
+        Eigen::Vector<int, D> pntIds((*faceList)(*faceId, Eigen::placeholders::all));
+        Eigen::Vector2d x1((*Vp)(pntIds(0), Eigen::placeholders::all));
+        Eigen::Vector2d x2((*Vp)(pntIds(1), Eigen::placeholders::all));
 
         // Edge vector
         Eigen::Vector2d u = x2 - x1;
@@ -192,10 +192,10 @@ void Mesh<D>::projection3D(int nodeId, Eigen::Vector<double, D> &nodeIn) {
     set<int> faceIds(faceConnects->at(nodeId));
 
     for (auto nodePnt = faceIds.begin(); nodePnt != faceIds.end(); ++nodePnt) {
-        Eigen::Vector<int, D> pntIds((*faceList)(*nodePnt, Eigen::all));
-        Eigen::Vector3d pnt0((*Vp)(pntIds(0), Eigen::all));
-        Eigen::Vector3d pnt1((*Vp)(pntIds(1), Eigen::all));
-        Eigen::Vector3d pnt2((*Vp)(pntIds(2), Eigen::all));
+        Eigen::Vector<int, D> pntIds((*faceList)(*nodePnt, Eigen::placeholders::all));
+        Eigen::Vector3d pnt0((*Vp)(pntIds(0), Eigen::placeholders::all));
+        Eigen::Vector3d pnt1((*Vp)(pntIds(1), Eigen::placeholders::all));
+        Eigen::Vector3d pnt2((*Vp)(pntIds(2), Eigen::placeholders::all));
 
         Eigen::Vector3d q = pnt0;
         Eigen::Vector3d u = pnt1 - q;
@@ -209,9 +209,9 @@ void Mesh<D>::projection3D(int nodeId, Eigen::Vector<double, D> &nodeIn) {
         b(1) = (w.cross(v)).dot(n) * temp;
         b(0) = 1.0 - b(1) - b(2);
 
-        Eigen::Vector3d nodeProj = b(0)*(*Vp)(pntIds(0), Eigen::all)
-            + b(1)*(*Vp)(pntIds(1), Eigen::all)
-            + b(2)*(*Vp)(pntIds(2), Eigen::all);
+        Eigen::Vector3d nodeProj = b(0)*(*Vp)(pntIds(0), Eigen::placeholders::all)
+            + b(1)*(*Vp)(pntIds(1), Eigen::placeholders::all)
+            + b(2)*(*Vp)(pntIds(2), Eigen::placeholders::all);
 
         double dist = (nodeProj - node).norm();
         if (dist < minDist && b(0) >= CHECK_EPS && b(1) >= CHECK_EPS && b(2) >= CHECK_EPS) {
@@ -241,12 +241,11 @@ void Mesh<D>::projectOntoBoundary(int nodeId, Eigen::Vector<double, D> &node) {
 template <int D>
 void Mesh<D>::reOrientElements(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F) {
     Eigen::Matrix<double,D,D> E;
-    cout << "Xp size = " << Xp.rows() << ", " << Xp.cols() << endl;
 
     // Compute the edge matrix
     for (int i = 0; i < F.rows(); i++) {
         for (int j = 0; j < D; j++) {
-            E.col(j) = Xp(F(i, j+1), Eigen::all)  - Xp(F(i, 0), Eigen::all);
+            E.col(j)    = Xp(F(i, j+1), Eigen::placeholders::all)  - Xp(F(i, 0), Eigen::placeholders::all);
         }
 
         if (E.determinant() < 0) {
@@ -255,14 +254,6 @@ void Mesh<D>::reOrientElements(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F) {
             F(i, 1) = temp;
         }
     }
-
-    for (int i = 0; i < F.rows(); i++) {
-        for (int j = 0; j < D; j++) {
-            E.col(j)    = Xp(F(i, j+1), Eigen::all)  - Xp(F(i, 0), Eigen::all);
-        }
-        assert(E.determinant() > 0);
-    }
-
 
 }
 
@@ -337,6 +328,7 @@ void Mesh<D>::buildMatrix() {
 
                     for (int r = rowStart; r <= rowEnd; r++) {
                         for (int c = colStart; c <= colEnd; c++) {
+                            // cout << "Inserting r = " << r << ", c = " << c << endl;
                             matrixBuilder->set_entry(r, c);
                         }
                     }
@@ -411,15 +403,11 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
     this->Vp = &Xp;
 
     // Should only use positive orientation elements
-    cout << "reorienting" << endl;
     reOrientElements(Xp, F);
-    cout << "FINISHED reorienting" << endl;
 
     this->F = &F;
 
-    cout << "building map" << endl;
     buildSimplexMap();
-    cout << "FINISHED building map" << endl;
 
     this->boundaryMask = &boundaryMask;
 
@@ -427,26 +415,22 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
 
     this->Ih = new Eigen::VectorXd(F.rows());
 
-    cout << "building faceList" << endl;
     buildFaceList();
-    cout << "FINISHED building faceList" << endl;
 
     // Build the matrix for backwards Euler's
-    if (this->integrationMode == 2) {
+    if (integrationMode == 2) {
         buildMatrix();
     }
+
 
 #ifdef THREADS
     omp_set_num_threads(numThreads);
 #endif
 
     // Create mesh interpolator
-    cout << "interpolating" << endl;
     mapEvaluator = new MeshInterpolator<D>();
     mapEvaluator->updateMesh((*this->Vp), (*this->F));
-    cout << "going into interpolate" << endl;
     mapEvaluator->interpolateMonitor(*Mon);
-    cout << "finished interpolating" << endl;
     this->nPnts = Xp.rows();
 
     this->Mon = Mon;
@@ -520,7 +504,7 @@ double Mesh<D>::computeEnergy(Eigen::VectorXd &x) {
     for (int i = 0; i < F->rows(); i++) {
         if (compMesh) {
             for (int n = 0; n < D+1; n++) {
-                pnt = (*Vc)((*F)(i,n), Eigen::all);
+                pnt = (*Vc)((*F)(i,n), Eigen::placeholders::all);
                 
                 for (int l = 0; l < D; l++) {
                     xi_i(n*D+l) = pnt(l);
@@ -529,7 +513,7 @@ double Mesh<D>::computeEnergy(Eigen::VectorXd &x) {
         }
 
         for (int n = 0; n < D+1; n++) {
-            pnt = (*Vp)((*F)(i,n), Eigen::all);
+            pnt = (*Vp)((*F)(i,n), Eigen::placeholders::all);
 
             for (int l = 0; l < D; l++) {
                 x_i(n*D+l) = pnt(l);
@@ -556,7 +540,7 @@ double Mesh<D>::eulerStepMod(Eigen::VectorXd &x, Eigen::VectorXd &grad) {
     for (int i = 0; i < F->rows(); i++) {
         if (compMesh) {
             for (int n = 0; n < D+1; n++) {
-                pnt = (*Vc)((*F)(i,n), Eigen::all);
+                pnt = (*Vc)((*F)(i,n), Eigen::placeholders::all);
                 
                 for (int l = 0; l < D; l++) {
                     xi_i(n*D+l) = pnt(l);
@@ -585,6 +569,9 @@ double Mesh<D>::eulerStepMod(Eigen::VectorXd &x, Eigen::VectorXd &grad) {
         }
     }
 
+    // cout << "in Euler Ihorig = " << Ihorig << endl;
+    // assert(false);
+
     return Ihorig;
 }
 
@@ -602,7 +589,7 @@ double Mesh<D>::eulerGrad(Eigen::VectorXd &x, Eigen::VectorXd &grad) {
     for (int i = 0; i < F->rows(); i++) {
         if (compMesh) {
             for (int n = 0; n < D+1; n++) {
-                pnt = (*Vc)((*F)(i,n), Eigen::all);
+                pnt = (*Vc)((*F)(i,n), Eigen::placeholders::all);
                 
                 for (int l = 0; l < D; l++) {
                     xi_i(n*D+l) = pnt(l);
@@ -638,7 +625,7 @@ double Mesh<D>::eulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad) 
     Eigen::Vector<double, D*(D+1)> xi_i;
     Eigen::Vector<double, D> pnt;
 
-    double Ihorig = eulerStepMod(x, grad);
+    double Ihorig = eulerGrad(x, grad);
 
     x -= (dt / tau) * grad;
 
@@ -841,10 +828,6 @@ double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
             Ix += abs(Gkp1(i));
         }
         
-        if (Ix < tol) {
-            Gk = Gkp1;
-            break;
-        }
 
         yk = Gkp1 - Gk; 
 
@@ -852,6 +835,12 @@ double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
         c2 = pk.dot(yk);
         c1 = (pk.dot(yk) + yk.dot(Bkinv*yk))/(pow(c2, 2.0));
         Bkinv += c1 * (pk * pk.transpose()) - Bkinv*(yk*pk.transpose()) / c2 - pk*(yk.transpose()*Bkinv) / c2; 
+
+        if (Ix < tol) {
+            Gk = Gkp1;
+            break;
+        }
+
         Gk = Gkp1;
     }
 
@@ -860,9 +849,9 @@ double Mesh<D>::bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
     //     Ix += abs(Gk(i));
     // }
 
-    // if (iter == nIter) {
-    //     cout << "MAX IN BFGS" << endl;
-    // }
+    if (iter == nIter) {
+        cout << "MAX IN BFGS" << endl;
+    }
 
     hessInvs->at(zId) = Bkinv;
 
@@ -953,7 +942,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 #endif
         if (compMesh) {
             for (int n = 0; n < D+1; n++) {
-                pnt = (*Vc)((*F)(i,n), Eigen::all);
+                pnt = (*Vc)((*F)(i,n), Eigen::placeholders::all);
                 
                 for (int l = 0; l < D; l++) {
                     xi_i(n*D+l) = pnt(l);
@@ -963,7 +952,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
 
-        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 25, 1e-8, hessComputed);
+        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 5, tol/10, hessComputed);
         // (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 1000, tol/50);
 
         for (int l = 0; l < D*(D+1); l++) {
@@ -1110,14 +1099,14 @@ void Mesh<D>::setConstant(Eigen::SparseMatrix<double, Eigen::RowMajor> *jac, dou
 template <int D>
 void Mesh<D>::buildEulerJac(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad) {
     // this->setConstant(jac, 0.0);
-    cout << "setting const" << endl;
+    // cout << "setting const" << endl;
     for (int r = 0; r < x.size(); r++) {
         // cout << "r = " << r << endl;
         for (int i = jac->rowBegin(r); i < jac->rowEndPlusOne(r); i++) {
             jac->aValue(i) = 0;
         }
     }
-    cout << "finsihed setting const" << endl;
+    // cout << "finsihed setting const" << endl;
 
     for (int i = 0; i < x.size()/D; i++) {
         // cout << "Building pntRow " << endl;
@@ -1128,7 +1117,7 @@ void Mesh<D>::buildEulerJac(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad
 
     // *jac += *sparseId;
 
-    cout << "adding diagonal" << endl;
+    // cout << "adding diagonal" << endl;
     for (int r = 0; r < x.size(); r++) {
         for (int i = jac->rowBegin(r); i < jac->rowEndPlusOne(r); i++) {
             int colIndex = jac->getColIndex(i);
@@ -1143,6 +1132,7 @@ void Mesh<D>::buildEulerJac(double dt, Eigen::VectorXd &x, Eigen::VectorXd &grad
     // cout << "finished adding diagonal" << endl;
 
 }
+
 
 void pairsort(vector<int> &a, vector<int> &b, int n)
 {
@@ -1192,7 +1182,7 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
         int off;
         if (compMesh) {
             for (int n = 0; n < D+1; n++) {
-                pnt = (*Vc)((*F)(*sId, n), Eigen::all);
+                pnt = (*Vc)((*F)(*sId, n), Eigen::placeholders::all);
                 
                 for (int l = 0; l < D; l++) {
                     xiLoc(n*D+l) = pnt(l);
@@ -1201,7 +1191,7 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
         }
 
         for (int n = 0; n < D+1; n++) {
-            pnt = (*Vp)((*F)(*sId, n), Eigen::all);
+            pnt = (*Vp)((*F)(*sId, n), Eigen::placeholders::all);
 
             if ((*F)(*sId,n) == pntId) {
                 off = n;
@@ -1235,11 +1225,21 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
                 // Compute gradient at purturbed point
                 I_wx->blockGrad(*sId, xPurt, xiLoc, Gkp1, *mapEvaluator, true, false);
 
-                derivs(i, Eigen::all) = (Gkp1 - Gk)/h;
+                derivs(i, Eigen::placeholders::all) = (Gkp1 - Gk)/h;
 
                 xPurt(D*off+i) = xLoc(D*off+i);
             }
         }
+        // for (int n = 0; n < D+1; n++) {
+        //     int pntId = (*F)(zId, n);
+
+        //     if (boundaryMask->at(pntId) != NodeType::INTERIOR) {
+        //         for (int m = 0; m < D; m++) {
+        //             hessInvs->at(zId)(D*n+m, D*n+m) = 1.0;
+        //         }
+        //     }
+        // }
+
 
         vector<int> sortedPntIds(D+1);
         vector<int> relativePntIds(D+1);
@@ -1251,20 +1251,68 @@ void Mesh<D>::FSubJac(double dt, int pntId, Eigen::VectorXd &x, Eigen::VectorXd 
 
         pairsort(sortedPntIds, relativePntIds, D+1);
 
+        // for (int i = 0; i < D; i++) {
+        //     int colo = 0;
+        //     int r = 0;
+        //     for (int o = ROWPTR[(*F)(*sId,off)*D+i]; o < ROWPTR[(*F)(*sId,off)*D+i+1]; o++) {
+        //         if (int(COLUMN[o] / D) != sortedPntIds.at(r))
+        //             continue;
+
+        //         VALUE[o] += derivs(i, relativePntIds.at(r)*D+colo);
+
+        //         colo = (colo + 1) % (D);
+        //         if (colo == 0)
+        //             r++;
+
+        //         if (r > D)
+        //             break;
+        //     }
+        // }
+
+        // for (int p = 0; p < D+1; p++) {
+        //     int pntId = sortedPntIds.at(p);
+        //     for (int r = 0; r < D; r++) {
+
+        //     }
+
+        // }
+        // cout << "sortedPntIds" << endl;
+        // for (int r = 0; r < D+1; r++) {
+        //     cout << sortedPntIds.at(r) << " ";
+        // }
+        // cout << endl;
+
+        // cout << "relativePntIds" << endl;
+        // for (int r = 0; r < D+1; r++) {
+        //     cout << relativePntIds.at(r) << " ";
+        // }
+        // cout << endl;
+
+
         for (int p = 0; p < D; p++) {
             for (int i = jac->rowBegin(D*pntId+p); i < jac->rowEndPlusOne(D*pntId+p); i++) {
                 int colIndex = (int)(jac->getColIndex(i) / D);
                 int colOff = (int)(jac->getColIndex(i) % D);
 
                 for (int j = 0; j < D+1; j++) {
+                    // cout << "row = " << pntId+p << endl;
+                    // cout << "j = " << j << endl;
+                    // cout << "Column = " << jac->getColIndex(i) << endl;
+                    // cout << "Column idx = " << colIndex << endl;
+                    // cout << "Column off = " << colOff << endl;
                     if (sortedPntIds.at(j) == colIndex) {
+                        // cout << "========================================================" << endl;
+                        // cout << "accessing derivs (r, c) = (" << p << ", " << D*relativePntIds.at(j)+colOff << ")" << endl;
                         jac->aValue(i) += derivs(p, D*relativePntIds.at(j)+colOff);
+                        // cout << "========================================================" << endl;
                     } else {
                         jac->aValue(i) += 0.0;
                     }
                 }
             }
+            // cout << "iter" << endl;
         }
+        // assert(false);
     }
 }
 
@@ -1283,6 +1331,12 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
 
     double gradOneN = 0;
     double gradOneNPrev = INFINITY;
+
+    // buildEulerJac(dt, x, grad);
+    if (!stepTaken) {
+        buildEulerJac(dt, x, grad);
+        jac->sfac(*cgParams);
+    }
 
     do {
         // Form F (= 0 the function to minimize)
@@ -1303,7 +1357,9 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
         if (!stepTaken || abs(gradOneN - gradOneNPrev)/(gradOneN) < 0.1) {
             cout << "building euler jac" << endl;
             buildEulerJac(dt, x, grad);
-            jac->sfac(*cgParams);
+            if (!stepTaken) {
+                jac->sfac(*cgParams);
+            }
             cout << "finsihed factorizing matrix" << endl;
             // cg->compute(*jac);
             jac->set_toler(this->tol);
@@ -1380,7 +1436,6 @@ Mesh<D>::~Mesh() {
     delete simplexConnects;
 
 }
-
 // explicit instantiation for each dimension of interest
 template class Mesh<2>;
 template class Mesh<3>;

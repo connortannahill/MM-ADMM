@@ -64,6 +64,7 @@ double MeshIntegrator<D>::backwardsEulerStep(double dt, double tol) {
     grad.setZero();
     double Ih = a->backwardsEulerStep(dt, *x, grad, tol);
 
+    // cout << "IN BACKWARDS EULER STEP ENERGY FIN = " << a->computeEnergy(*x) << endl;
     return Ih;
 }
 
@@ -78,8 +79,6 @@ double MeshIntegrator<D>::getEnergy() {
 template <int D>
 double MeshIntegrator<D>::eulerStep(double tol) {
     Eigen::VectorXd grad(x->size());
-    cout << "dt = " << dt << endl;
-    cout << "tau = " << a->tau << endl;
     double Ih = a->eulerStepMod(*x, grad);
     *x -= (dt / a->tau) * grad;
 
@@ -100,42 +99,36 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     // Make prediction for next value of x (sorta) and the next time step
     this->dtPrev = dt;
     double Ih;
-    // cout << "predicting X" << endl;
     Ih = (this->a)->predictX(dt, energyCur, *this->xPrev, *this->x, *this->xBar);
 
     // Get xBar, the predicted (explicit) location of the nodes independent of constraints
     double dtsq = dt*dt;
-    // cout << "finsihed predicting X" << endl;
 
     *xPrev = *x;
-    // if (stepsTaken)
+    *x = *xBar;
+    *z = (*a->Dmat) * *x;
     if (!a->stepTaken) {
-        *z = (*a->Dmat) * *this->x;
+        uBar->setZero();
     }
-    // *z = (*a->Dmat) * *this->x;
-
-    // uBar->setZero();
-
-    // *x = *xBar;
 
     if (dt != dtPrev) {
-        *t = *M + dtsq*(*WD_TWD);
-        this->cg->compute(*t);
+        // *t = *M + dtsq*(*WD_TWD);
+        // this->cg->compute(*t);
     }
 
     // Update the solution x^{n+1}
     *vec =  ((a->m) * (*xBar)) + dtsq*(( *WD_T * ((a->w) * (*z - *uBar))));
-    *x = this->cg->solveWithGuess(*vec, *xBar);
+    // *x = this->cg->solveWithGuess(*vec, *xBar);
+    *x = this->cg->solve(*vec);
+    // *x = cgSol->solve(*vec);
 
     int i;
     double IhCur = 0;
     double IhPrev = 0;
     for (i = 0; i < nIters; i++) {
-        // cout << "on Iter = " << i << endl;
         // Update z_{n+1} using the assembly prox algorithm
         *DXpU = (*(a->Dmat))*(*x) + (*uBar);
         IhCur = a->prox(dt, *x, *DXpU, *z, tol);
-        // cout << "finished prox on iter " << i << endl;
         a->stepTaken = true;
 
         // Update the Lagrange multiplier uBar^{n+1}
@@ -144,9 +137,8 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         // Update the solution x^{n+1}
         *vec =  ((a->m) * (*xBar)) + dtsq*(( *WD_T * ((a->w) * (*z - *uBar))));
         // *x = this->cg->solveWithGuess(*vec, *xBar);
-        *x = this->cgSol->solve(*vec);
-
-        // cout << "primal res = " << ((*a->Dmat) * *this->x - *z).norm() << endl;
+        // *x = cgSol->solve(*vec);
+        *x = this->cg->solve(*vec);
 
         if (((*a->Dmat) * *this->x - *z).norm() < tol) {
             break;

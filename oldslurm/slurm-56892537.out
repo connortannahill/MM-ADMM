@@ -1,0 +1,25 @@
+====================================
+Functions available:
+
+create_input()
+grid_scale_test_2d()
+grid_scale_test_3d()
+output_grid_scale_test_2d()
+run_parallel_experiment()
+run_scale_experiment()
+create_parallel_plot()
+plot_single_thread_increase()
+plot_energy_decrease()
+exit()
+
+====================================
+call function() = test name = dimension = ['Monitor1160.json', 'Monitor13D10.json', 'Monitor13D80.json', 'Monitor1320.json', 'Monitor13D160.json', 'Monitor120.json', 'Monitor140.json', 'Monitor13D20.json', 'Monitor110.json', 'Monitor180.json', 'Monitor13D40.json', 'Monitor13D320.json']
+Traceback (most recent call last):
+  File "experiments.py", line 471, in <module>
+    eval(mode)
+  File "<string>", line 1, in <module>
+  File "experiments.py", line 306, in run_scale_experiment
+    num_literal = [int(file[len(testName):file.rfind('.')]) for file in inputFiles]
+  File "experiments.py", line 306, in <listcomp>
+    num_literal = [int(file[len(testName):file.rfind('.')]) for file in inputFiles]
+ValueError: invalid literal for int() with base 10: '3D10'
