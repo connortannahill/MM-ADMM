@@ -100,7 +100,7 @@ AdaptationFunctional<D>::AdaptationFunctional(Eigen::MatrixXd &Vc,
  * Method for computing the block gradient of a simplex for the objective function
 */
 template <int D>
-inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)> &z,
+double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)> &z,
             Eigen::Vector<double, D*(D+1)> &xi,
             Eigen::Vector<double, D*(D+1)> &grad,
             MeshInterpolator<D> &interp, bool computeGrad, bool regularize) {
@@ -140,17 +140,21 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
     xK /= ((double) D + 1.0);
 
     // Interpolate the monitor function
-    interp.evalMonitorOnGrid(xK, M);
-
-    Eigen::Matrix<double, D, D> Minv(M.inverse());
     vector<Eigen::Matrix<double, D, D>> mPre(D+1);
 
     Eigen::Matrix<double, D, D> mTemp;
+    M.setZero();
     for (int i = 0; i < D+1; i++) {
         xTemp = z.segment(i*D, D);
         interp.evalMonitorOnGrid(xTemp, mTemp);
         mPre.at(i) = mTemp;
+        // mPre.at(i) = M;
+        M += mPre.at(i);
     }
+
+    // interp.evalMonitorOnGrid(xK, M);
+
+    Eigen::Matrix<double, D, D> Minv(M.inverse());
 
     double G, dGddet;
 
@@ -278,6 +282,7 @@ inline double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, 
 
     return Ih;
 }
+
 
 template <int D>
 AdaptationFunctional<D>::~AdaptationFunctional() {
