@@ -1,3 +1,3 @@
-run_parallel_experiment()
+run_scale_experiment()
 3DMonitor2
 exit()

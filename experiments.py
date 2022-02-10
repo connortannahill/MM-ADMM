@@ -164,8 +164,8 @@ def plot_energy_decrease():
 
             out =  np.genfromtxt('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodType), delimiter=',')
             assert(out.size > 0)
-            tVals = out[:,0][1:][:10]
-            Ih = out[:,1][1:][:10]
+            tVals = out[:,0][1:]
+            Ih = out[:,1][1:]
             # with open('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodType)) as f:
                 # vals = np.array([float(i) for i in f.read().split()])
             if timePlot:

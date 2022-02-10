@@ -1349,12 +1349,12 @@ double Mesh<D>::backwardsEulerStep(double dt, Eigen::VectorXd &x, Eigen::VectorX
 
         cout << "||grad|| = " << gradOneN << endl;
 
-        if (gradOneN < tol) {
+        if (gradOneN < tol/10.0) {
             break;
         }
 
         // Perform Newton step solving J(f)dx = -F
-        if (!stepTaken || abs(gradOneN - gradOneNPrev)/(gradOneN) < 0.1) {
+        if (!stepTaken || abs(gradOneN - gradOneNPrev)/(gradOneN) < 0.25) {
             cout << "building euler jac" << endl;
             buildEulerJac(dt, x, grad);
             if (!stepTaken) {
