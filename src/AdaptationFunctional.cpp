@@ -148,7 +148,6 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
         xTemp = z.segment(i*D, D);
         interp.evalMonitorOnGrid(xTemp, mTemp);
         mPre.at(i) = mTemp;
-        // mPre.at(i) = M;
         M += mTemp;
     }
 
@@ -284,6 +283,7 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
 
     return Ih;
 }
+
 
 template <int D>
 AdaptationFunctional<D>::~AdaptationFunctional() {
