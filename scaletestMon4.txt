@@ -1,3 +1,0 @@
-run_scale_experiment()
-3DMonitor2
-exit()

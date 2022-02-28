@@ -103,7 +103,7 @@ template <int D>
 double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)> &z,
             Eigen::Vector<double, D*(D+1)> &xi,
             Eigen::Vector<double, D*(D+1)> &grad,
-            MeshInterpolator<D> &interp, bool computeGrad, bool regularize) {
+            MeshInterpolator<D> &interp, bool computeGrad, bool regularize, double &Igt) {
     double Ih = 0.0;
     double detFJ;
     Eigen::Vector<double,D> gradSimplex;
@@ -154,7 +154,7 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
 
     // interp.evalMonitorOnGrid(xK, M);
 
-    Eigen::Matrix<double, D, D> Minv(M.inverse());
+    Eigen::Matrix<double, D, D> Minv(M.inverse() / ((double) D + 1));
 
     double G, dGddet;
 
@@ -273,6 +273,8 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
 
     // Update the energy
     Ih = absK * G;
+
+    Igt = Ih;
 
     // Now add the constraint regularization
     if (regularize) {

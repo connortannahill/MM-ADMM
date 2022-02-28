@@ -23,6 +23,11 @@ MeshIntegrator<D>::MeshIntegrator(double dt, Mesh<D> &a) {
 
     this->stepsTaken = 0;
 
+    proxTime = 0;
+    cgTime = 0;
+    multTime = 0;
+    predTime = 0;
+
     // Assign initial values to x and z (xBar must be assigned at each step)
     a.copyX(*x);
     a.copyX(*xPrev);
@@ -30,6 +35,7 @@ MeshIntegrator<D>::MeshIntegrator(double dt, Mesh<D> &a) {
 
     // Compute the initial z vlaue
     z = new Eigen::VectorXd(*((this->a)->Dmat) * (*this->x));
+    zPrev = new Eigen::VectorXd(*((this->a)->Dmat) * (*this->x));
 
     uBar = new Eigen::VectorXd(Eigen::VectorXd::Constant(z->size(), 0.0));
 
@@ -37,6 +43,7 @@ MeshIntegrator<D>::MeshIntegrator(double dt, Mesh<D> &a) {
     double dtsq = dt*dt;
     // Eigen::SparseMatrix<double> t(*(this->a)->M);
     M = new Eigen::SparseMatrix<double>(*(this->a)->M);
+    D_T = new Eigen::SparseMatrix<double>( (*(this->a)->Dmat).transpose());
     WD_T = new Eigen::SparseMatrix<double>(( *((this->a)->W) * *((this->a)->Dmat)).transpose());
     WD_TWD = new Eigen::SparseMatrix<double>((*WD_T * (*(this->a)->W) * (*(this->a)->Dmat)));
 
@@ -92,6 +99,7 @@ double MeshIntegrator<D>::eulerStep(double tol) {
 */
 template <int D>
 double MeshIntegrator<D>::step(int nIters, double tol) {
+    clock_t start = clock();
 
     // Setup the assembly for the step
     (this->a)->setUp();
@@ -99,7 +107,11 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     // Make prediction for next value of x (sorta) and the next time step
     this->dtPrev = dt;
     double Ih;
-    Ih = (this->a)->predictX(dt, energyCur, *this->xPrev, *this->x, *this->xBar);
+
+    clock_t start2 = clock();
+    Ih = (this->a)->predictX(dt, stepsTaken, *this->xPrev, *this->x, *this->xBar);
+    predTime += ((double)clock() - (double)start2)
+        / ((double)CLOCKS_PER_SEC); 
 
     // Get xBar, the predicted (explicit) location of the nodes independent of constraints
     double dtsq = dt*dt;
@@ -107,8 +119,11 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
     *xPrev = *x;
     *x = *xBar;
     *z = (*a->Dmat) * *x;
-    if (!a->stepTaken) {
+    if (!(a->stepTaken)) {
         uBar->setZero();
+    }
+    if (stepsTaken == 0) {
+        *z = (*a->Dmat) * *xPrev;
     }
 
     if (dt != dtPrev) {
@@ -116,19 +131,25 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         // this->cg->compute(*t);
     }
 
+    double Ihstart = 0;
+
     // Update the solution x^{n+1}
     *vec =  ((a->m) * (*xBar)) + dtsq*(( *WD_T * ((a->w) * (*z - *uBar))));
-    // *x = this->cg->solveWithGuess(*vec, *xBar);
     *x = this->cg->solve(*vec);
-    // *x = cgSol->solve(*vec);
 
     int i;
     double IhCur = 0;
     double IhPrev = 0;
+    double primal, duel;
     for (i = 0; i < nIters; i++) {
         // Update z_{n+1} using the assembly prox algorithm
         *DXpU = (*(a->Dmat))*(*x) + (*uBar);
+        *zPrev = *z;
         IhCur = a->prox(dt, *x, *DXpU, *z, tol);
+
+        if (i == 0) {
+            Ihstart = IhCur;
+        }
         a->stepTaken = true;
 
         // Update the Lagrange multiplier uBar^{n+1}
@@ -136,27 +157,36 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
 
         // Update the solution x^{n+1}
         *vec =  ((a->m) * (*xBar)) + dtsq*(( *WD_T * ((a->w) * (*z - *uBar))));
-        // *x = this->cg->solveWithGuess(*vec, *xBar);
-        // *x = cgSol->solve(*vec);
         *x = this->cg->solve(*vec);
 
-        if (((*a->Dmat) * *this->x - *z).norm() < tol) {
+        primal = ((*a->Dmat) * *this->x - *z).norm();
+        duel = (*D_T*(*z  - *zPrev)).norm();
+        cout << "duel = " << duel << endl;
+
+        if (primal < tol && duel < 10*tol) {
             break;
         }
 
         IhPrev = IhCur;
     }
-    cout << "ADMM in " << i << " iters" << endl;
-    cout << "primal res = " << ((*a->Dmat) * *this->x - *z).norm() << endl;
+    cout << "ADMM in " << i+1 << " iters" << endl;
+    cout << "primal res = " << primal << endl;
+    cout << "duel res = " << duel << endl;
 
     // Update the assembly using the new locations
     a->updateAfterStep(dt, *xPrev, *x);
+
+    proxTime += ((double)clock() - (double)start)
+        / ((double)CLOCKS_PER_SEC);
 
     stepsTaken++;
     // this->energyCur = a->computeEnergy(*x);
     // // return a->eulerStep(*x, *vec);
     // return energyCur;
-    return Ih;
+    // cout << "Ih = " << Ih << endl;
+    // cout << "IhCur = " << IhCur << endl;
+    return Ihstart;
+    // return Ih;
 }
 
 template <int D>
@@ -169,9 +199,11 @@ MeshIntegrator<D>::~MeshIntegrator() {
     delete x;
     delete xBar;
     delete z;
+    delete zPrev;
     delete xPrev;
     // delete cgSol;
     delete WD_T;
+    delete D_T;
     delete DXpU;
     delete vec;
 

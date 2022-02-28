@@ -40,7 +40,7 @@ public:
                 Eigen::Vector<double, D*(D+1)> &xi,
                 Eigen::Vector<double, D*(D+1)> &grad,
                 MeshInterpolator<D> &interp, bool computeGrad,
-                bool regularize);
+                bool regularize, double &Igt);
 
     MatrixIter *jac;
     ParamIter *cgParams;
@@ -85,7 +85,7 @@ public:
     double prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DxpU, Eigen::VectorXd &z, double tol);
     void reOrientElements(Eigen::MatrixXd &Xp, Eigen::MatrixXi &F);
     void updateAfterStep(double dt, Eigen::VectorXd &xPrev, Eigen::VectorXd &x);
-    double predictX(double dt, double I, Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar);
+    double predictX(double dt, int steps,  Eigen::VectorXd &xPrev, Eigen::VectorXd &x, Eigen::VectorXd &xBar);
     double newtonOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
             Eigen::Vector<double, D*(D+1)> &xi, int nIter, double tol);
     double bfgsOptSimplex(int zId, Eigen::Vector<double, D*(D+1)> &z,
