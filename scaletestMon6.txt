@@ -1,3 +1,0 @@
-run_parallel_experiment()
-3DMonitor3
-exit()

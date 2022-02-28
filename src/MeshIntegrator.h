@@ -21,7 +21,10 @@ public:
     void outputX(const char *fname);
     void outputZ(const char *fname);
     void done();
-private:
+    double proxTime;
+    double multTime;
+    double cgTime;
+    double predTime;
 
     Mesh<D> *a;
     Eigen::SparseMatrix<double> *t;
@@ -31,8 +34,10 @@ private:
     Eigen::VectorXd *xBar;
     Eigen::VectorXd *uBar;
     Eigen::VectorXd *z;
+    Eigen::VectorXd *zPrev;
     Eigen::SimplicialCholesky<Eigen::SparseMatrix<double>> *cgSol;
     Eigen::SparseMatrix<double> *WD_T;
+    Eigen::SparseMatrix<double> *D_T;
     Eigen::SparseMatrix<double> *WD_TWD;
     Eigen::SparseMatrix<double> *M;
     Eigen::VectorXd *vec;

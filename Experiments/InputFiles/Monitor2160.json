@@ -6,11 +6,17 @@
     "BoundaryType": 1,
     "GradUse": false,
     "nSteps": 1000,
+<<<<<<< HEAD
     "AdmmIter": 5,
     "DtTol": 1e-4,
     "dt": 0.025,
+=======
+    "AdmmIter": 10,
+    "DtTol": 1e-4,
+    "dt": 0.055,
+>>>>>>> a3f32770e569a4db99b8594c398d069d60676cac
     "tau": 0.5,
-    "rho": 150,
+    "rho": 50,
     "w": 3.53553390593,
     "nx": 160,
     "ny": 160,

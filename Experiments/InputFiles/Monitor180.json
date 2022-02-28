@@ -5,12 +5,21 @@
     "CompMesh": false,
     "BoundaryType": 1,
     "GradUse": false,
+<<<<<<< HEAD
     "nSteps": 1000,
     "AdmmIter": 100,
     "DtTol": 1e-3,
     "dt": 0.0010,
     "tau": 1e-0,
     "rho": 100,
+=======
+    "nSteps": 100,
+    "AdmmIter": 1000,
+    "DtTol": 1e-5,
+    "dt": 0.005,
+    "tau": 1e-1,
+    "rho": 50,
+>>>>>>> a3f32770e569a4db99b8594c398d069d60676cac
     "w": 3.53553390593,
     "nx": 80,
     "ny": 80,

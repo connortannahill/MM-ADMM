@@ -18,9 +18,14 @@
 #include "./src/MonitorFunction.h"
 #include <cstdlib> 
 #include <ctime> 
+#include <time.h>
 #include <fstream>
 #include <unistd.h>
 #include "./src/MeshUtils.h"
+
+struct timespec start, finish;
+struct timespec startTemp, finishTemp;
+double elapsed, elapsedTemp;
 
 using namespace std;
 using namespace nlohmann;
@@ -167,7 +172,8 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
   Ivals.push_back(solver.getEnergy());
   tVals.push_back(0);
 
-  clock_t start = clock();
+  // clock_t start = clock();
+  clock_gettime(CLOCK_MONOTONIC, &start);
   double Ih;
   double Ihprev = INFINITY;
   int i;
@@ -185,27 +191,47 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
     }
 
     Ivals.push_back(Ih);
-    tVals.push_back(((double)clock() - (double)start)
-        / ((double)CLOCKS_PER_SEC) );
+    clock_gettime(CLOCK_MONOTONIC, &finishTemp);
+    elapsedTemp = (finishTemp.tv_sec - start.tv_sec);
+    elapsedTemp += (finishTemp.tv_nsec - start.tv_nsec) / 1000000000.0;
+
+    tVals.push_back(elapsedTemp);
 
     double dIdt = (Ih - Ihprev) / dt;
     cout << "d/dt = " << (Ih - Ihprev) / dt << endl;
     cout << "Ih = " << Ih << endl;
 
+<<<<<<< HEAD
     // if (i != 0 && (abs(dIdt) < dtTol || dIdt > 0)) {
     if (i != 0 && (abs(dIdt) < dtTol)) {
+=======
+    if (i != 0 && (abs(dIdt) < dtTol || dIdt > 0)) {
+      if (dIdt > 0 && methodType == 0) {
+        cout << "comping grad" << endl;
+        solver.stepsTaken = 0;
+        Ihprev = Ih;
+        continue;
+      } else {
+>>>>>>> a3f32770e569a4db99b8594c398d069d60676cac
         cout << "converged" << endl;
         break;
+      }
     }
 
     Ihprev = Ih;
   }
 
-  cout << "Took " << ((double)clock() - (double)start)
-        / ((double)CLOCKS_PER_SEC) << " seconds" << endl;
+  clock_gettime(CLOCK_MONOTONIC, &finish);
+  elapsed = (finish.tv_sec - start.tv_sec);
+  elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+
+  cout << "Took " << elapsed << " seconds" << endl;
   cout << "Took " << i << " iters" << endl;
   cout << "Number of simplices = " << F->rows() << endl;
   cout << "Number of points = " << Vp->rows() << endl;
+
+  cout << "Time spent in prox = " << solver.proxTime << endl;;
+  cout << "Time spent predicting = " << solver.predTime << endl;
 
   solver.done();
 
@@ -223,7 +249,14 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
   string Ihdir = outDir + "/Ih";
   Ihdir = Ihdir + to_string(methodType);
   Ihdir = Ihdir + ".txt";
-  outputVecToFile(Ihdir, tVals, Ivals);
+  string IhdirGud = outDir + "/IhPara";
+  IhdirGud = IhdirGud + to_string(numThreads);
+  IhdirGud = IhdirGud + ".txt";
+
+  outputVecToFile(IhdirGud, tVals, Ivals);
+  if (numThreads == 1) {
+    outputVecToFile(Ihdir, tVals, Ivals);
+  }
 
   delete Vc;
   delete F;
@@ -596,7 +629,7 @@ void setUpShoulderExperiment(string testName,
         dir /= dir.norm();
 
         // Now generate random length between [0, hx/5]
-        double r = (h/8.0)*static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+        double r = (h/10.0)*static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
 
         // (*Vc)(i, Eigen::all) += r*dir;
         (*Vp)(i, Eigen::all) += r*dir;

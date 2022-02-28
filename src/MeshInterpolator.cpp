@@ -199,7 +199,13 @@ template <int D>
 void MeshInterpolator<D>::interpolateMonitor(MonitorFunction<D> &Mon) {
     this->Mon = &Mon;
     // Set up relevant information
-    const int NUM_SMOOTH = 5; // TODO: allow this to be set as a input param
+    int NUM_SMOOTH;
+    if (D == 2) {
+        NUM_SMOOTH = 5;
+    } else {
+        NUM_SMOOTH = 2;
+    }
+    // const int NUM_SMOOTH = 2; // TODO: allow this to be set as a input param
     Mon.evaluateAtVertices(*X, *F, *monVals);;
     nearestNeighGridMap();
     smoothMonitorGrid(NUM_SMOOTH);
