@@ -106,7 +106,7 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
 
     *xPrev = *x;
     *x = *xBar;
-    *z = (*a->Dmat) * *x;
+    *z = (*a->Dmat) * *xPrev;
     if (!a->stepTaken) {
         uBar->setZero();
     }

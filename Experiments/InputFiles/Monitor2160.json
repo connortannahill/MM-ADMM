@@ -7,7 +7,7 @@
     "GradUse": false,
     "nSteps": 1000,
     "AdmmIter": 5,
-    "DtTol": 1e-3,
+    "DtTol": 1e-4,
     "dt": 0.025,
     "tau": 0.5,
     "rho": 150,

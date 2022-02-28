@@ -4,7 +4,7 @@
     "Method": 0,
     "CompMesh": false,
     "BoundaryType": 1,
-    "GradUse": false,
+    "GradUse": true,
     "nSteps": 1000,
     "AdmmIter": 5,
     "DtTol": 1e-2,

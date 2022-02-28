@@ -9,8 +9,10 @@ module load python/3.8.10
 module load scipy-stack
 
 # nums=(10, 20, 40, 80, 160, 320)
-monNums=( 1 2 3)
-nums=( 10 20 40 80 160 320)
+# monNums=( 1 2 3)
+# nums=( 10 20 40 80 160 320)
+monNums=( 2)
+nums=( 80 160 320)
 # echo "${nums[@]}"
 
 for monNum in "${monNums[@]}"; do

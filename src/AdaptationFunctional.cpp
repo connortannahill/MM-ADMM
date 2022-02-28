@@ -153,7 +153,7 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
 
     // interp.evalMonitorOnGrid(xK, M);
 
-    Eigen::Matrix<double, D, D> Minv(M.inverse());
+    Eigen::Matrix<double, D, D> Minv(M.inverse() / ((double) D + 1));
 
     double G, dGddet;
 
