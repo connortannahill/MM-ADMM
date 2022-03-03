@@ -19,6 +19,8 @@
 #include <omp.h>
 #endif
 
+#define MAX_NUM_THREADS 32
+
 using namespace std;
 using namespace nlohmann;
 
@@ -423,15 +425,19 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
     }
 
 
-#ifdef THREADS
-    omp_set_num_threads(numThreads);
-#endif
 
     // Create mesh interpolator
+#ifdef THREADS
+    omp_set_num_threads(MAX_NUM_THREADS);
+#endif
     mapEvaluator = new MeshInterpolator<D>();
     mapEvaluator->updateMesh((*this->Vp), (*this->F));
     mapEvaluator->interpolateMonitor(*Mon);
     this->nPnts = Xp.rows();
+
+#ifdef THREADS
+    omp_set_num_threads(numThreads);
+#endif
 
     this->Mon = Mon;
 

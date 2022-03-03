@@ -10,6 +10,7 @@ from matplotlib.pyplot import cm
 import time
 from pathlib import Path
 import json
+from os import path
 
 """
 TEMPLATES AND MISC
@@ -176,19 +177,25 @@ def plot_parallel_experiment(dirName, testName, num, pows, times, ax, color, mar
 
         ax[0].legend(prop={'size': 8})
 
-        ax[1].plot(np.log2(pows), tps_mean, label=label, color=color, marker=mark)
+        # ax[1].plot(np.log2(pows), tps_mean, label=label, color=color, marker=mark)
+        ax[1].plot(np.log2(pows), tps_mean, color=color, marker=mark)
         # ax[1].fill_between(np.log2(pows), tps_low_int, tps_high_int, color=color, alpha=.1)
         
-        ax[1].legend(prop={'size': 8})
+        # ax[1].legend(prop={'size': 8})
     else:
         print('hit')
-        ax.plot(np.log2(pows), mean / mean_max, label=label, color=color, marker=mark)#, ms=mark)
+        ax[0].plot(np.log2(pows), mean / mean_max, label=label, color=color, marker=mark)#, ms=mark)
         # ax[0].fill_between(np.log2(pows), low_int / low_max, high_int / high_max, color=color, alpha=.1)
-        ax.legend(prop={'size': 8})
+        ax[0].legend(prop={'size': 8})
+
+        tps_max = max(tps_mean)
+        # ax[1].plot(np.log2(pows), [tps/tps_max for tps in tps_mean], label=label, color=color, marker=mark)
+        ax[1].plot(np.log2(pows), [tps/tps_max for tps in tps_mean], color=color, marker=mark)
+        # ax[1].legend(prop={'size': 8})
 
         # ax.plot(np.log2(pows), [tps_mean[0] for i in range(len(pows))] , label=label, color=color)
         # ax[1].fill_between(np.log2(pows), tps_low_int / tps_low_max, tps_high_int / tps_high_max, color=color, alpha=.1)
-        ax.legend(prop={'size': 8})
+        # ax.legend(prop={'size': 8})
     # ax.plot(np.log2(pows), mean, label=label, color=color)
     # ax.fill_between(np.log2(pows), low_int, high_int, color=color, alpha=.1)
 
@@ -219,6 +226,7 @@ def plot_energy_decrease():
             else:
                 methodName = 'Backwards Euler'
 
+            print('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodType))
             out =  np.genfromtxt('./Experiments/Results/{0}/Ih{1}.txt'.format(testName, methodType), delimiter=',')
             assert(out.size > 0)
             tVals = out[:,0][1:]
@@ -253,10 +261,24 @@ def plot_energy_decrease():
         plt.xlabel('CPU time')
     else:
         plt.xlabel('number of time steps')
+
+    NS =  np.genfromtxt('./Experiments/Results/{0}/triangles.txt'.format(testName), delimiter=',').shape[0]
     plt.ylabel('$I_h$')
-    plt.title('{}'.format(testName))
+
+    mon_name = 'ERR'
+
+    print(testName)
+
+    if testName.startswith('Monitor1'):
+        mon_name = 'Example 7.1 with {0} simplices'.format(NS)
+    elif testName.startswith('Monitor2'):
+        mon_name = 'Example 7.2 with {0} simplices'.format(NS)
+    elif testName.startswith('Monitor3'):
+        mon_name = 'Example 7.3 with {0} simplices'.format(NS)
+
+    plt.title('{}'.format(mon_name))
     plt.legend()
-    plt.savefig('./Experiments/Results/{0}/IhPlot.png'.format(testName))
+    plt.savefig('./Experiments/Results/{0}/IhPlot{0}.png'.format(testName))
     # plt.show()
 
 def create_parallel_plot():
@@ -295,14 +317,14 @@ def create_parallel_plot():
     #     num_simplices = [4*(i**2) for i in num_list]
     # else:
     #     num_simplices = [12*(i**3) for i in num_list]
-    if plotAll:
-        fig, ax = plt.subplots(1 if plotAll else 2)
+    # if plotAll:
+    fig, ax = plt.subplots(2)
 
     pows = [1, 2, 4, 8, 16]
 
     for i, dataFileJson in enumerate(dataFilesJson):
-        if not plotAll:
-            fig, ax = plt.subplots(1 if plotAll else 2)
+        # if not plotAll:
+        #     fig, ax = plt.subplots(1 if plotAll else 2)
 
         times = {}
         print(dataFileJson)
@@ -312,9 +334,12 @@ def create_parallel_plot():
         # pows = [int(i) for i in times.keys()]
         times = {}
         for pow in pows:
-            val = np.genfromtxt('./Experiments/Results/{0}{1}/IhPara{2}.txt'.format(testName, num_list[i], pow), delimiter=',')[-1, 0]
-            times[str(pow)] = [val]
+            fname = './Experiments/Results/{0}{1}/IhPara{2}.txt'.format(testName, num_list[i], pow)
+            if (path.exists(fname)):
+                val = np.genfromtxt(fname, delimiter=',')[-1, 0]
+                times[str(pow)] = [val]
         print('pows = {}'.format(pows))
+        print(times)
         
         # Dump the data file
         # label = str(num_simplices[i])
@@ -326,15 +351,16 @@ def create_parallel_plot():
 
         if not plotAll:
             # Make modified ticks
-            ticks = ['${}$'.format(pow) for pow in pows]
-            ticks.insert(0, '$1$')
-            ax[0].set_xticklabels(ticks)
-            ax[1].set_xticklabels(ticks)
+            # ticks = ['${}$'.format(pow) for pow in pows]
+            # ticks.insert(0, '$1$')
+            # ax[0].set_xticklabels(ticks)
+            # ax[1].set_xticklabels(ticks)
+            plt.setp(ax, xticks=[i for i in range(len(pows))], xticklabels=[str(pow) for pow in pows])
 
-            plt.xlabel('Log Number of CPU Cores')
-            plt.ylabel('Average CPU Time')
+            plt.xlabel('Number of CPU Cores')
+            # plt.ylabel('Average CPU Time')
             ax[0].set(ylabel='Average CPU Time')
-            ax[1].set(ylabel='Average CPU Time Per-Step')
+            ax[1].set(ylabel='Average CPU TPS')
             # ax[0].ylabel('Average CPU Time')
             # ax[1].ylabel('Average CPU Time Per Step')
             # plt.title('{}'.format(testName))
@@ -347,14 +373,44 @@ def create_parallel_plot():
             plt.clf()
 
     if plotAll:
-        ticks = ['${}$'.format(pow) for pow in pows]
-        ticks.insert(0, '$1$')
-        print(ticks)
-        ax.set_xticklabels(ticks)
+        # ticks = ['${}$'.format(pow) for pow in pows]
+        # ticks.insert(0, '$1$')
+        # print(ticks)
+        # ax.set_xticklabels(ticks)
+        # plt.xlabel('Number of CPU Cores')
+        # plt.ylabel('Normalized Average CPU Time')
+        # plt.title('{}'.format(testName))
+        # plt.legend()
+
+        # pName = "Experiments/Results/"
+        # Path(pName).mkdir(parents=True, exist_ok=True)
+        # plt.savefig('{0}ParTest{1}.png'.format(pName, testName))
+
+        # ticks = ['${}$'.format(pow) for pow in pows]
+        # ticks.insert(0, '$1$')
+        # print(ticks)
+        # ax[0].ticks(np.arange(len(pow)))
+        # ax[0].set_xticklabels(ticks)
+        # ax[1].ticks(np.arange(len(pow)))
+        # ax[1].set_xticklabels(ticks)
+
+        plt.setp(ax, xticks=[i for i in range(len(pows))], xticklabels=[str(pow) for pow in pows])
+
         plt.xlabel('Number of CPU Cores')
-        plt.ylabel('Normalized Average CPU Time')
-        plt.title('{}'.format(testName))
-        plt.legend()
+        ax[0].set(ylabel='Normalized CPU Time')
+        ax[1].set(ylabel='Normalized CPU TPS')
+        # plt.ylabel('Normalized Average CPU Time')
+        # plt.title('{}'.format(testName))
+        if testName.startswith('Monitor1'):
+            mon_name = 'Example 7.1 Parallel Scaling'
+        elif testName.startswith('Monitor2'):
+            mon_name = 'Example 7.2 Parallel Scaling'
+        elif testName.startswith('Monitor3'):
+            mon_name = 'Example 7.3 Parallel Scaling'
+
+        fig.suptitle('{}'.format(mon_name))
+        # fig.title()
+        # plt.legend()
 
         pName = "Experiments/Results/"
         Path(pName).mkdir(parents=True, exist_ok=True)

@@ -17,8 +17,8 @@ echo $monNum
 # echo $inputStr
 python experiments.py <<STDIN -o other --options
 create_parallel_plot()
-3DMonitor$monNum
-False
+Monitor$monNum
+True
 exit()
 STDIN
 

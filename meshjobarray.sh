@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=2:00:00
+#SBATCH --time=48:00:00
 #SBATCH --account=def-wan
 #SBATCH --cpus-per-task=32
 #SBATCH --array=1-12

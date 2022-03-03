@@ -10,6 +10,12 @@
 using namespace std;
 using namespace utils;
 
+#ifdef THREADS
+#include <omp.h>
+#endif
+
+#define MAX_NUM_THREADS 32
+
 const int NUM_RESULTS = 5;
 
 template<int D>
@@ -158,11 +164,11 @@ void MeshInterpolator<D>::computeBarycentricCoordinates(int simplexId, Eigen::Ve
 
 template <int D>
 void MeshInterpolator<D>::nearestNeighGridMap() {
+#ifndef THREADS
     std::vector<size_t> ret_index(NUM_RESULTS);
     std::vector<double> out_dist_sqr(NUM_RESULTS);
     double query_pt[D];
 
-    Eigen::Vector<double, D> pnt;
     if (D == 2) {
         for (int i = 0; i < nx+1; i++) {
             for (int j = 0; j < ny+1; j++) {
@@ -193,6 +199,44 @@ void MeshInterpolator<D>::nearestNeighGridMap() {
             }
         }
     }
+#endif
+
+#ifdef THREADS
+    if (D == 2) {
+        #pragma omp parallel for collapse(2)
+        for (int i = 0; i < nx+1; i++) {
+            for (int j = 0; j < ny+1; j++) {
+                double query_pt[2] = {x->at(i), y->at(j)};
+                std::vector<size_t> ret_index(NUM_RESULTS);
+                std::vector<double> out_dist_sqr(NUM_RESULTS);
+
+                int numFound = vertexSearchTree->knnSearch(&query_pt[0],
+                    1, &ret_index[0], &out_dist_sqr[0]);
+                assert(numFound >= 1);
+                
+                (*monGridVals)(j*(nx+1)+i, Eigen::placeholders::all) = (*monVals)(ret_index.at(0), Eigen::placeholders::all);
+            }
+        }
+    } else {
+        #pragma omp parallel for collapse(3)
+        for (int k = 0; k < nz+1; k++) {
+            for (int i = 0; i < nx+1; i++) {
+                for (int j = 0; j < ny+1; j++) {
+                    double query_pt[3] = {x->at(i), y->at(j), z->at(k)};
+                    std::vector<size_t> ret_index(NUM_RESULTS);
+                    std::vector<double> out_dist_sqr(NUM_RESULTS);
+
+                    int numFound = vertexSearchTree->knnSearch(&query_pt[0],
+                        1, &ret_index[0], &out_dist_sqr[0]);
+                    assert(numFound >= 1);
+
+                    (*monGridVals)((nx+1)*(ny+1)*k+i*(nx+1)+j, Eigen::placeholders::all) = (*monVals)(ret_index.at(0), Eigen::placeholders::all);
+                }
+            }
+        }
+    }
+#endif
+
 }
 
 template <int D>

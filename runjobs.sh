@@ -1,1 +1,1 @@
-sbatch meshjobarray.sh --array=0-12
+sbatch meshjobarray.sh --array=1-12
