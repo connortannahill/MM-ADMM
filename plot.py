@@ -270,13 +270,13 @@ elif mode == 5:
     ny = 11
     nz = 11
 
-    # off = 5
-    # x = x[off*nx*ny:(off+1)*nx*ny]
-    # y = y[off*nx*ny:(off+1)*nx*ny]
-    # z = z[off*nx*ny:(off+1)*nx*ny]
+    off = 5
+    x = x[off*nx*ny:(off+1)*nx*ny]
+    y = y[off*nx*ny:(off+1)*nx*ny]
+    z = z[off*nx*ny:(off+1)*nx*ny]
 
-    # plt.scatter(x, y)
-    # plt.show()
+    plt.scatter(x, y)
+    plt.show()
 
     # lenVec = np.sqrt(x**2 + y**2 + z**2)
 
@@ -319,15 +319,15 @@ elif mode == 5:
     #         intensity=[0, 0.33, 0.66, 1],
     #     )
     # ])
-    fig = go.Figure(data=[
-        go.Scatter3d(
-            x=x,
-            y=y,
-            z=z,
-        )
-    ])
+    # fig = go.Figure(data=[
+    #     go.Scatter3d(
+    #         x=x,
+    #         y=y,
+    #         z=z,
+    #     )
+    # ])
 
-    fig.show()
+    # fig.show()
 if mode != 4:
     plt.show()
 

@@ -9,8 +9,13 @@
     "BoundaryType": 1,
     "GradUse": false,
     "nSteps": 10000,
+<<<<<<< HEAD
+    "AdmmIter": 5,
+    "DtTol": 1e-3,
+=======
     "AdmmIter": 100,
     "DtTol": 1e-5,
+>>>>>>> a3f32770e569a4db99b8594c398d069d60676cac
     "dt": 0.05,
     "tau": 1e-1,
     "rho": 5,
