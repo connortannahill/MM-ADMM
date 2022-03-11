@@ -47,6 +47,7 @@ public:
     void findNeighbourPoints(int pntId, vector<int> neighPnts);
     void checkStorage(Eigen::MatrixXd &X, Eigen::MatrixXi &F, bool resize);
     void evalMonitorOnGrid(Eigen::Vector<double, D> &x, Eigen::Matrix<double, D, D> &mVal);
+    void evalMonitorNotOnGrid(Eigen::Vector<double, D> &x, Eigen::Matrix<double, D, D> &mVal);
     void evalMonitorOnSimplex(int simplexId, Eigen::Vector<double, D> &x, Eigen::Vector<double,D+1> &b,
             Eigen::Matrix<double,D,D> &mVal);
     void biLinearInterpolation(double x, double y, double xMesh[2],

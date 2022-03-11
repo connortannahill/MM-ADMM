@@ -146,7 +146,8 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     M.setZero();
     for (int i = 0; i < D+1; i++) {
         xTemp = z.segment(i*D, D);
-        interp.evalMonitorOnGrid(xTemp, mTemp);
+        // interp.evalMonitorOnGrid(xTemp, mTemp);
+        interp.evalMonitorNotOnGrid(xTemp, mTemp);
         mPre.at(i) = mTemp;
         M += mTemp;
     }
@@ -166,7 +167,6 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
         }
         j++;
     }
-    // cout << "Ehatdet = " << Ehat.determinant() << endl;
     
     // The element volume
     double Edet = E.determinant();

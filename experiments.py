@@ -434,7 +434,7 @@ def run_parallel_experiment():
 
     for i, inputFile in enumerate(inputFiles):
         times = {}
-        num_runs = 10
+        num_runs = 3
 
         for pow in pows:
             times[pow] = []
@@ -470,7 +470,7 @@ def run_simultaneous_experiment():
 
     for i, inputFile in enumerate(inputFiles):
         times = {}
-        num_runs = 10
+        num_runs = 3
 
         times['({0}, {1})'.format(num_list[i], pows[i])] = []
         for run in range(num_runs):

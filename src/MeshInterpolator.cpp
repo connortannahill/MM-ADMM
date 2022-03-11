@@ -134,9 +134,9 @@ void MeshInterpolator<D>::computeBarycentricCoordinates(int simplexId, Eigen::Ve
             Eigen::Vector<double, D+1> &bCoords) {
 
     if (D == 2) {
-        Eigen::Vector<double, D> x0((*X)((*F)(simplexId, 0), Eigen::all));
-        Eigen::Vector<double, D> x1((*X)((*F)(simplexId, 1), Eigen::all));
-        Eigen::Vector<double, D> x2((*X)((*F)(simplexId, 2), Eigen::all));
+        Eigen::Vector<double, D> x0((*X)((*F)(simplexId, 0), Eigen::placeholders::all));
+        Eigen::Vector<double, D> x1((*X)((*F)(simplexId, 1), Eigen::placeholders::all));
+        Eigen::Vector<double, D> x2((*X)((*F)(simplexId, 2), Eigen::placeholders::all));
 
         double det = (x1(1) - x2(1))*(x0(0) - x2(0)) + (x2(0) - x1(0))*(x0(1) - x2(1));
         bCoords(0) = ( (x1(1) - x2(1))*(pnt(0) - x2(0)) + (x2(0) - x1(0))*(pnt(1) - x2(1)) ) / det;
@@ -145,10 +145,10 @@ void MeshInterpolator<D>::computeBarycentricCoordinates(int simplexId, Eigen::Ve
     } else if (D == 3) {
         Eigen::Matrix<double,D,D> T;
         for (int i = 0; i < D; i++) {
-            T.col(i) = (*X)((*F)(simplexId,i), Eigen::all) - (*X)((*F)(simplexId,D), Eigen::all);
+            T.col(i) = (*X)((*F)(simplexId,i), Eigen::placeholders::all) - (*X)((*F)(simplexId,D), Eigen::placeholders::all);
         }
 
-        Eigen::Vector<double, D> temp((*X)((*F)(simplexId, D), Eigen::all));
+        Eigen::Vector<double, D> temp((*X)((*F)(simplexId, D), Eigen::placeholders::all));
         Eigen::Matrix<double,D,D> Tinv(T.inverse());
 
         temp = Tinv * (pnt - temp);
@@ -179,7 +179,7 @@ void MeshInterpolator<D>::nearestNeighGridMap() {
                     1, &ret_index[0], &out_dist_sqr[0]);
                 assert(numFound >= 1);
                 
-                (*monGridVals)(j*(nx+1)+i, Eigen::all) = (*monVals)(ret_index.at(0), Eigen::all);
+                (*monGridVals)(j*(nx+1)+i, Eigen::placeholders::all) = (*monVals)(ret_index.at(0), Eigen::placeholders::all);
             }
         }
     } else {
@@ -194,7 +194,7 @@ void MeshInterpolator<D>::nearestNeighGridMap() {
                         1, &ret_index[0], &out_dist_sqr[0]);
                     assert(numFound >= 1);
 
-                    (*monGridVals)((nx+1)*(ny+1)*k+i*(nx+1)+j, Eigen::all) = (*monVals)(ret_index.at(0), Eigen::all);
+                    (*monGridVals)((nx+1)*(ny+1)*k+i*(nx+1)+j, Eigen::placeholders::all) = (*monVals)(ret_index.at(0), Eigen::placeholders::all);
                 }
             }
         }
@@ -266,6 +266,16 @@ void MeshInterpolator<D>::biLinearInterpolation(double x, double y, double xMesh
 }
 
 template <int D>
+inline void MeshInterpolator<D>::evalMonitorNotOnGrid(Eigen::Vector<double, D> &pnt, Eigen::Matrix<double, D, D> &mVal) {
+    int xInd = utils::findLimInfMeshPoint(pnt(0), *this->x);
+    int yInd = utils::findLimInfMeshPoint(pnt(1), *this->y);
+    // Eigen::Vector<double, D*D> mTemp;
+    // Eigen::Vector<double, D*D> mFlat;
+
+    (*Mon)(pnt, mVal);
+}
+
+template <int D>
 inline void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &pnt, Eigen::Matrix<double, D, D> &mVal) {
     int xInd = utils::findLimInfMeshPoint(pnt(0), *this->x);
     int yInd = utils::findLimInfMeshPoint(pnt(1), *this->y);
@@ -307,14 +317,14 @@ inline void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &pnt
 
         Eigen::Vector<double, D*D> mFlat(Eigen::Vector<double, D*D>::Zero());
 
-        mFlat += coefs[0]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
-        mFlat += coefs[1]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
-        mFlat += coefs[2]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
-        mFlat += coefs[3]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
-        mFlat += coefs[4]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::all);
-        mFlat += coefs[5]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::all);
-        mFlat += coefs[6]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::all);
-        mFlat += coefs[7]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::all);
+        mFlat += coefs[0]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::placeholders::all);
+        mFlat += coefs[1]*(*monGridVals)(zInd*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::placeholders::all);
+        mFlat += coefs[2]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::placeholders::all);
+        mFlat += coefs[3]*(*monGridVals)(zInd*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::placeholders::all);
+        mFlat += coefs[4]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd, Eigen::placeholders::all);
+        mFlat += coefs[5]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + yInd*(nx+1) + xInd+1, Eigen::placeholders::all);
+        mFlat += coefs[6]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd, Eigen::placeholders::all);
+        mFlat += coefs[7]*(*monGridVals)((zInd+1)*(nx+1)*(ny+1) + (yInd+1)*(nx+1) + xInd+1, Eigen::placeholders::all);
 
         for (int n = 0; n < D*D; n++) {
             mVal(n / D, n % D) = mFlat(n);
@@ -351,11 +361,11 @@ void MeshInterpolator<D>::smoothMonitorGrid(int nIters) {
         if (D == 2) {
             for (int i = 1; i < nx; i++) {
                 for (int j = 1; j < ny; j++) {
-                    (*monGridVals)(j*(nx+1)+i, Eigen::all) = 0.6*(*monGridTemp)(j*(nx+1) + i, Eigen::all) ;
-                    (*monGridVals)(j*(nx+1)+i, Eigen::all) += 0.1*(*monGridTemp)(j*(nx+1) + i+1, Eigen::all);
-                    (*monGridVals)(j*(nx+1)+i, Eigen::all) += 0.1*(*monGridTemp)(j*(nx+1) + i-1, Eigen::all);
-                    (*monGridVals)(j*(nx+1)+i, Eigen::all) += 0.1*(*monGridTemp)((j+1)*(nx+1) + i, Eigen::all);
-                    (*monGridVals)(j*(nx+1)+i, Eigen::all) += 0.1*(*monGridTemp)((j-1)*(nx+1) + i, Eigen::all);;
+                    (*monGridVals)(j*(nx+1)+i, Eigen::placeholders::all) = 0.6*(*monGridTemp)(j*(nx+1) + i, Eigen::placeholders::all) ;
+                    (*monGridVals)(j*(nx+1)+i, Eigen::placeholders::all) += 0.1*(*monGridTemp)(j*(nx+1) + i+1, Eigen::placeholders::all);
+                    (*monGridVals)(j*(nx+1)+i, Eigen::placeholders::all) += 0.1*(*monGridTemp)(j*(nx+1) + i-1, Eigen::placeholders::all);
+                    (*monGridVals)(j*(nx+1)+i, Eigen::placeholders::all) += 0.1*(*monGridTemp)((j+1)*(nx+1) + i, Eigen::placeholders::all);
+                    (*monGridVals)(j*(nx+1)+i, Eigen::placeholders::all) += 0.1*(*monGridTemp)((j-1)*(nx+1) + i, Eigen::placeholders::all);;
 
                     // Eigen::Matrix<double, D, D> a;
                     // for (int n = 0; n < D; n++) {
@@ -372,10 +382,10 @@ void MeshInterpolator<D>::smoothMonitorGrid(int nIters) {
             for (int k = 1; k < nz; k++) {
                 for (int i = 1; i < nx; i++) {
                     for (int j = 1; j < ny; j++) {
-                        (*monGridVals)((nx+1)*(ny+1)*k + j*(nx+1) + i, Eigen::all) = 0.6*(*monGridTemp)((nx+1)*(ny+1)*k + j*(nx+1) + i, Eigen::all) 
-                            + h*(*monGridTemp)((nx+1)*(ny+1)*k + j*(nx+1) + (i+1), Eigen::all) + h*(*monGridTemp)((nx+1)*(ny+1)*k + j*(nx+1) + (i-1), Eigen::all) 
-                            + h*(*monGridTemp)((nx+1)*(ny+1)*k + (j+1)*(nx+1) + i, Eigen::all) + h*(*monGridTemp)((nx+1)*(ny+1)*k + (j-1)*(nx+1) + i, Eigen::all)
-                            + h*(*monGridTemp)((nx+1)*(ny+1)*(k+1) + j*(nx+1) + i, Eigen::all) + h*(*monGridTemp)((nx+1)*(ny+1)*(k-1) + j*(nx+1) + i, Eigen::all);
+                        (*monGridVals)((nx+1)*(ny+1)*k + j*(nx+1) + i, Eigen::placeholders::all) = 0.6*(*monGridTemp)((nx+1)*(ny+1)*k + j*(nx+1) + i, Eigen::placeholders::all) 
+                            + h*(*monGridTemp)((nx+1)*(ny+1)*k + j*(nx+1) + (i+1), Eigen::placeholders::all) + h*(*monGridTemp)((nx+1)*(ny+1)*k + j*(nx+1) + (i-1), Eigen::placeholders::all) 
+                            + h*(*monGridTemp)((nx+1)*(ny+1)*k + (j+1)*(nx+1) + i, Eigen::placeholders::all) + h*(*monGridTemp)((nx+1)*(ny+1)*k + (j-1)*(nx+1) + i, Eigen::placeholders::all)
+                            + h*(*monGridTemp)((nx+1)*(ny+1)*(k+1) + j*(nx+1) + i, Eigen::placeholders::all) + h*(*monGridTemp)((nx+1)*(ny+1)*(k-1) + j*(nx+1) + i, Eigen::placeholders::all);
                     }
                 }
             }

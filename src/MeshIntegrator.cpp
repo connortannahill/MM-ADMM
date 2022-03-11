@@ -118,13 +118,8 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
 
     *xPrev = *x;
     *x = *xBar;
-<<<<<<< HEAD
-    *z = (*a->Dmat) * *xPrev;
-    if (!a->stepTaken) {
-=======
     *z = (*a->Dmat) * *x;
     if (!(a->stepTaken)) {
->>>>>>> a3f32770e569a4db99b8594c398d069d60676cac
         uBar->setZero();
     }
     if (stepsTaken == 0) {
