@@ -181,13 +181,13 @@ void runAlgo(string testName, int nSteps, double dt, unordered_map<string,double
 
     switch (methodType) {
       case 0:
-        Ih = solver.step(admmIter, 1e-5);
+        Ih = solver.step(admmIter, 1e-3);
         break;
       case 1:
         Ih = solver.eulerStep(1e-3);
         break;
       default:
-        Ih = solver.backwardsEulerStep(dt, 1e-5);
+        Ih = solver.backwardsEulerStep(dt, 1e-3);
     }
 
     Ivals.push_back(Ih);

@@ -160,10 +160,11 @@ double MeshIntegrator<D>::step(int nIters, double tol) {
         *x = this->cg->solve(*vec);
 
         primal = ((*a->Dmat) * *this->x - *z).norm();
-        duel = (*D_T*(*z  - *zPrev)).norm();
+        // duel = (*D_T*(*z  - *zPrev)).norm();
+        duel = ((*z  - *zPrev)).norm();
         cout << "duel = " << duel << endl;
 
-        if (primal < tol && duel < 10*tol) {
+        if (primal < tol && duel < tol) {
             break;
         }
 

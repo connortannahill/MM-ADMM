@@ -146,8 +146,8 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
     M.setZero();
     for (int i = 0; i < D+1; i++) {
         xTemp = z.segment(i*D, D);
-        // interp.evalMonitorOnGrid(xTemp, mTemp);
-        interp.evalMonitorNotOnGrid(xTemp, mTemp);
+        interp.evalMonitorOnGrid(xTemp, mTemp);
+        // interp.evalMonitorNotOnGrid(xTemp, mTemp);
         mPre.at(i) = mTemp;
         M += mTemp;
     }
@@ -280,6 +280,8 @@ double AdaptationFunctional<D>::blockGrad(int zId, Eigen::Vector<double, D*(D+1)
         Ih += 0.5*w*w*( (*DXpU).segment(D*(D+1)*zId, D*(D+1)) - z ).squaredNorm();
         grad += w*w*(-(*DXpU).segment(D*(D+1)*zId, D*(D+1)) + z);
     }
+
+    // assert(false);
 
     return Ih;
 }

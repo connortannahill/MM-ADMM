@@ -429,8 +429,8 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
     omp_set_num_threads(MAX_NUM_THREADS);
 #endif
     mapEvaluator = new MeshInterpolator<D>();
-    // mapEvaluator->updateMesh((*this->Vp), (*this->F));
-    // mapEvaluator->interpolateMonitor(*Mon);
+    mapEvaluator->updateMesh((*this->Vp), (*this->F));
+    mapEvaluator->interpolateMonitor(*Mon);
     this->nPnts = Xp.rows();
 
 #ifdef THREADS
@@ -441,9 +441,6 @@ void Mesh<D>::meshInit(Eigen::MatrixXd &Xc, Eigen::MatrixXd &Xp,
 
     // Trivial edge matrix
     int nPnts = Vp->rows();
-
-    // Build the monitor simplex values
-    monitorEvals = new Eigen::MatrixXd(Xp.rows(), D*D);
 
     // Build the mass matrix
     Eigen::VectorXd m(Eigen::VectorXd::Constant(nPnts*D, tau));
@@ -968,7 +965,7 @@ double Mesh<D>::prox(double dt, Eigen::VectorXd &x, Eigen::VectorXd &DXpU, Eigen
 
         z_i = z.segment(D*(D+1)*i, D*(D+1));
 
-        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 10, tol/100, hessComputed);
+        (*Ih)(i) = bfgsOptSimplex(i, z_i, xi_i, 50, tol/100, hessComputed);
         // (*Ih)(i) = newtonOptSimplex(i, z_i, xi_i, 1000, tol/50);
 
         for (int l = 0; l < D*(D+1); l++) {

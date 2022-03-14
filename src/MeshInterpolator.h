@@ -40,6 +40,7 @@ public:
     void computeBarycentricCoordinates(int simplexId, Eigen::Vector<double, D> &pnt,
             Eigen::Vector<double, D+1> &bCoords);
     void interpolateMonitor(MonitorFunction<D> &Mon);
+    void interpolateMonitorNotOnGrid(MonitorFunction<D> &Mon);
     void nearestNeighGridMap();
     void smoothMonitor(int nIters);
     void smoothMonitorGrid(int nIters);

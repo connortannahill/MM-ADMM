@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 import json
 from os import path
+from pathlib import Path
 
 """
 TEMPLATES AND MISC
@@ -300,6 +301,8 @@ def create_parallel_plot():
     dataFiles = list(np.array(dataFiles)[sort_list])
 
     dataFilesJson = list(np.array(dataFilesJson)[sort_list])
+    print(dataFilesJson)
+    print(dataFilesPre)
 
     num_list2 = [int(file[len(testName):]) for file in dataFilesPre]
     sort_list2 = np.argsort(num_list2)
@@ -307,7 +310,6 @@ def create_parallel_plot():
 
 
     # print(dataFilesPre)
-    # print(dataFilesJson)
     # assert(False)
 
 
@@ -336,6 +338,7 @@ def create_parallel_plot():
         for pow in pows:
             fname = './Experiments/Results/{0}{1}/IhPara{2}.txt'.format(testName, num_list[i], pow)
             if (path.exists(fname)):
+                print('found file {}'.format(fname))
                 val = np.genfromtxt(fname, delimiter=',')[-1, 0]
                 times[str(pow)] = [val]
         print('pows = {}'.format(pows))
@@ -344,9 +347,16 @@ def create_parallel_plot():
         # Dump the data file
         # label = str(num_simplices[i])
         # Get the number of simplces
+        if not path.exists('./Experiments/Results/{0}{1}/triangles.txt'.format(testName, num_list[i])):
+            continue
+            
         num_simplices = np.genfromtxt('./Experiments/Results/{0}{1}/triangles.txt'.format(testName, num_list[i])).shape[0]
         label = 'MM-ADMM on ' + str(num_simplices) + ' simplices'
         print('label {}'.format(label))
+        print('{}'.format(dataFilesPre[i]))
+        print('{}'.format(num_list[i]))
+        print('{}'.format(color[i]))
+        print('{}'.format(marks[i]))
         denom = plot_parallel_experiment(dataFilesPre[i], dataFiles[i], num_list[i], pows, times, ax, color[i], marks[i], label, plotAll)
 
         if not plotAll:
@@ -402,11 +412,17 @@ def create_parallel_plot():
         # plt.ylabel('Normalized Average CPU Time')
         # plt.title('{}'.format(testName))
         if testName.startswith('Monitor1'):
-            mon_name = 'Example 7.1 Parallel Scaling'
+            mon_name = 'Example 7.1 Parallel Scaling in Two-Dimensions'
         elif testName.startswith('Monitor2'):
-            mon_name = 'Example 7.2 Parallel Scaling'
+            mon_name = 'Example 7.2 Parallel Scaling in Two-Dimensions'
         elif testName.startswith('Monitor3'):
-            mon_name = 'Example 7.3 Parallel Scaling'
+            mon_name = 'Example 7.3 Parallel Scaling in Two-Dimensions'
+        elif testName.startswith('3DMonitor1'):
+            mon_name = 'Example 7.1 Parallel Scaling in Three-Dimensions'
+        elif testName.startswith('3DMonitor2'):
+            mon_name = 'Example 7.2 Parallel Scaling in Three-Dimensions'
+        elif testName.startswith('3DMonitor3'):
+            mon_name = 'Example 7.3 Parallel Scaling in Three-Dimensions'
 
         fig.suptitle('{}'.format(mon_name))
         # fig.title()

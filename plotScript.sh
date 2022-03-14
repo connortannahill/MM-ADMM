@@ -23,7 +23,7 @@ echo $monNum
 # echo $inputStr
 python experiments.py <<STDIN -o other --options
 plot_energy_decrease()
-Monitor$monNum$num
+3DMonitor$monNum$num
 True
 True
 exit()

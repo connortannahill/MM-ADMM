@@ -75,13 +75,13 @@ void MeshInterpolator<D>::updateMesh(Eigen::MatrixXd &X, Eigen::MatrixXi &F) {
 
     // It is not uneccisary and expensive to call updateMesh unless
     // the boundary of the domain has changed
-    nx = 2*((int)pow(this->X->size(), 1.0/2.0));
-    ny = 2*((int)pow(this->X->size(), 1.0/2.0));
+    nx = ((int)pow(this->X->size(), 1.0/D));
+    ny = ((int)pow(this->X->size(), 1.0/D));
 
     if (D == 2) {
         nz = 1;
     } else if (D == 3) {
-        nz = 2*((int)pow(this->X->size(), 1.0/2.0));
+        nz = ((int)pow(this->X->size(), 1.0/D));
     }
 
     monGridVals->resize((nx+1)*(ny+1)*(nz+1), D*D);
@@ -164,6 +164,7 @@ void MeshInterpolator<D>::computeBarycentricCoordinates(int simplexId, Eigen::Ve
 
 template <int D>
 void MeshInterpolator<D>::nearestNeighGridMap() {
+    // assert(false);
 #ifndef THREADS
     std::vector<size_t> ret_index(NUM_RESULTS);
     std::vector<double> out_dist_sqr(NUM_RESULTS);
@@ -253,6 +254,13 @@ void MeshInterpolator<D>::interpolateMonitor(MonitorFunction<D> &Mon) {
     Mon.evaluateAtVertices(*X, *F, *monVals);;
     nearestNeighGridMap();
     smoothMonitorGrid(NUM_SMOOTH);
+
+    delete monGridTemp;
+}
+
+template <int D>
+void MeshInterpolator<D>::interpolateMonitorNotOnGrid(MonitorFunction<D> &Mon) {
+    this->Mon = &Mon;
 }
 
 template <int D>
@@ -281,6 +289,7 @@ inline void MeshInterpolator<D>::evalMonitorOnGrid(Eigen::Vector<double, D> &pnt
     int yInd = utils::findLimInfMeshPoint(pnt(1), *this->y);
     Eigen::Vector<double, D*D> mTemp;
     Eigen::Vector<double, D*D> mFlat;
+    // assert(false);
 
     if (D == 2) {
         double xMesh[2] = {this->x->at(xInd), this->x->at(xInd+1)};
@@ -401,7 +410,7 @@ MeshInterpolator<D>::~MeshInterpolator() {
     delete vertexSearchTree;
     delete monVals;
 
-    delete monGridTemp;
+    // delete monGridTemp;
     delete monGridVals;
     delete X;
     delete F;
