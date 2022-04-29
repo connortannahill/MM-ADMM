@@ -13,21 +13,21 @@ And yes, we are embarrassed by the commit messages.
 
 ## Install
 
-git clone https://github.com/connortannahill/OptMeshes.git  
+`git clone https://github.com/connortannahill/OptMeshes.git` 
 
 ## Dependencies
 
 Install Eigen with the latest version at the standard library.  
 
-git clone https://gitlab.com/libeigen/eigen.git  
+`git clone https://gitlab.com/libeigen/eigen.git` 
 
-And copy the /lib/Eigen/ subdirectory to the standard path:  
+And copy the `/lib/Eigen/` subdirectory to the standard path:  
 
-sudo cp -rf Eigen/ /usr/include/  
+`sudo cp -rf Eigen/ /usr/include/`
 
 Also clone [nanoflann](https://github.com/jlblancoc/nanoflann.git) into the /lib/ directory.
 
 ## Compilation
 
-Simply run make within the /OptMeshes directory to compile the project. If using the parallel capabilities you must add the -fopenmp flag in the CFLAGS variable and assign the DEFS variable to DEFS = -D THREADS
+Simply run make within the `/OptMeshes` directory to compile the project. If using the parallel capabilities you must add the `-fopenmp` flag in the CFLAGS variable and assign the `DEFS` variable to `DEFS = -D THREADS`
 
