@@ -1,4 +1,4 @@
-This is the source code for the papter
+This is the source code for the paper
 
 MM-ADMM: Implicit Integration of MMPDEs in Parallel.
 Connor Tannahill and Justin Wan.
@@ -29,5 +29,5 @@ Also clone [nanoflann](https://github.com/jlblancoc/nanoflann.git) into the /lib
 
 ## Compilation
 
-Simply run make in /OptMeshes directory to compile the project. If using the parallel capabilities you must add or remove the -fopenmp flag in the CFLAGS variable and assign the DEFS variable to DEFS = -D THREADS
+Simply run make within the /OptMeshes directory to compile the project. If using the parallel capabilities you must add or remove the -fopenmp flag in the CFLAGS variable and assign the DEFS variable to DEFS = -D THREADS
 
