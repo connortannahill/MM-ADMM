@@ -29,5 +29,5 @@ Also clone [nanoflann](https://github.com/jlblancoc/nanoflann.git) into the /lib
 
 ## Compilation
 
-Simply run make within the /OptMeshes directory to compile the project. If using the parallel capabilities you must add or remove the -fopenmp flag in the CFLAGS variable and assign the DEFS variable to DEFS = -D THREADS
+Simply run make within the /OptMeshes directory to compile the project. If using the parallel capabilities you must add the -fopenmp flag in the CFLAGS variable and assign the DEFS variable to DEFS = -D THREADS
 
